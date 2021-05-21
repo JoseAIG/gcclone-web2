@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="ISO-8859-1">
+		<link href="public/styles/materialize.min.css" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+		<script src="public/scripts/materialize.min.js" defer></script>
+		<script src="public/scripts/registro.js" defer></script>
+		<title>GC Clone - Registro</title>
+	</head>
+	<body>
+	<!-- Inicio componente de navbar -->
+		<nav>
+		  <div class="nav-wrapper teal">
+		    <a href="/gcclone" class="brand-logo left"><i class="material-icons">perm_contact_calendar</i>GC Clone</a>
+		    <ul class="right">
+<!-- 		      <li><a href="Login"><i class="material-icons left">keyboard_arrow_right</i>Iniciar Sesión</a></li>
+		      <li><a href="Registro"><i class="material-icons left">person_add</i>Registrarse</a></li> -->
+		    </ul>
+		  </div>
+		</nav>
+	<!-- Fin componente de navbar -->
+	
+	<!-- Inicio tarjeta de registro -->
+		<div class="row">
+		  <div class="card horizontal  col s4 offset-s4 center hoverable" style="margin-top:3em">
+		    <div class="card-stacked">
+		      <div class="card-content">
+    		   	<div class="card-title">Registrar usuario</div>
+		        <div class="row">
+		        	<form class="col s12" id="form-registro">
+		        		<div class="row">
+		        			<div class="input-field col s6 offset-s3">
+       			         		<input id="usuario" type="text" class="validate" name="usuario" autocomplete="off">
+       					   		<label for="usuario">Usuario</label>
+		        			</div>
+        			       	<div class="input-field col s6 offset-s3">
+					        	<input id="correo" type="email" class="validate" name="correo" autocomplete="off">
+					        	<label for="correo">Correo</label>
+		        	            <span class="helper-text" data-error="Invalido" data-success="Valido"></span>
+					        </div>
+        			        <div class="input-field col s6 offset-s3">
+					        	<input id="clave" type="password" class="validate" name="clave">
+					        	<label for="clave">Contraseña</label>
+					        </div>
+      					    <div class="col s6 offset-s3">
+					        	<p>¿Ya tienes cuenta? <a href="Login">Ingresa</a></p>
+					        </div>
+		        		</div>
+		        	</form>
+		        </div>
+		      </div>
+		      <div class="card-action">
+		        <button class="waves-effect waves-light btn" id="boton-registro">Registrarse</button>
+		      </div>
+		    </div>
+		  </div>
+	 	</div>
+  	<!-- Fin tarjeta de registro -->
+	</body>
+</html>
