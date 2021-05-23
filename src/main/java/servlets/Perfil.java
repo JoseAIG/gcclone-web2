@@ -10,17 +10,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import helpers.Database;
+
 /**
- * Servlet implementation class Dashboard
+ * Servlet implementation class Perfil
  */
-@WebServlet("/Dashboard")
-public class Dashboard extends HttpServlet {
+@WebServlet("/Perfil")
+public class Perfil extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public Dashboard() {
+    public Perfil() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -28,21 +30,20 @@ public class Dashboard extends HttpServlet {
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
+    //METODO doGet ENCARGADO DE RESPONDER LOS DATOS DEL USUARIO PARA QUE EL MISMO PUEDA EDITARLOS
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		//response.getWriter().append("Served at: ").append(request.getContextPath());
+		System.out.println("Pefil - GET");
 		HttpSession sesion = request.getSession();
-		System.out.println(sesion.getAttribute("usuario"));
-		if(sesion.getAttribute("usuario")==null) {
-			System.out.println("usuario nulo, redireccionar a pagina principal");
-			response.sendRedirect("/gcclone");
-		}else {
-			System.out.println("usuario NO nulo, mostrar dashboard");
-			//response.setContentType("text/html");
-			request.getRequestDispatcher("/public/views/dashboard.html").include(request, response);			
-		}
-//		response.setContentType("text/html");
-//		request.getRequestDispatcher("/public/views/dashboard.html").include(request, response);
+		
+		Database DB = Database.getInstances();
+		String [] datos_usuario = DB.dbObtenerDatosUsuario(sesion.getAttribute("usuario").toString());
+        
+		response.setContentType("application/json");  
+		PrintWriter out = response.getWriter();
+		out.println("{\"usuario\": \""+datos_usuario[0]+"\", \"correo\":\""+datos_usuario[1]+"\", \"clave\":\""+datos_usuario[2]+"\"}");
+		out.close();
 	}
 
 	/**
@@ -51,18 +52,6 @@ public class Dashboard extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		doGet(request, response);
-	}
-	
-	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		//super.doDelete(req, resp);
-		HttpSession sesion = request.getSession();
-		sesion.invalidate();
-		
-        response.setContentType("application/json");  
-		PrintWriter out = response.getWriter();
-		out.println("{\"resultado\": \"Sesion finalizada\", \"status\":"+200+"}");
-		out.close();
 	}
 
 }
