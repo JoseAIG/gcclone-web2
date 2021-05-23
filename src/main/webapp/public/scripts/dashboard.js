@@ -86,6 +86,27 @@ const guardar_datos_perfil = () => {
 }
 link_guardar_perfil.onclick=guardar_datos_perfil;
 
+//FUNCIONALIDAD PARA ELIMINAR UN PERFIL
+var link_borrar_perfil = document.getElementById("link-borrar-perfil");
+const borrar_perfil = () => {
+	    fetch('http://localhost:8080/gcclone/Perfil', {
+	    	method: 'DELETE',
+		})
+	    //RESPUESTA CRUDA DEL SERVER
+	    .then(response => response.json())
+	    //RESPUESTA CON LOS RESULTADOS DEL SERVIDOR
+	    .then(data => {
+	        console.log('Respuesta del servidor:', data);
+			alert(data.resultado);
+			window.open("/gcclone","_self");
+	    })	    
+		//CATCH PARA OBTENER DETALLER POR SI ORURRE UN ERROR
+	    .catch((error) => {
+	        console.error('Error:', error);
+	    });
+}
+link_borrar_perfil.onclick=borrar_perfil;
+
 //ACTIVAR LOS MODAL DE MATERIALIZE
 document.addEventListener('DOMContentLoaded', function() {
    var elems = document.querySelectorAll('.modal');

@@ -79,6 +79,25 @@ public class Perfil extends HttpServlet {
 		}
 	}
 	
+	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		HttpSession sesion = request.getSession();
+		
+		response.setContentType("application/json");
+		PrintWriter out = response.getWriter();
+		
+		Database DB = Database.getInstances();
+		Boolean resultado = DB.dbEliminarPerfil(sesion.getAttribute("usuario").toString());
+		System.out.println(resultado);
+		if(resultado) {
+			sesion.setAttribute("usuario", null);
+		
+			out.println("{\"resultado\": \"Perfil eliminado\", \"status\":"+200+"}");
+			out.close();
+		}else {
+			System.out.println("El usuario no pudo eliminarse");
+		}
+	}
+	
 //	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 //		System.out.println("Perfil - PUT");
 //		System.out.println(request.getParameter("usuario"));
