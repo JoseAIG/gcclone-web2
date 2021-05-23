@@ -29,7 +29,6 @@ public class Inicio extends HttpServlet {
 			request.getRequestDispatcher("/public/views/inicio.html").include(request, response); 
 		}else {
 			System.out.println("NO es null, redireccionar a dashboard");
-			//request.getRequestDispatcher("Dashboard").include(request, response);
 			response.sendRedirect("Dashboard");
 		}
 //		response.setContentType("text/html");

@@ -1,10 +1,24 @@
 <!DOCTYPE html>
 <html>
-<head>
-<meta charset="ISO-8859-1">
-<title>Insert title here</title>
-</head>
-<body>
-	<h1>Estas en el dashboard</h1>
-</body>
+	<head>
+		<meta charset="ISO-8859-1">
+		<link href="public/styles/materialize.min.css" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+		<script src="public/scripts/materialize.min.js" defer></script>		
+		<script src="public/scripts/dashboard.js" defer></script>		
+		<title>GC Clone - Dashboard</title>
+	</head>
+	<body>
+		<!-- Inicio componente de navbar -->
+		<nav>
+		  <div class="nav-wrapper teal">
+		    <a href="/gcclone" class="brand-logo left"><i class="material-icons">perm_contact_calendar</i>GC Clone</a>
+		    <ul class="right">
+		    	<li><a id="link-editar-perfil"><i class="material-icons left">person_outline</i>Editar perfil</a></li>
+		      	<li><a id="link-cerrar-sesion"><i class="material-icons left">power_settings_new</i>Cerrar Sesión</a></li>
+		    </ul>
+		  </div>
+		</nav>
+		<!-- Fin componente de navbar -->
+	</body>
 </html>

@@ -56,7 +56,7 @@ public class Registro extends HttpServlet {
 			System.out.println("No se redireccionara.");
 		}
 		out.println("{\"resultado\": \""+ resultado_registro +"\", \"status\":"+200+"}");
-
+		out.close();
 	}
 
 }

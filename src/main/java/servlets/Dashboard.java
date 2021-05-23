@@ -1,6 +1,8 @@
 package servlets;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -36,7 +38,7 @@ public class Dashboard extends HttpServlet {
 			response.sendRedirect("/gcclone");
 		}else {
 			System.out.println("usuario NO nulo, mostrar dashboard");
-			response.setContentType("text/html");
+			//response.setContentType("text/html");
 			request.getRequestDispatcher("/public/views/dashboard.html").include(request, response);			
 		}
 //		response.setContentType("text/html");
@@ -49,6 +51,19 @@ public class Dashboard extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		doGet(request, response);
+	}
+	
+	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		//super.doDelete(req, resp);
+		HttpSession sesion = request.getSession();
+		sesion.invalidate();
+		
+        response.setContentType("application/json");  
+		PrintWriter out = response.getWriter();
+		out.println("{\"resultado\": \"Sesion finalizada\", \"status\":"+200+"}");
+		out.close();
+		
 	}
 
 }
