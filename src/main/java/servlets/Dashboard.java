@@ -9,34 +9,45 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 /**
- * Servlet implementation class Inicio
+ * Servlet implementation class Dashboard
  */
-@WebServlet("")
-public class Inicio extends HttpServlet {
+@WebServlet("/Dashboard")
+public class Dashboard extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
-    public Inicio() {
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public Dashboard() {
         super();
+        // TODO Auto-generated constructor stub
     }
 
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
 		//response.getWriter().append("Served at: ").append(request.getContextPath());
 		HttpSession sesion = request.getSession();
 		System.out.println(sesion.getAttribute("usuario"));
 		if(sesion.getAttribute("usuario")==null) {
-			System.out.println("es null, mostrar vista principal de inicio");
-			response.setContentType("text/html");
-			request.getRequestDispatcher("/public/views/inicio.html").include(request, response); 
+			System.out.println("usuario nulo, redireccionar a pagina principal");
+			response.sendRedirect("/gcclone");
 		}else {
-			System.out.println("NO es null, redireccionar a dashboard");
-			//request.getRequestDispatcher("Dashboard").include(request, response);
-			response.sendRedirect("Dashboard");
+			System.out.println("usuario NO nulo, mostrar dashboard");
+			response.setContentType("text/html");
+			request.getRequestDispatcher("/public/views/dashboard.html").include(request, response);			
 		}
 //		response.setContentType("text/html");
-//		request.getRequestDispatcher("/public/views/inicio.html").include(request, response); 
+//		request.getRequestDispatcher("/public/views/dashboard.html").include(request, response);
 	}
 
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
 		doGet(request, response);
 	}
 

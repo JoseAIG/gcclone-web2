@@ -21,13 +21,18 @@ const iniciar_sesion = () => {
 			})
 	    //RESPUESTA CRUDA DEL SERVER
 	    .then(response => response.json())
-	    //CATCH PARA OBTENER DETALLER POR SI ORURRE UN ERROR
-	    .catch((error) => {
-	        console.error('Error:', error);
-	    })
 	    //RESPUESTA CON LOS RESULTADOS DEL SERVIDOR
 	    .then(data => {
 	        console.log('Respuesta del servidor:', data);
+			if(data.status==200){
+				//console.log("redireccionar aqui");
+				//alert("redireccionar!");
+				window.open("Dashboard","_self");
+			}
+	    })
+	    //CATCH PARA OBTENER DETALLER POR SI ORURRE UN ERROR
+	    .catch((error) => {
+	        console.error('Error:', error);
 	    });
 	}
 }

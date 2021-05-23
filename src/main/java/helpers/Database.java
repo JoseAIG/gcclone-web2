@@ -122,7 +122,7 @@ public class Database {
 			this.stmt = this.conn.createStatement();
 			this.rs = this.stmt.executeQuery(query);
 			while(rs.next()) {
-				String usuario = rs.getString("usuario");
+				String usuario = rs.getString("nombre_usuario");
 				String clave = rs.getString("clave");
 				if(usuario.equals(datos[0]) && clave.equals(datos[1])) {
 					return true;
