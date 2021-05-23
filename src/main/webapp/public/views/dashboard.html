@@ -24,28 +24,34 @@
 		<!-- Modal actualizacion usuario -->
 		<div id="modal-editar-perfil" class="modal">
 		  <div class="modal-content">
-		    <h4>Editar Perfil</h4>
+		    <h4 class="center">Editar Perfil</h4>
    		        <div class="row">
-		        	<form class="col s12" id="form-login">
+		        	<form class="col s12" id="form-editar-perfil">
 		        		<div class="row">
 		        			<div class="input-field col s6 offset-s3">
-       			         		<input id="editar-usuario" type="text" class="validate" name="usuario" autocomplete="off">
+       			         		<input id="editar-usuario" type="text" class="validate selected" name="usuario" autocomplete="off" placeholder="" disabled>
        					   		<label for="usuario">Usuario</label>
 		        			</div>
 			        		<div class="input-field col s6 offset-s3">
-					        	<input id="editar-correo" type="email" class="validate" name="clave">
+					        	<input id="editar-correo" type="email" class="validate" name="correo" placeholder="" disabled>
 					        	<label for="correo">Correo</label>
 					        </div>
         			        <div class="input-field col s6 offset-s3">
-					        	<input id="editar-clave" type="password" class="validate" name="clave">
+					        	<input id="editar-clave" type="password" class="validate" name="clave" placeholder="" disabled>
 					        	<label for="clave">Contraseña</label>
 					        </div>
 		        		</div>
 		        	</form>
+		        	<div class="col s12 center">
+		        		<a id="link-guardar-perfil" class="waves-effect waves-light btn"><i class="material-icons left">save</i>Guardar</a>
+		        	</div>
+     			    <div class="col s12 center" style="margin-top:1em">
+		        		<a id="link-borrar-perfil" class="waves-effect waves-light btn red"><i class="material-icons left">delete_forever</i>Eliminar perfil</a>
+		        	</div>
 		        </div>
 		  </div>
 		  <div class="modal-footer">
-		    <a class="modal-close waves-effect waves-green btn-flat">Agree</a>
+		    <a class="modal-close waves-effect waves-green btn-flat">Cerrar</a>
 		  </div>
 		</div>
 		

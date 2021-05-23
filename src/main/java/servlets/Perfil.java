@@ -1,9 +1,12 @@
 package servlets;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -15,6 +18,7 @@ import helpers.Database;
 /**
  * Servlet implementation class Perfil
  */
+@MultipartConfig()
 @WebServlet("/Perfil")
 public class Perfil extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -50,8 +54,40 @@ public class Perfil extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
+		System.out.println("Perfil - POST");
+		System.out.println(request.getParameter("usuario"));
+		System.out.println(request.getParameter("clave"));
+		System.out.println(request.getParameter("correo"));
+		
+		HttpSession sesion = request.getSession();
+		
+		response.setContentType("application/json");
+		PrintWriter out = response.getWriter();
+		
+		String usuario = request.getParameter("usuario");
+		String correo = request.getParameter("correo");
+		String clave = request.getParameter("clave");
+		Object[] datos_usuario = {usuario, correo, clave}; 
+		
+		Database DB = Database.getInstances();
+		Boolean resultado = DB.dbActualizarDatosUsuario(sesion.getAttribute("usuario").toString(), datos_usuario);
+		System.out.println(resultado);
+		if(resultado) {
+			sesion.setAttribute("usuario", usuario);
+			out.println("{\"resultado\": \"Datos actualizados\", \"status\":"+200+", \"nuevo_usuario\":\""+usuario+"\"}");
+			out.close();
+		}
 	}
+	
+//	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+//		System.out.println("Perfil - PUT");
+//		System.out.println(request.getParameter("usuario"));
+//		System.out.println(request.getParameter("clave"));
+//		System.out.println(request.getParameter("correo"));
+//		BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));
+//
+//		String data = br.readLine();
+//		System.out.println(data);
+//	};
 
 }

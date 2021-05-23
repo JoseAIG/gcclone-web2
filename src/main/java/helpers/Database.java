@@ -144,7 +144,6 @@ public class Database {
 	//METODO PARA OBTENER LOS DATOS DE UN USUARIO
 	public String[] dbObtenerDatosUsuario(String nombre_usuario) {
 		String [] datos = new String[3];
-		
 		try {
 			this.stmt = this.conn.createStatement();
 			this.rs = this.stmt.executeQuery("select *from usuario where nombre_usuario ='"+nombre_usuario+"';");
@@ -163,8 +162,28 @@ public class Database {
 				ex.printStackTrace();
 			}
 		}
-		
 		return datos;
+	}
+	
+	//METODO PARA ACTUALIZAR LOS DATOS DE UN USUARIO
+	public boolean dbActualizarDatosUsuario(String usuario, Object[] datos ) {
+		try {
+			this.pstmt = this.conn.prepareStatement("UPDATE usuario SET nombre_usuario = ?, correo = ?, clave = ? WHERE nombre_usuario='"+usuario+"';");
+			this.pstmt.setString(1, (String) datos[0]);
+			this.pstmt.setString(2, (String) datos[1]);
+			this.pstmt.setString(3, (String) datos[2]);
+			this.pstmt.executeUpdate();
+		} catch (SQLException e) {
+//			e.printStackTrace();
+			return false;
+		} finally {
+			try {
+				this.pstmt.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return true;
 	}
 	
 	//METODO PARA CERRAR LA SESION DE LA BASE DE DATOS
