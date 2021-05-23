@@ -5,7 +5,7 @@
 //FUNCIONALIDAD PARA CERRAR SESION
 var link_cerrar_sesion = document.getElementById("link-cerrar-sesion");
 const cerrar_sesion = ()=>{
-	    fetch('http://localhost:8080/gcclone/Dashboard', {
+	    fetch('/gcclone/Dashboard', {
 	    	method: 'DELETE',
 	    	//body: datos_form,
 			//mode: "no-cors",
@@ -32,7 +32,7 @@ var input_editar_nombre_usuario = document.getElementById("editar-usuario");
 var input_editar_correo = document.getElementById("editar-correo");
 var input_editar_clave = document.getElementById("editar-clave");
 const obtener_datos_perfil = () => {
-    fetch('http://localhost:8080/gcclone/Perfil', {
+    fetch('/gcclone/Perfil', {
     	method: 'GET',
     	//body: datos_form,
 		//mode: "no-cors",
@@ -66,7 +66,7 @@ const guardar_datos_perfil = () => {
 	console.log("Usuario: "+datos_form_editar_perfil.get("usuario"), "Correo: " + datos_form_editar_perfil.get("correo"), "Clave: " + datos_form_editar_perfil.get("clave"));
 
 	
-    fetch('http://localhost:8080/gcclone/Perfil', {
+    fetch('/gcclone/Perfil', {
     	method: 'POST',
     	body: datos_form_editar_perfil,
 		mode: "no-cors",
@@ -89,7 +89,7 @@ link_guardar_perfil.onclick=guardar_datos_perfil;
 //FUNCIONALIDAD PARA ELIMINAR UN PERFIL
 var link_borrar_perfil = document.getElementById("link-borrar-perfil");
 const borrar_perfil = () => {
-	    fetch('http://localhost:8080/gcclone/Perfil', {
+	    fetch('/gcclone/Perfil', {
 	    	method: 'DELETE',
 		})
 	    //RESPUESTA CRUDA DEL SERVER
@@ -98,7 +98,9 @@ const borrar_perfil = () => {
 	    .then(data => {
 	        console.log('Respuesta del servidor:', data);
 			alert(data.resultado);
-			window.open("/gcclone","_self");
+			if(data.status==200){
+				window.open("/gcclone","_self");				
+			}
 	    })	    
 		//CATCH PARA OBTENER DETALLER POR SI ORURRE UN ERROR
 	    .catch((error) => {

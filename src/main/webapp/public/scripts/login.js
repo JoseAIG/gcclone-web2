@@ -13,7 +13,7 @@ const iniciar_sesion = () => {
 	if(datos_form.get("usuario")=="" || datos_form.get("clave")=="" ){
 		alert("Llene todos los campos");
 	}else{
-	    fetch('http://localhost:8080/gcclone/Login', {
+	    fetch('/gcclone/Login', {
 	    	method: 'POST',
 	    	body: datos_form,
 			mode: "no-cors",

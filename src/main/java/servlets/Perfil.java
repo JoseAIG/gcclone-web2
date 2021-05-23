@@ -90,7 +90,6 @@ public class Perfil extends HttpServlet {
 		System.out.println(resultado);
 		if(resultado) {
 			sesion.setAttribute("usuario", null);
-		
 			out.println("{\"resultado\": \"Perfil eliminado\", \"status\":"+200+"}");
 			out.close();
 		}else {

@@ -24,6 +24,9 @@ const enviar_datos = (e) => {
 	    .then(data => {
 	        console.log('Respuesta del servidor:', data.resultado);
 			alert(data.resultado);
+			if(data.status==200){
+				window.open("/gcclone","_self");
+			}
 	    })	    
 		//CATCH PARA OBTENER DETALLER POR SI ORURRE UN ERROR
 	    .catch((error) => {

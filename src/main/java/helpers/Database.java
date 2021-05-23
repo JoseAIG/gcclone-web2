@@ -197,13 +197,15 @@ public class Database {
 		}finally {
 			try {
 				this.stmt.close();
-				//this.rs.close();
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
 		}
 		return true;
 	}
+	
+	//METODO PARA CREAR UN NUEVO CALENDARIO
+	
 	
 	//METODO PARA CERRAR LA SESION DE LA BASE DE DATOS
 	public void dbClose() {
