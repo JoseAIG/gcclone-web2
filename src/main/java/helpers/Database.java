@@ -141,6 +141,32 @@ public class Database {
 		return false;
 	}
 	
+	//METODO PARA OBTENER LOS DATOS DE UN USUARIO
+	public String[] dbObtenerDatosUsuario(String nombre_usuario) {
+		String [] datos = new String[3];
+		
+		try {
+			this.stmt = this.conn.createStatement();
+			this.rs = this.stmt.executeQuery("select *from usuario where nombre_usuario ='"+nombre_usuario+"';");
+			while(rs.next()) {
+				datos[0] = rs.getString("nombre_usuario");
+				datos[1] = rs.getString("correo");
+				datos[2] = rs.getString("clave");	
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				this.stmt.close();
+				this.rs.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		
+		return datos;
+	}
+	
 	//METODO PARA CERRAR LA SESION DE LA BASE DE DATOS
 	public void dbClose() {
 		try {

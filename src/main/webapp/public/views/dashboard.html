@@ -14,11 +14,40 @@
 		  <div class="nav-wrapper teal">
 		    <a href="/gcclone" class="brand-logo left"><i class="material-icons">perm_contact_calendar</i>GC Clone</a>
 		    <ul class="right">
-		    	<li><a id="link-editar-perfil"><i class="material-icons left">person_outline</i>Editar perfil</a></li>
+		    	<li><a id="link-editar-perfil" class="modal-trigger" data-target="modal-editar-perfil"><i class="material-icons left ">person_outline</i>Editar perfil</a></li>
 		      	<li><a id="link-cerrar-sesion"><i class="material-icons left">power_settings_new</i>Cerrar Sesión</a></li>
 		    </ul>
 		  </div>
 		</nav>
 		<!-- Fin componente de navbar -->
+		
+		<!-- Modal actualizacion usuario -->
+		<div id="modal-editar-perfil" class="modal">
+		  <div class="modal-content">
+		    <h4>Editar Perfil</h4>
+   		        <div class="row">
+		        	<form class="col s12" id="form-login">
+		        		<div class="row">
+		        			<div class="input-field col s6 offset-s3">
+       			         		<input id="editar-usuario" type="text" class="validate" name="usuario" autocomplete="off">
+       					   		<label for="usuario">Usuario</label>
+		        			</div>
+			        		<div class="input-field col s6 offset-s3">
+					        	<input id="editar-correo" type="email" class="validate" name="clave">
+					        	<label for="correo">Correo</label>
+					        </div>
+        			        <div class="input-field col s6 offset-s3">
+					        	<input id="editar-clave" type="password" class="validate" name="clave">
+					        	<label for="clave">Contraseña</label>
+					        </div>
+		        		</div>
+		        	</form>
+		        </div>
+		  </div>
+		  <div class="modal-footer">
+		    <a class="modal-close waves-effect waves-green btn-flat">Agree</a>
+		  </div>
+		</div>
+		
 	</body>
 </html>

@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import helpers.Database;
+
 /**
  * Servlet implementation class Dashboard
  */
@@ -63,7 +65,21 @@ public class Dashboard extends HttpServlet {
 		PrintWriter out = response.getWriter();
 		out.println("{\"resultado\": \"Sesion finalizada\", \"status\":"+200+"}");
 		out.close();
+	}
+	
+	protected void doOptions(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		//super.doOptions(arg0, arg1);
+		System.out.println("options");
+		HttpSession sesion = request.getSession();
 		
+		Database DB = Database.getInstances();
+		String [] datos_usuario = DB.dbObtenerDatosUsuario(sesion.getAttribute("usuario").toString());
+        
+		response.setContentType("application/json");  
+		PrintWriter out = response.getWriter();
+		out.println("{\"usuario\": \""+datos_usuario[0]+"\", \"correo\":\""+datos_usuario[1]+"\", \"clave\":\""+datos_usuario[2]+"\"}");
+		out.close();
 	}
 
 }
