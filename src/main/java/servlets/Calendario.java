@@ -1,6 +1,8 @@
 package servlets;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
@@ -38,7 +40,18 @@ public class Calendario extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		//doGet(request, response);
-		System.out.println("Calendario - POST " + request.getParameter("nombre-calendario"));
+		System.out.println("Calendario - POST " + request.getParameter("nombre-calendario") + " " + request.getParameter("input-invitado0"));
+		int cantidad_invitados = Integer.parseInt(request.getParameter("cantidad-invitados").toString());
+		System.out.println("invitados: ");
+		for(int i=0;i<cantidad_invitados;i++) {
+			if(request.getParameter("input-invitado"+i)!=null && !request.getParameter("input-invitado"+i).equals("")) {
+				System.out.println(request.getParameter("input-invitado"+i));
+			}
+		}
+		response.setContentType("application/json");
+		PrintWriter out = response.getWriter();
+		out.println("{\"resultado\": \"Creacion exitosa\", \"status\":"+200+", \"redirect\": \"/Dashboard\"}");
+
 	}
 
 }

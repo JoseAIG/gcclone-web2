@@ -79,13 +79,16 @@
 		    <h4 class="center">Nuevo calendario</h4>
    		        <div class="row">
 		        	<form class="col s12" id="form-crear-calendario">
-		        		<div class="row">
+		        		<div class="row" id="contenedor-input-crear-calendario">
 		        			<div class="input-field col s6 offset-s3">
        			         		<input id="input-nombre-calendario" type="text" class="validate selected" name="nombre-calendario" autocomplete="off" placeholder="Festividades">
        					   		<label for="usuario">Nombre</label>
 		        			</div>
 		        		</div>
 		        	</form>
+      			    <div class="col s12 center" style="margin-bottom:1em">
+		        		<a id="link-agregar-invitado" class="waves-effect waves-light btn"><i class="material-icons left">person_add</i>Agregar invitado</a>
+		        	</div>
 		        	<div class="col s12 center">
 		        		<a id="link-guardar-nuevo-calendario" class="waves-effect waves-light btn"><i class="material-icons left">save</i>Crear</a>
 		        	</div>
