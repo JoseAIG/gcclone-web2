@@ -50,7 +50,7 @@ public class Calendario extends HttpServlet {
 		}
 		response.setContentType("application/json");
 		PrintWriter out = response.getWriter();
-		out.println("{\"resultado\": \"Creacion exitosa\", \"status\":"+200+", \"redirect\": \"/Dashboard\"}");
+		out.println("{\"resultado\": \"Creacion de calendario exitosa\", \"status\":"+200+", \"redirect\": \"/Dashboard\"}");
 
 	}
 

@@ -16,14 +16,14 @@ const guardar_nuevo_calendario = ()=>{
 	//console.log("invitados: " + datos_form_crear_calendario.get("input-invitado0"), datos_form_crear_calendario.get("input-invitado1"), contador_invitados);
 	datos_form_crear_calendario.append("cantidad-invitados", contador_invitados);
 	for(let i=0;i<contador_invitados;i++){
-/*		if(datos_form_crear_calendario.get("input-invitado"+i)!=""){
+		if(datos_form_crear_calendario.get("input-invitado"+i)!=null){
 			console.log(datos_form_crear_calendario.get("input-invitado"+i));
-		}*/
-		for(let j=0; j<contador_invitados;j++){
-			if(i!=j && datos_form_crear_calendario.get("input-invitado"+i)==datos_form_crear_calendario.get("input-invitado"+j)){
-				console.log("Son iguales: ", datos_form_crear_calendario.get("input-invitado"+i), datos_form_crear_calendario.get("input-invitado"+j));
-				alert("No puede duplicarse un invitado");
-				return;
+			for(let j=0; j<contador_invitados;j++){
+				if(i!=j && datos_form_crear_calendario.get("input-invitado"+i)==datos_form_crear_calendario.get("input-invitado"+j)){
+					console.log("Son iguales: ", datos_form_crear_calendario.get("input-invitado"+i), datos_form_crear_calendario.get("input-invitado"+j));
+					alert("No puede duplicarse un invitado");
+					return;
+				}
 			}
 		}
 	}
@@ -66,8 +66,9 @@ var contador_invitados=0;
 const crear_campo_invitado = () => {
 	console.log("crear campo invitado");
 	
+	//DIV PARA EL CAMPO DE INVITADO
 	let div = document.createElement("div");
-	div.className="input-field col s6 offset-s3";
+	div.className="input-field col s4 offset-s3";
 	let input = document.createElement("input");
 	input.type="text";
 	input.className="validate selected";
@@ -80,7 +81,26 @@ const crear_campo_invitado = () => {
 	label.innerText="Invitado";
 	div.appendChild(label);
 	
+	//DIV PARA BOTON REMOVER CAMPO INVITADO
+	let div_remover = document.createElement("div");
+	div_remover.className="col 2";
+	div_remover.style="margin-top: 1.5em";
+	let a_remover = document.createElement("a");
+	a_remover.className="btn waves-effect waves-light red";
+	let i_remover = document.createElement("i");
+	i_remover.className="material-icons";
+	i_remover.innerText="clear";
+	a_remover.appendChild(i_remover);
+	div_remover.appendChild(a_remover);
+	
+	a_remover.addEventListener("click",()=>{
+		div.remove();
+		div_remover.remove();
+		//contador_invitados--;
+	})
+	
 	contenedor_input_crear_calendario.appendChild(div);
+	contenedor_input_crear_calendario.appendChild(div_remover);
 	contador_invitados++;
 }
 link_agregar_invitado.onclick=crear_campo_invitado;
