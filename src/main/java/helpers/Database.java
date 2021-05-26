@@ -38,55 +38,55 @@ public class Database {
 		return DB;
 	}
 	
-	//METODO DE STATEMENT
-	public ResultSet dbStatement(String query) {
-		try {
-			this.stmt = this.conn.createStatement();
-			this.rs = this.stmt.executeQuery(query);
-			while(rs.next()) {
-				System.out.print(rs.getString("usuario"));
-				System.out.println(rs.getInt("edad"));
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}finally {
-			try {
-				this.stmt.close();
-				this.rs.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-		return rs;
-	}
-	
-	//METODO DE PREPARESTATEMENT (REGISTRO)
-	public boolean dbPrepareStatement(String query, Object[] obj) {
-		try {
-			this.pstmt = this.conn.prepareStatement(query);
-			this.pstmt.setString(1, (String) obj[0]);
-			this.pstmt.setString(2, (String) obj[1]);
-			this.pstmt.setString(3, (String) obj[2]);
-			this.pstmt.executeUpdate();
-		} catch (SQLException e) {
+//	//METODO DE STATEMENT
+//	public ResultSet dbStatement(String query) {
+//		try {
+//			this.stmt = this.conn.createStatement();
+//			this.rs = this.stmt.executeQuery(query);
+//			while(rs.next()) {
+//				System.out.print(rs.getString("usuario"));
+//				System.out.println(rs.getInt("edad"));
+//			}
+//		} catch (SQLException e) {
 //			e.printStackTrace();
-			return false;
-		} finally {
-			try {
-				this.pstmt.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-		return true;
-	}
+//		}finally {
+//			try {
+//				this.stmt.close();
+//				this.rs.close();
+//			} catch (SQLException e) {
+//				e.printStackTrace();
+//			}
+//		}
+//		return rs;
+//	}
+	
+//	//METODO DE PREPARESTATEMENT (REGISTRO)
+//	public boolean dbPrepareStatement(String query, Object[] obj) {
+//		try {
+//			this.pstmt = this.conn.prepareStatement(query);
+//			this.pstmt.setString(1, (String) obj[0]);
+//			this.pstmt.setString(2, (String) obj[1]);
+//			this.pstmt.setString(3, (String) obj[2]);
+//			this.pstmt.executeUpdate();
+//		} catch (SQLException e) {
+////			e.printStackTrace();
+//			return false;
+//		} finally {
+//			try {
+//				this.pstmt.close();
+//			} catch (SQLException e) {
+//				e.printStackTrace();
+//			}
+//		}
+//		return true;
+//	}
 	
 	//METODO PARA REGISTRAR USUARIO CON COMPROBACION DE USUARIO EXISTENTE
 	public String dbRegistroUsuario(Object[] datos) {
 		try {
 			//CHEQUEO DE USUARIO REGISTRADO
 			this.stmt = this.conn.createStatement();
-			this.rs = this.stmt.executeQuery("select *from usuario");
+			this.rs = this.stmt.executeQuery("select *from usuarios");
 			while(rs.next()) {
 				if(rs.getString("nombre_usuario").equals(datos[0])) {
 					return "Usuario ya existe";
@@ -96,7 +96,7 @@ public class Database {
 				}
 			}
 			//REGISTRO DE USUARIO
-			this.pstmt = this.conn.prepareStatement("insert into usuario (nombre_usuario, correo, clave) values (?,?,?)");
+			this.pstmt = this.conn.prepareStatement("insert into usuarios (nombre_usuario, correo, clave) values (?,?,?)");
 			this.pstmt.setString(1, (String) datos[0]);
 			this.pstmt.setString(2, (String) datos[1]);
 			this.pstmt.setString(3, (String) datos[2]);
@@ -118,14 +118,15 @@ public class Database {
 	}
 	
 	//METODO PARA OBTENER COINCIDENCIAS DE USUARIO Y CLAVE PARA LOGIN
-	public boolean dbLogin (String query, Object[] datos) {
+	public boolean dbLogin (Object[] datos) {
 		try {
 			this.stmt = this.conn.createStatement();
-			this.rs = this.stmt.executeQuery(query);
+			this.rs = this.stmt.executeQuery("select *from usuarios");
 			while(rs.next()) {
 				String usuario = rs.getString("nombre_usuario");
+				String correo = rs.getString("correo");
 				String clave = rs.getString("clave");
-				if(usuario.equals(datos[0]) && clave.equals(datos[1])) {
+				if((usuario.equals(datos[0]) || correo.equals(datos[0])) && clave.equals(datos[1])) {
 					return true;
 				}
 			}
@@ -143,11 +144,11 @@ public class Database {
 	}
 	
 	//METODO PARA OBTENER LOS DATOS DE UN USUARIO
-	public String[] dbObtenerDatosUsuario(String nombre_usuario) {
+	public String[] dbObtenerDatosUsuario(String usuario) {
 		String [] datos = new String[3];
 		try {
 			this.stmt = this.conn.createStatement();
-			this.rs = this.stmt.executeQuery("select *from usuario where nombre_usuario ='"+nombre_usuario+"';");
+			this.rs = this.stmt.executeQuery("select *from usuarios where nombre_usuario ='"+usuario+"' OR correo='"+usuario+"';");
 			while(rs.next()) {
 				datos[0] = rs.getString("nombre_usuario");
 				datos[1] = rs.getString("correo");
@@ -169,7 +170,7 @@ public class Database {
 	//METODO PARA ACTUALIZAR LOS DATOS DE UN USUARIO
 	public boolean dbActualizarDatosUsuario(String usuario, Object[] datos ) {
 		try {
-			this.pstmt = this.conn.prepareStatement("UPDATE usuario SET nombre_usuario = ?, correo = ?, clave = ? WHERE nombre_usuario='"+usuario+"';");
+			this.pstmt = this.conn.prepareStatement("UPDATE usuarios SET nombre_usuario = ?, correo = ?, clave = ? WHERE nombre_usuario='"+usuario+"' OR correo='"+usuario+"';");
 			this.pstmt.setString(1, (String) datos[0]);
 			this.pstmt.setString(2, (String) datos[1]);
 			this.pstmt.setString(3, (String) datos[2]);
@@ -191,7 +192,7 @@ public class Database {
 	public Boolean dbEliminarPerfil (String usuario) {
 		try {
 			this.stmt = this.conn.createStatement();
-			this.stmt.executeUpdate("DELETE FROM usuario WHERE nombre_usuario='"+ usuario +"';");
+			this.stmt.executeUpdate("DELETE FROM usuarios WHERE nombre_usuario='"+ usuario +"' OR correo='"+usuario+"';");
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
@@ -208,13 +209,13 @@ public class Database {
 	//METODO PARA CREAR UN NUEVO CALENDARIO
 	
 	//METODO PARA OBTENER DATOS DE EDICION DE CALENDARIOS
-	public ArrayList<Integer> dbObtenerDatosEdicionCalendario(String nombre_usuario) {
+	public ArrayList<Integer> dbObtenerDatosEdicionCalendario(String usuario) {
 		ArrayList<Integer> id_calendario = new ArrayList<>();
-		String [] datos = new String[3];
+		//String [] datos = new String[3];
 		//String [] id_calendarios = new String [2];
  		try {
 			this.stmt = this.conn.createStatement();
-			this.rs = this.stmt.executeQuery("select *from ediciones where nombre_usuario ='"+nombre_usuario+"';");
+			this.rs = this.stmt.executeQuery("select *from ediciones where nombre_usuario ='"+usuario+"' OR correo='"+usuario+"';");
 			//int i=0;
 			while(rs.next()) {
 //				datos[0] = rs.getString("nombre_usuario");

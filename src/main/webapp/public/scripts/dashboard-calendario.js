@@ -20,6 +20,12 @@ window.onload=()=>{
 	    .then(data => {
 	        console.log('Respuesta del servidor:', data);
 			alert(data.resultado);
+			mostrar_calendarios_aside(data);
+/*			console.log(data.calendarios);
+			console.log("Longitud array calendarios: " + data.calendarios.length);
+			console.log(data.calendarios[0]);
+			console.log(data.calendarios[0].nombre_calendario);*/
+
 /*			if(data.status==200){
 				window.open("/gcclone","_self");
 			}*/
@@ -28,6 +34,20 @@ window.onload=()=>{
 	    .catch((error) => {
 	        console.error('Error:', error);
 	    });
+}
+
+var div_contenedor_nombres_calendarios = document.getElementById("contenedor-nombres-calendarios");
+const mostrar_calendarios_aside = (data)=>{
+	for(let i=0;i<data.calendarios.length;i++){
+		let p = document.createElement("p");
+		p.innerText=data.calendarios[i].nombre_calendario;
+		p.id="calendario"+data.calendarios[i].id_calendario;
+		p.style='color:'+data.calendarios[i].color;
+		
+		p.addEventListener("click",()=>{console.log(p.id,p.innerText)});
+		
+		div_contenedor_nombres_calendarios.appendChild(p);
+	}
 }
 
 var link_guardar_nuevo_calendario = document.getElementById("link-guardar-nuevo-calendario");

@@ -38,7 +38,8 @@ public class CalendarController {
 			//System.out.println(" Nombre: " + datos_calendario[0] + " Color: " + datos_calendario[1]);
 		}
 		resultado_JSON.append("]}");
-		System.out.println(resultado_JSON.toString());
+		//System.out.println(resultado_JSON.toString());
+		
 		//resultado = "{\"resultado\": \"ID's de calendarios satisfactorio\", \"status\":"+200+"}";
 
 		

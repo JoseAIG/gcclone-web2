@@ -50,7 +50,7 @@ public class Login extends HttpServlet {
 		String usuario = request.getParameter("usuario");
 		String clave = request.getParameter("clave");
 		Object[] datos = {usuario, clave};
-		Boolean resultadoLogin = DB.dbLogin("select *from usuario", datos);
+		Boolean resultadoLogin = DB.dbLogin(datos);
 		//System.out.println(request.getParameter("usuario") + request.getParameter("clave"));
 		System.out.println(resultadoLogin);
 		if(resultadoLogin) {
