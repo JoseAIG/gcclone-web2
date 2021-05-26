@@ -19,7 +19,7 @@ window.onload=()=>{
 	    //RESPUESTA CON LOS RESULTADOS DEL SERVIDOR
 	    .then(data => {
 	        console.log('Respuesta del servidor:', data);
-			alert(data.resultado);
+			console.log(data.resultado);
 			mostrar_calendarios_aside(data);
 /*			console.log(data.calendarios);
 			console.log("Longitud array calendarios: " + data.calendarios.length);
@@ -55,7 +55,7 @@ var link_guardar_nuevo_calendario = document.getElementById("link-guardar-nuevo-
 var form_crear_calendario = document.getElementById("form-crear-calendario");
 const guardar_nuevo_calendario = ()=>{
 	var datos_form_crear_calendario = new FormData(form_crear_calendario);
-	console.log("datos form: " + datos_form_crear_calendario.get("nombre-calendario"));
+	//console.log("datos form: " + datos_form_crear_calendario.get("nombre-calendario"));
 	//console.log("invitados: " + datos_form_crear_calendario.get("input-invitado0"), datos_form_crear_calendario.get("input-invitado1"), contador_invitados);
 	datos_form_crear_calendario.append("cantidad-invitados", contador_invitados);
 	for(let i=0;i<contador_invitados;i++){

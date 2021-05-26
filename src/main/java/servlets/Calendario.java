@@ -60,16 +60,18 @@ public class Calendario extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		//doGet(request, response);
-		System.out.println("Calendario - POST " + request.getParameter("nombre-calendario") + " " + request.getParameter("input-invitado0"));
-		int cantidad_invitados = Integer.parseInt(request.getParameter("cantidad-invitados").toString());
-		System.out.println("invitados: ");
-		for(int i=0;i<cantidad_invitados;i++) {
-			if(request.getParameter("input-invitado"+i)!=null && !request.getParameter("input-invitado"+i).equals("")) {
-				System.out.println(request.getParameter("input-invitado"+i));
-			}
-		}
+
+//		System.out.println("Calendario - POST " + request.getParameter("nombre-calendario"));
+//		int cantidad_invitados = Integer.parseInt(request.getParameter("cantidad-invitados").toString());
+//		System.out.println("invitados: ");
+//		for(int i=0;i<cantidad_invitados;i++) {
+//			if(request.getParameter("input-invitado"+i)!=null && !request.getParameter("input-invitado"+i).equals("")) {
+//				System.out.println(request.getParameter("input-invitado"+i));
+//			}
+//		}
+		
+		CalendarController.crearNuevoCalendrio(request);
+		
 		response.setContentType("application/json");
 		PrintWriter out = response.getWriter();
 		out.println("{\"resultado\": \"Creacion de calendario exitosa\", \"status\":"+200+", \"redirect\": \"/Dashboard\"}");

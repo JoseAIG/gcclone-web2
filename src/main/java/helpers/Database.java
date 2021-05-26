@@ -206,7 +206,90 @@ public class Database {
 		return true;
 	}
 	
-	//METODO PARA CREAR UN NUEVO CALENDARIO
+	//METODO PARA CONOCER SI UN USUARIO EXISTE
+	public String[] dbExisteUsuario (String usuario) {
+		String [] datos = new String[2];
+		try {
+			this.stmt = this.conn.createStatement();
+			this.rs = this.stmt.executeQuery("select *from usuarios where nombre_usuario ='"+usuario+"' OR correo='"+usuario+"';");
+			while(rs.next()) {
+				datos[0] = rs.getString("nombre_usuario");
+				datos[1] = rs.getString("correo");
+				if(!(usuario.equals(datos[0]) || usuario.equals(datos[1]))) {
+					return null;
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				this.stmt.close();
+				this.rs.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return datos;
+	}
+	
+	//METODO PARA CREAR UN NUEVO CALENDARIO, RETORNA EL ID DEL CALENDARIO CREADO
+	public int dbCrearCalendario (Object[] datos_calendario) {
+		//SE INICIALIZA EN 0, REPRESENTANDO ERROR
+		int id_calendario_creado = 0;
+		try {
+			//OBTENER ID DEL ULTIMO CALENDARIO
+			this.stmt = this.conn.createStatement();
+			this.rs = this.stmt.executeQuery("SELECT MAX(id_calendario) FROM calendarios");
+			while(rs.next()) {
+				id_calendario_creado = (rs.getInt("max")+1);
+			}
+			//INGRESAR LOS DATOS DEL CALENDARIO CON SU ID RESPECTIVO
+			this.pstmt = this.conn.prepareStatement("INSERT INTO calendarios (id_calendario, nombre, color) VALUES (?,?,?)");
+			this.pstmt.setInt(1,  id_calendario_creado);
+			this.pstmt.setString(2, (String) datos_calendario[0]);
+			this.pstmt.setString(3, (String) datos_calendario[1]);
+			this.pstmt.executeUpdate();
+		}catch (SQLException e) {
+			e.printStackTrace();
+			//EN ESTE PUNTO RETORNARIA 0 (ERROR)
+			return id_calendario_creado;
+		}finally {
+			try {
+				this.stmt.close();
+				this.rs.close();
+				//this.pstmt.close();
+			} catch (SQLException e) {
+				//e.printStackTrace();
+			}
+		}
+		
+		return id_calendario_creado;
+	}
+	
+	//METODO PARA CREAR DATOS DE EDICION PARA UN CALENDARIO ESPECIFICO
+	public Boolean dbCrearDatosEdicionCalendario(Object[] datos_ediciones) {
+		try {
+			this.pstmt = this.conn.prepareStatement("INSERT INTO ediciones (nombre_usuario, correo, id_calendario) VALUES (?,?,?)");
+			this.pstmt.setString(1, (String) datos_ediciones[0]);
+			this.pstmt.setString(2, (String) datos_ediciones[1]);
+			this.pstmt.setInt(3,  (int) datos_ediciones[2]);
+			this.pstmt.executeUpdate();
+			
+		}catch (SQLException e) {
+			e.printStackTrace();
+			//EN ESTE PUNTO RETORNARIA 0 (ERROR)
+			return false;
+		}finally {
+			try {
+				//this.stmt.close();
+				this.rs.close();
+				this.pstmt.close();
+			} catch (SQLException e) {
+				//e.printStackTrace();
+			}
+		}
+		return true;
+	}
 	
 	//METODO PARA OBTENER DATOS DE EDICION DE CALENDARIOS
 	public ArrayList<Integer> dbObtenerDatosEdicionCalendario(String usuario) {
