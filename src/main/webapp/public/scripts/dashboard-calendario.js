@@ -7,6 +7,29 @@ link_crear_calendario.addEventListener('click',()=>{
 	console.log("crear calendario");
 });*/
 
+window.onload=()=>{
+	    fetch('/gcclone/Calendario', {
+	    	method: 'GET',
+/*	    	body: datos_form_crear_calendario,
+			mode: "no-cors",
+	    	headers: new Headers({'Content-Type': 'application/json'}),*/
+			})
+	    //RESPUESTA CRUDA DEL SERVER
+	    .then(response => response.json())
+	    //RESPUESTA CON LOS RESULTADOS DEL SERVIDOR
+	    .then(data => {
+	        console.log('Respuesta del servidor:', data);
+			alert(data.resultado);
+/*			if(data.status==200){
+				window.open("/gcclone","_self");
+			}*/
+	    })	    
+		//CATCH PARA OBTENER DETALLER POR SI ORURRE UN ERROR
+	    .catch((error) => {
+	        console.error('Error:', error);
+	    });
+}
+
 var link_guardar_nuevo_calendario = document.getElementById("link-guardar-nuevo-calendario");
 //var input_nombre_calendario = document.getElementById("input-nombre-calendario");
 var form_crear_calendario = document.getElementById("form-crear-calendario");
@@ -68,7 +91,7 @@ const crear_campo_invitado = () => {
 	
 	//DIV PARA EL CAMPO DE INVITADO
 	let div = document.createElement("div");
-	div.className="input-field col s4 offset-s3";
+	div.className="input-field col s5 offset-s3";
 	let input = document.createElement("input");
 	input.type="text";
 	input.className="validate selected";
@@ -86,7 +109,7 @@ const crear_campo_invitado = () => {
 	div_remover.className="col 2";
 	div_remover.style="margin-top: 1.5em";
 	let a_remover = document.createElement("a");
-	a_remover.className="btn waves-effect waves-light red";
+	a_remover.className="btn-floating waves-effect waves-light red";
 	let i_remover = document.createElement("i");
 	i_remover.className="material-icons";
 	i_remover.innerText="clear";
@@ -104,6 +127,35 @@ const crear_campo_invitado = () => {
 	contador_invitados++;
 }
 link_agregar_invitado.onclick=crear_campo_invitado;
+
+//prueba put
+var prueba_put = document.getElementById("prueba-put");
+const fetchput = () => {
+	let data = {username: 'example'};
+	
+	    fetch('/gcclone/Calendario', {
+	    	method: 'PUT',
+	    	body: JSON.stringify(data),
+			//mode: "no-cors",
+	    	headers: new Headers({'Content-Type': 'application/json'}),
+			})
+	    //RESPUESTA CRUDA DEL SERVER
+	    .then(response => response.json())
+	    //RESPUESTA CON LOS RESULTADOS DEL SERVIDOR
+	    .then(data => {
+	        console.log('Respuesta del servidor:', data.resultado);
+			alert(data.resultado);
+/*			if(data.status==200){
+				window.open("/gcclone","_self");
+			}*/
+	    })	    
+		//CATCH PARA OBTENER DETALLER POR SI ORURRE UN ERROR
+	    .catch((error) => {
+	        console.error('Error:', error);
+	    });
+}
+prueba_put.onclick=fetchput;
+
 //ACTIVAR LOS MODAL DE MATERIALIZE
 document.addEventListener('DOMContentLoaded', function() {
    var elems = document.querySelectorAll('.modal');

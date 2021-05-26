@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import helpers.Database;
+
 /**
  * Servlet implementation class Dashboard
  */
@@ -39,7 +41,7 @@ public class Dashboard extends HttpServlet {
 		}else {
 			System.out.println("usuario NO nulo, mostrar dashboard");
 			//response.setContentType("text/html");
-			request.getRequestDispatcher("/public/views/dashboard.html").include(request, response);			
+			request.getRequestDispatcher("/public/views/dashboard.html").include(request, response);
 		}
 //		response.setContentType("text/html");
 //		request.getRequestDispatcher("/public/views/dashboard.html").include(request, response);

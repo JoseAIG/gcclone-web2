@@ -1,6 +1,7 @@
 package helpers;
 
 import java.sql.*;
+import java.util.ArrayList;
 
 public class Database {
 
@@ -206,6 +207,63 @@ public class Database {
 	
 	//METODO PARA CREAR UN NUEVO CALENDARIO
 	
+	//METODO PARA OBTENER DATOS DE EDICION DE CALENDARIOS
+	public ArrayList<Integer> dbObtenerDatosEdicionCalendario(String nombre_usuario) {
+		ArrayList<Integer> id_calendario = new ArrayList<>();
+		String [] datos = new String[3];
+		//String [] id_calendarios = new String [2];
+ 		try {
+			this.stmt = this.conn.createStatement();
+			this.rs = this.stmt.executeQuery("select *from ediciones where nombre_usuario ='"+nombre_usuario+"';");
+			//int i=0;
+			while(rs.next()) {
+//				datos[0] = rs.getString("nombre_usuario");
+//				datos[1] = rs.getString("correo");
+//				datos[2] = rs.getString("id_calendario");	
+				
+				//id_calendarios[i] = rs.getString("id_calendario");
+				id_calendario.add(rs.getInt("id_calendario"));
+				//i++;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				this.stmt.close();
+				this.rs.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return id_calendario;
+	}
+	
+	//METODO PARA OBTENER DATOS DE UN CALENDARIO
+	public String[] dbObtenerDatosCalendario(int id_calendario) {
+		//String [] datos = new String[3];
+		String[] datos_calendario = new String[2];
+		try {
+			this.stmt = this.conn.createStatement();
+			this.rs = this.stmt.executeQuery("select *from calendarios where id_calendario ='"+id_calendario+"';");
+			while(rs.next()) {
+//				datos[0] = rs.getString("id_calendario");
+//				datos[1] = rs.getString("nombre");
+//				datos[2] = rs.getString("color");	
+				datos_calendario[0]=rs.getString("nombre");
+				datos_calendario[1]=rs.getString("color");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				this.stmt.close();
+				this.rs.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return datos_calendario;
+	}
 	
 	//METODO PARA CERRAR LA SESION DE LA BASE DE DATOS
 	public void dbClose() {
