@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import controllers.ControladorCalendario;
+import controllers.ControladorRegistro;
 import helpers.Database;
 /**
  * Servlet implementation class Registro
@@ -32,7 +34,8 @@ public class Registro extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		Database DB = Database.getInstances();
+		//Database DB = Database.getInstances();
+		
 		//doGet(request, response);
 		//String usuario = request.getParameter("usuario");
 		//System.out.println("Post! "+usuario+ " " + request.getParameter("correo") + " " + request.getParameter("clave"));
@@ -45,17 +48,20 @@ public class Registro extends HttpServlet {
 		String usuario = request.getParameter("usuario");
 		String correo_electronico = request.getParameter("correo");
 		String clave = request.getParameter("clave");
-		Object[] datos_usuario = {usuario, correo_electronico, clave}; 
+		String resultado_registro = ControladorRegistro.registrarUsuario(usuario, correo_electronico, clave);
+		
 		//System.out.println(DB.dbPrepareStatement("insert into usuario (nombre_usuario, correo, clave) values (?,?,?)", datos_usuario));
 		//EJECUTAR EL REGISTRO DE NUEVO USUARIO Y GUARDAR EL RESULTADO EN UN STRING PARA GENERAR ESTATUS EN FUNCION DEL RESULTADO
-		String resultado_registro = DB.dbRegistroUsuario(datos_usuario);
-		System.out.println(resultado_registro);
-		if(resultado_registro.equals("Operacion exitosa")) {
-			System.out.println("redireccionamiento aqui...");
-		}else {
-			System.out.println("No se redireccionara.");
-		}
-		out.println("{\"resultado\": \""+ resultado_registro +"\", \"status\":"+200+"}");
+		//String resultado_registro = DB.dbRegistroUsuario(datos_usuario);
+//		System.out.println(resultado_registro);
+//		if(resultado_registro.equals("Operacion exitosa")) {
+//			System.out.println("redireccionamiento aqui...");
+//		}else {
+//			System.out.println("No se redireccionara.");
+//		}
+		//out.println("{\"resultado\": \""+ resultado_registro +"\", \"status\":"+200+"}");
+		out.println(resultado_registro);
+
 		out.close();
 	}
 

@@ -7,10 +7,13 @@ var boton_registro = document.getElementById("boton-registro");
 const enviar_datos = (e) => {
 	var datos_form = new FormData(form_registro);
 	//console.log(datos_form,datos_form.get("usuario"),datos_form.get("correo"),datos_form.get("clave"));
-
+	
 	//COMPROBACION QUE LOS CAMPOS QUE INGRESO EL USUARIO ESTEN COMPLETOS
 	if(datos_form.get("usuario")=="" || datos_form.get("correo")=="" || datos_form.get("clave")=="" ){
 		alert("Llene todos los campos");
+	}
+	else if(!CorreoValido(datos_form.get("correo"))){
+		alert("Ingrese un correo valido");
 	}else{
 	    fetch('http://localhost:8080/gcclone/Registro', {
 	    	method: 'POST',
@@ -36,3 +39,10 @@ const enviar_datos = (e) => {
 
 }
 boton_registro.onclick=enviar_datos;
+
+function CorreoValido(mail) {
+	if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(mail)){
+    	return true;
+	}
+    return false;
+}

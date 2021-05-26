@@ -7,9 +7,9 @@ import javax.servlet.http.HttpSession;
 
 import helpers.Database;
 
-public class CalendarController {
+public class ControladorCalendario {
 
-	public CalendarController() {
+	public ControladorCalendario() {
 		
 	}
 	

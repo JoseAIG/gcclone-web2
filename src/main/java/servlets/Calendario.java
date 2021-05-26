@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import controllers.CalendarController;
+import controllers.ControladorCalendario;
 import helpers.Database;
 
 /**
@@ -47,7 +47,7 @@ public class Calendario extends HttpServlet {
 //		String [] datos_calendarios = DB.dbObtenerDatosCalendario(Integer.parseInt(datos_ediciones[2]));
 //		System.out.println("Datos de ediciones: " + datos_calendarios[0]+datos_calendarios[1]+datos_calendarios[2]);
 
-		String calendarios = CalendarController.obtenerCalendariosUsuario(sesion.getAttribute("usuario").toString());
+		String calendarios = ControladorCalendario.obtenerCalendariosUsuario(sesion.getAttribute("usuario").toString());
 		
 		response.setContentType("application/json");
 		PrintWriter out = response.getWriter();
@@ -70,7 +70,7 @@ public class Calendario extends HttpServlet {
 //			}
 //		}
 		
-		CalendarController.crearNuevoCalendrio(request);
+		ControladorCalendario.crearNuevoCalendrio(request);
 		
 		response.setContentType("application/json");
 		PrintWriter out = response.getWriter();
