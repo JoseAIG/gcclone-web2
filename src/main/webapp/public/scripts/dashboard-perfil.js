@@ -47,7 +47,8 @@ const obtener_datos_perfil = () => {
 		input_editar_nombre_usuario.disabled=false;
 		input_editar_correo.value=data.correo;
 		input_editar_correo.disabled=false;
-		input_editar_clave.value=data.clave;
+		//input_editar_clave.value=data.clave;
+		input_editar_clave.value="";
 		input_editar_clave.disabled=false;
     })	    
 	//CATCH PARA OBTENER DETALLER POR SI ORURRE UN ERROR

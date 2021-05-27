@@ -11,7 +11,8 @@ public class Hashing {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public static String obtenerHash(String texto, String secret) {
+	public static String obtenerHash(String texto) {
+		String secret = "gcclone-web2";
 		String cadena = secret + texto;
 		try {
 			MessageDigest md = MessageDigest.getInstance("SHA-256");

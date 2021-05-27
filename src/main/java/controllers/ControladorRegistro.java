@@ -15,8 +15,8 @@ public class ControladorRegistro {
 		try {
 			Database DB = Database.getInstances();
 			
-			String hash_clave = Hashing.obtenerHash(usuario, "gcclone-web2");
-			Object[] datos_usuario = {usuario, correo, hash_clave};	
+			String hash_clave = Hashing.obtenerHash(clave);
+			Object[] datos_usuario = {usuario, correo, hash_clave};
 			
 			resultado_registro = DB.dbRegistroUsuario(datos_usuario);
 			System.out.println(resultado_registro);

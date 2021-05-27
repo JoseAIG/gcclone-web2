@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import controllers.ControladorPerfil;
 import helpers.Database;
 
 /**
@@ -46,7 +47,8 @@ public class Perfil extends HttpServlet {
         
 		response.setContentType("application/json");  
 		PrintWriter out = response.getWriter();
-		out.println("{\"usuario\": \""+datos_usuario[0]+"\", \"correo\":\""+datos_usuario[1]+"\", \"clave\":\""+datos_usuario[2]+"\"}");
+//		out.println("{\"usuario\": \""+datos_usuario[0]+"\", \"correo\":\""+datos_usuario[1]+"\", \"clave\":\""+datos_usuario[2]+"\"}");
+		out.println("{\"usuario\": \""+datos_usuario[0]+"\", \"correo\":\""+datos_usuario[1]+"\"}");
 		out.close();
 	}
 
@@ -56,58 +58,15 @@ public class Perfil extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("application/json");
 		PrintWriter out = response.getWriter();
-		try {
-			System.out.println("Perfil - POST");
-			System.out.println(request.getParameter("usuario"));
-			System.out.println(request.getParameter("clave"));
-			System.out.println(request.getParameter("correo"));
-			
-			HttpSession sesion = request.getSession();
-			
-			String usuario = request.getParameter("usuario");
-			String correo = request.getParameter("correo");
-			String clave = request.getParameter("clave");
-			Object[] datos_usuario = {usuario, correo, clave}; 
-			
-			Database DB = Database.getInstances();
-			Boolean resultado = DB.dbActualizarDatosUsuario(sesion.getAttribute("usuario").toString(), datos_usuario);
-			System.out.println(resultado);
-			if(resultado) {
-				sesion.setAttribute("usuario", usuario);
-				out.println("{\"resultado\": \"Datos actualizados\", \"status\":"+200+", \"nuevo_usuario\":\""+usuario+"\"}");
-				out.close();
-			}else {
-				out.println("{\"resultado\": \"Error: datos ya existentes\", \"status\":"+422+"}");
-				out.close();
-			}
-		} catch (Exception e) {
-			out.println("{\"resultado\": \"Error al actualizar datos\", \"status\":"+500+"}");
-			out.close();
-		}
+		out.println(ControladorPerfil.actualizarDatosPerfil(request));
+		out.close();
 	}
 	
-	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		HttpSession sesion = request.getSession();
-		
+	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {		
 		response.setContentType("application/json");
 		PrintWriter out = response.getWriter();
-		
-		try {
-			Database DB = Database.getInstances();
-			Boolean resultado = DB.dbEliminarPerfil(sesion.getAttribute("usuario").toString());
-			System.out.println(resultado);
-			if(resultado) {
-				sesion.setAttribute("usuario", null);
-				out.println("{\"resultado\": \"Perfil eliminado\", \"status\":"+200+"}");
-				out.close();
-			}else {
-				out.println("{\"resultado\": \"No se pudo eliminar el perfil\", \"status\":"+500+"}");
-				out.close();
-			}
-		} catch (Exception e) {
-			out.println("{\"resultado\": \"No se pudo eliminar el perfil\", \"status\":"+500+"}");
-			out.close();
-		}
+		out.println(ControladorPerfil.eliminarDatosPerfil(request));
+		out.close();
 	}
 	
 //	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

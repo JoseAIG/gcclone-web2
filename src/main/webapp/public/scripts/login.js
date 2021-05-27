@@ -24,6 +24,7 @@ const iniciar_sesion = () => {
 	    //RESPUESTA CON LOS RESULTADOS DEL SERVIDOR
 	    .then(data => {
 	        console.log('Respuesta del servidor:', data);
+	        alert(data.resultado);
 			if(data.status==200){
 				//console.log("redireccionar aqui");
 				//alert("redireccionar!");

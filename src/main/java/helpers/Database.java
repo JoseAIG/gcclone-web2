@@ -167,16 +167,37 @@ public class Database {
 		return datos;
 	}
 	
-	//METODO PARA ACTUALIZAR LOS DATOS DE UN USUARIO
-	public boolean dbActualizarDatosUsuario(String usuario, Object[] datos ) {
+	//METODOS PARA ACTUALIZAR LOS DATOS DE UN PERFIL
+	//ACTUALIZAR LOS DATOS DE UN USUARIO CUANDO CAMBIA LA CLAVE
+	public boolean dbActualizarDatosUsuario(String usuario, String nombre, String correo, String hash_clave) {
 		try {
 			this.pstmt = this.conn.prepareStatement("UPDATE usuarios SET nombre_usuario = ?, correo = ?, clave = ? WHERE nombre_usuario='"+usuario+"' OR correo='"+usuario+"';");
-			this.pstmt.setString(1, (String) datos[0]);
-			this.pstmt.setString(2, (String) datos[1]);
-			this.pstmt.setString(3, (String) datos[2]);
+			this.pstmt.setString(1, (String) nombre);
+			this.pstmt.setString(2, (String) correo);
+			this.pstmt.setString(3, (String) hash_clave);
 			this.pstmt.executeUpdate();
 		} catch (SQLException e) {
 //			e.printStackTrace();
+			return false;
+		} finally {
+			try {
+				this.pstmt.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return true;
+	}
+	
+	//ACTUALIZAR LOS DATOS DE UN USUARIO CUANDO ---NO--- CAMBIA LA CLAVE
+	public boolean dbActualizarDatosUsuario(String usuario, String nombre, String correo) {
+		try {
+			this.pstmt = this.conn.prepareStatement("UPDATE usuarios SET nombre_usuario = ?, correo = ? WHERE nombre_usuario='"+usuario+"' OR correo='"+usuario+"';");
+			this.pstmt.setString(1, (String) nombre);
+			this.pstmt.setString(2, (String) correo);
+			this.pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
 			return false;
 		} finally {
 			try {

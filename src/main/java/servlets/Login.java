@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import controllers.ControladorLogin;
 import helpers.Database;
 
 /**
@@ -34,8 +35,17 @@ public class Login extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		response.setContentType("text/html");
-		request.getRequestDispatcher("/public/views/login.html").include(request, response);
+//		response.setContentType("text/html");
+//		request.getRequestDispatcher("/public/views/login.html").include(request, response);
+		
+		//COMPROBAR SESION SI EXISTE UNA SESION ACTIVA PARA REDIRIGIR AL DASHBOARD
+		HttpSession sesion = request.getSession();
+		if(sesion.getAttribute("usuario")==null) {
+			response.setContentType("text/html");
+			request.getRequestDispatcher("/public/views/login.html").include(request, response); 
+		}else {
+			response.sendRedirect("Dashboard");
+		}
 	}
 
 	/**
@@ -44,22 +54,8 @@ public class Login extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("application/json");
 		PrintWriter out = response.getWriter();
-		//out.println("{\"message\": \"Proceso login\", \"status\":"+200+"}");
-		Database DB = Database.getInstances();
-		
-		String usuario = request.getParameter("usuario");
-		String clave = request.getParameter("clave");
-		Object[] datos = {usuario, clave};
-		Boolean resultadoLogin = DB.dbLogin(datos);
-		//System.out.println(request.getParameter("usuario") + request.getParameter("clave"));
-		System.out.println(resultadoLogin);
-		if(resultadoLogin) {
-			HttpSession sesion = request.getSession();
-			sesion.setAttribute("usuario", usuario);
-			System.out.println("sesion otorgada a: " + sesion.getAttribute("usuario"));		
-			out.println("{\"message\": \"Login exitoso\", \"status\":"+200+", \"redirect\": \"/Dashboard\"}");
-
-		}
+		out.println(ControladorLogin.iniciarSesion(request));
+		out.close();
 	}
 
 }

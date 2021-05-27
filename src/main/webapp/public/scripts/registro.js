@@ -40,8 +40,8 @@ const enviar_datos = (e) => {
 }
 boton_registro.onclick=enviar_datos;
 
-function CorreoValido(mail) {
-	if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(mail)){
+function CorreoValido(correo) {
+	if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(correo)){
     	return true;
 	}
     return false;

@@ -9,6 +9,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import controllers.ControladorCalendario;
 import controllers.ControladorRegistro;
@@ -26,8 +27,17 @@ public class Registro extends HttpServlet {
     }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		response.setContentType("text/html");
-		request.getRequestDispatcher("/public/views/registro.html").include(request, response);
+//		response.setContentType("text/html");
+//		request.getRequestDispatcher("/public/views/registro.html").include(request, response);
+		
+		//COMPROBAR SESION SI EXISTE UNA SESION ACTIVA PARA REDIRIGIR AL DASHBOARD
+		HttpSession sesion = request.getSession();
+		if(sesion.getAttribute("usuario")==null) {
+			response.setContentType("text/html");
+			request.getRequestDispatcher("/public/views/registro.html").include(request, response); 
+		}else {
+			response.sendRedirect("Dashboard");
+		}
 	}
 	
 	/**
