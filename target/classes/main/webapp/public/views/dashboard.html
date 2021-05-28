@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="ISO-8859-1">
+		<link href="public/styles/materialize.min.css" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+		<script src="public/scripts/materialize.min.js" defer></script>		
+		<script src="public/scripts/dashboard-perfil.js" defer></script>
+		<script src="public/scripts/dashboard-calendario.js" defer></script>
+		<title>GC Clone - Dashboard</title>
+	</head>
+	<body>
+		<!-- Inicio componente de navbar -->
+		<nav>
+		  <div class="nav-wrapper teal">
+		    <a href="/gcclone" class="brand-logo left"><i class="material-icons">perm_contact_calendar</i>GC Clone</a>
+		    <ul class="right">
+		    	<li><a id="link-editar-perfil" class="modal-trigger" data-target="modal-editar-perfil"><i class="material-icons left ">person_outline</i>Editar perfil</a></li>
+		      	<li><a id="link-cerrar-sesion"><i class="material-icons left">power_settings_new</i>Cerrar Sesión</a></li>
+		    </ul>
+		  </div>
+		</nav>
+		<!-- Fin componente de navbar -->
+		
+	    <!-- ESTRUCTURA DE LA PAGINA DEBAJO DEL NAVBAR -->
+    	<div class="row">
+			<!-- ASIDE NAVEGACION -->
+      		<aside class="col s2 grey" style="border:1px solid gray; height: 80vh;">
+        		<!-- Grey navigation panel -->
+        		<h5 class="center">Calendarios</h5>
+        		<div id="contenedor-nombres-calendarios"></div>
+       		  	<a id="link-crear-calendario" class="btn-floating btn waves-effect waves-light teal right modal-trigger" data-target="modal-crear-calendario"><i class="material-icons">add</i></a>
+        		
+      		</aside>
+			<!-- SECTION DASHBOARD -->
+      		<section class="col s10" style="border:1px solid red; height: 80vh;">
+        		<!-- Teal page content  -->
+      		</section>
+    	</div>
+    	
+  		<!-- Modal actualizacion usuario -->
+		<div id="modal-editar-perfil" class="modal hoverable">
+		  <div class="modal-content">
+		    <h4 class="center">Editar Perfil</h4>
+   		        <div class="row">
+		        	<form class="col s12" id="form-editar-perfil">
+		        		<div class="row">
+		        			<div class="input-field col s6 offset-s3">
+       			         		<input id="editar-usuario" type="text" class="validate selected" name="usuario" autocomplete="off" placeholder="" disabled>
+       					   		<label for="usuario">Usuario</label>
+		        			</div>
+			        		<div class="input-field col s6 offset-s3">
+					        	<input id="editar-correo" type="email" class="validate" name="correo" placeholder="" disabled>
+					        	<label for="correo">Correo</label>
+					        </div>
+        			        <div class="input-field col s6 offset-s3">
+					        	<input id="editar-clave" type="password" class="validate" name="clave" placeholder="" disabled>
+					        	<label for="clave">Nueva contraseña</label>
+					        </div>
+		        		</div>
+		        	</form>
+		        	<div class="col s12 center">
+		        		<a id="link-guardar-perfil" class="waves-effect waves-light btn"><i class="material-icons left">save</i>Guardar</a>
+		        	</div>
+     			    <div class="col s12 center" style="margin-top:1em">
+		        		<a id="link-borrar-perfil" class="waves-effect waves-light btn red"><i class="material-icons left">delete_forever</i>Eliminar perfil</a>
+		        	</div>
+		        </div>
+		  </div>
+		  <div class="modal-footer">
+		    <a class="modal-close waves-effect waves-green btn-flat">Cerrar</a>
+		  </div>
+		</div>
+		<!-- Fin Modal actualizacion usuario -->
+		
+		<!-- MODAR AGREGAR CALENDARIO -->
+		<div id="modal-crear-calendario" class="modal hoverable">
+		  <div class="modal-content">
+		    <h4 class="center">Nuevo calendario</h4>
+   		        <div class="row">
+		        	<form class="col s12" id="form-crear-calendario">
+		        		<div class="row" id="contenedor-input-crear-calendario">
+		        			<div class="input-field col s6 offset-s3">
+       			         		<input id="input-nombre-calendario" type="text" class="validate selected" name="nombre-calendario" autocomplete="off" placeholder="Festividades">
+       					   		<label for="usuario">Nombre</label>
+		        			</div>
+		        			<div class="col s6 offset-s3">
+		        				<input type="color" name="color-calendario">
+		        			</div>
+		        		</div>
+		        	</form>
+      			    <div class="col s12 center" style="margin-bottom:1em">
+		        		<a id="link-agregar-invitado" class="waves-effect waves-light btn"><i class="material-icons left">person_add</i>Agregar invitado</a>
+		        	</div>
+		        	<div class="col s12 center">
+		        		<a id="link-guardar-nuevo-calendario" class="waves-effect waves-light btn"><i class="material-icons left">save</i>Crear</a>
+		        	</div>
+		        </div>
+		  </div>
+		  <div class="modal-footer">
+		    <a class="modal-close waves-effect waves-green btn-flat">Cerrar</a>
+		  </div>
+		</div>
+		<!-- FIN MODAL AGREGAR CALENDARIO -->
+		
+		<!-- MODAR EDITAR CALENDARIO -->
+		<div id="modal-editar-calendario" class="modal hoverable">
+		  <div class="modal-content">
+		    <h4 class="center">Editar calendario</h4>
+   		        <div class="row">
+		        	<form class="col s12" id="form-editar-calendario">
+		        		<div class="row" id="contenedor-input-editar-calendario">
+		        			<div class="input-field col s6 offset-s3">
+       			         		<input id="input-nombre-editar-calendario" type="text" class="validate selected" name="nombre-editar-calendario" autocomplete="off" placeholder="">
+       					   		<label for="usuario">Nombre</label>
+		        			</div>
+		        			<div class="col s6 offset-s3 center">
+		        				<input id="input-color-editar-calendario" type="color" name="color-editar-calendario" style="width: 100%">
+		        			</div>
+		        			<p class="col s12 center">Compartido con:</p>
+		        			<div id="contenedor-editar-invitados"></div>
+		        		</div>
+		        	</form>
+		        	<div class="col s12 center">
+		        		<a id="link-guardar-edicion-calendario" class="waves-effect waves-light btn"><i class="material-icons left">save</i>Guardar Edicion</a>
+		        	</div>
+		        </div>
+		  </div>
+		  <div class="modal-footer">
+		    <a class="modal-close waves-effect waves-green btn-flat">Cerrar</a>
+		  </div>
+		</div>
+		<!-- FIN MODAL EDITAR CALENDARIO -->
+		
+    		<button id="prueba-put">PUT</button>
+	</body>
+</html>
