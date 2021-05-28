@@ -39,11 +39,12 @@
     
     <plugins>
       <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.8.1</version>
-        <configuration>
-          <release>15</release>
-        </configuration>
+       	<artifactId>maven-compiler-plugin</artifactId>
+       	<version>3.8.0</version>
+       	<configuration>
+       		<source>1.8</source>
+       		<target>1.8</target>
+       	</configuration>
       </plugin>
       <plugin>
         <artifactId>maven-war-plugin</artifactId>
