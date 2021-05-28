@@ -102,6 +102,36 @@
 		  </div>
 		</div>
 		<!-- FIN MODAL AGREGAR CALENDARIO -->
+		
+		<!-- MODAR EDITAR CALENDARIO -->
+		<div id="modal-editar-calendario" class="modal hoverable">
+		  <div class="modal-content">
+		    <h4 class="center">Editar calendario</h4>
+   		        <div class="row">
+		        	<form class="col s12" id="form-editar-calendario">
+		        		<div class="row" id="contenedor-input-editar-calendario">
+		        			<div class="input-field col s6 offset-s3">
+       			         		<input id="input-nombre-editar-calendario" type="text" class="validate selected" name="nombre-editar-calendario" autocomplete="off" placeholder="">
+       					   		<label for="usuario">Nombre</label>
+		        			</div>
+		        			<div class="col s6 offset-s3 center">
+		        				<input id="input-color-editar-calendario" type="color" name="color-editar-calendario" style="width: 100%">
+		        			</div>
+		        			<p class="col s12 center">Compartido con:</p>
+		        			<div id="contenedor-editar-invitados"></div>
+		        		</div>
+		        	</form>
+		        	<div class="col s12 center">
+		        		<a id="link-guardar-edicion-calendario" class="waves-effect waves-light btn"><i class="material-icons left">save</i>Guardar Edicion</a>
+		        	</div>
+		        </div>
+		  </div>
+		  <div class="modal-footer">
+		    <a class="modal-close waves-effect waves-green btn-flat">Cerrar</a>
+		  </div>
+		</div>
+		<!-- FIN MODAL EDITAR CALENDARIO -->
+		
     		<button id="prueba-put">PUT</button>
 	</body>
 </html>

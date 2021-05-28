@@ -313,7 +313,7 @@ public class Database {
 	}
 	
 	//METODO PARA OBTENER DATOS DE EDICION DE CALENDARIOS
-	public ArrayList<Integer> dbObtenerDatosEdicionCalendario(String usuario) {
+	public ArrayList<Integer> dbObtenerIDsCalendarios(String usuario) {
 		ArrayList<Integer> id_calendario = new ArrayList<>();
 		//String [] datos = new String[3];
 		//String [] id_calendarios = new String [2];
@@ -368,6 +368,28 @@ public class Database {
 			}
 		}
 		return datos_calendario;
+	}
+	
+	//METODO PARA OBTENER LOS INVITADOS DE UN CALENDARIO
+	public ArrayList<String> dbObtenerInvitadosCalendario(String usuario, int id_calendario) {
+		ArrayList<String> invitados = new ArrayList<>();
+ 		try {
+			this.stmt = this.conn.createStatement();
+			this.rs = this.stmt.executeQuery("select *from ediciones where (nombre_usuario!='"+usuario+"' AND correo!='"+usuario+"') AND id_calendario="+id_calendario+";");
+			while(rs.next()) {
+				invitados.add(rs.getString("nombre_usuario"));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				this.stmt.close();
+				this.rs.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return invitados;
 	}
 	
 	//METODO PARA CERRAR LA SESION DE LA BASE DE DATOS

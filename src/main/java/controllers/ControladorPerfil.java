@@ -14,6 +14,18 @@ public class ControladorPerfil {
 		// TODO Auto-generated constructor stub
 	}
 	
+	//METODO PARA OBTENER LOS DATOS DE UN PERFIL
+	public static String obtenerDatosPerfil(HttpServletRequest request) {
+		try {
+			HttpSession sesion = request.getSession();
+			Database DB = Database.getInstances();
+			String [] datos_usuario = DB.dbObtenerDatosUsuario(sesion.getAttribute("usuario").toString());
+			return("{\"usuario\": \""+datos_usuario[0]+"\", \"correo\":\""+datos_usuario[1]+"\", \"status\":"+200+"}");
+		} catch (Exception e) {
+			return("{\"resultado\": \"Error al obtener datos\", \"status\":"+200+"}");
+		}
+	}
+	
 	//METODO PARA ACTUALIZAR LOS DATOS DE UN PERFIL DEL SISTEMA
 	public static String actualizarDatosPerfil(HttpServletRequest request) {
 		try {

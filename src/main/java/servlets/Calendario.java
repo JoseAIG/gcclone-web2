@@ -70,23 +70,26 @@ public class Calendario extends HttpServlet {
 //			}
 //		}
 		
-		ControladorCalendario.crearNuevoCalendrio(request);
+	
 		
 		response.setContentType("application/json");
 		PrintWriter out = response.getWriter();
-		out.println("{\"resultado\": \"Creacion de calendario exitosa\", \"status\":"+200+", \"redirect\": \"/Dashboard\"}");
+		out.println(ControladorCalendario.crearNuevoCalendrio(request));
+		out.close();
 
 	}
-	
 	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));
 
 		String data = br.readLine();
 		System.out.println(data);
-		response.setContentType("application/json");
-		PrintWriter out = response.getWriter();
-		out.println("{\"resultado\": \"Put satisfactorio\", \"status\":"+200+"}");
+		
+//		System.out.println(request.getAttribute("usuario"));
+//		
+//		response.setContentType("application/json");
+//		PrintWriter out = response.getWriter();
+//		out.println("{\"resultado\": \"Put satisfactorio\", \"status\":"+200+"}");
 	}
 
 }

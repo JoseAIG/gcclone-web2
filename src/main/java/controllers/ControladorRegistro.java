@@ -1,5 +1,7 @@
 package controllers;
 
+import javax.servlet.http.HttpServletRequest;
+
 import helpers.Database;
 import helpers.Hashing;
 
@@ -10,14 +12,17 @@ public class ControladorRegistro {
 	}
 	
 	//METODO PARA REGISTRAR UN NUEVO USUARIO AL SISTEMA
-	public static String registrarUsuario(String usuario, String correo, String clave) {
+	public static String registrarUsuario(HttpServletRequest request) {
 		String resultado_registro;
-		try {
-			Database DB = Database.getInstances();
+		try {			
+			String usuario = request.getParameter("usuario");
+			String correo = request.getParameter("correo");
+			String clave = request.getParameter("clave");
 			
 			String hash_clave = Hashing.obtenerHash(clave);
 			Object[] datos_usuario = {usuario, correo, hash_clave};
 			
+			Database DB = Database.getInstances();
 			resultado_registro = DB.dbRegistroUsuario(datos_usuario);
 			System.out.println(resultado_registro);
 			
@@ -28,11 +33,9 @@ public class ControladorRegistro {
 				System.out.println("No se redireccionara.");
 				return "{\"resultado\": \""+resultado_registro+"\", \"status\":"+422+"}";
 			}
-
 		} catch (Exception e) {
-			// TODO: handle exception
+			return "{\"resultado\": \"No se pudo realizar el registro\", \"status\":"+500+"}";
 		} 
-		return "{\"resultado\": \"No se pudo realizar el registro\", \"status\":"+500+"}";
 	}
 
 }

@@ -35,9 +35,6 @@ public class Login extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-//		response.setContentType("text/html");
-//		request.getRequestDispatcher("/public/views/login.html").include(request, response);
-		
 		//COMPROBAR SESION SI EXISTE UNA SESION ACTIVA PARA REDIRIGIR AL DASHBOARD
 		HttpSession sesion = request.getSession();
 		if(sesion.getAttribute("usuario")==null) {
