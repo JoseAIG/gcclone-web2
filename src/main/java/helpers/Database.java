@@ -227,7 +227,7 @@ public class Database {
 		return true;
 	}
 	
-	//METODO PARA CONOCER SI UN USUARIO EXISTE
+	//METODO PARA CONOCER SI UN USUARIO EXISTE Y RETORNAR SU NOMBRE Y CORREO
 	public String[] dbExisteUsuario (String usuario) {
 		String [] datos = new String[2];
 		try {
@@ -390,6 +390,53 @@ public class Database {
 			}
 		}
 		return invitados;
+	}
+	
+	//METODO PARA ACTUALIZAR UN CALENDARIO + DATOS DE EDICION DE CALENDARIO
+	public Boolean dbActualizarCalendario(int id_calendario, String nuevo_nombre, String nuevo_color) {
+		try {
+			this.pstmt = this.conn.prepareStatement("UPDATE calendarios SET nombre = ?, color = ? WHERE id_calendario="+id_calendario+";");
+			this.pstmt.setString(1, (String) nuevo_nombre);
+			this.pstmt.setString(2, (String) nuevo_color);
+			this.pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		} finally {
+			try {
+				this.pstmt.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return true;
+	}
+	
+	//METODO PARA ACTUALIZAR LOS DATOS DE EDICION DE UN CALENDARIO
+	public Boolean dbActualizarDatosEdicion(String usuario, int id_calendario, ArrayList<String> nombres_invitados, ArrayList<String> correos_invitados) {
+		try {
+			this.stmt = this.conn.createStatement();
+			this.stmt.executeUpdate("DELETE FROM ediciones WHERE id_calendario="+id_calendario+" AND (nombre_usuario!='"+usuario+"' AND correo!='"+usuario+"');");
+			
+			for(int i=0; i<nombres_invitados.size(); i++) {
+				this.pstmt = this.conn.prepareStatement("INSERT INTO ediciones (nombre_usuario, correo, id_calendario) VALUES (?,?,?);");
+				this.pstmt.setString(1, (String) nombres_invitados.get(i));
+				this.pstmt.setString(2, (String) correos_invitados.get(i));
+				this.pstmt.setInt(3, id_calendario);
+				this.pstmt.executeUpdate();	
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		} finally {
+			try {
+				this.pstmt.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return true;
 	}
 	
 	//METODO PARA CERRAR LA SESION DE LA BASE DE DATOS

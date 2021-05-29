@@ -1,9 +1,14 @@
 package controllers;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import helpers.Database;
 
@@ -109,7 +114,61 @@ public class ControladorCalendario {
 			}
 			
 		} catch (Exception e) {
-			return "{\"resultado\": \"Error al crear calendario\", \"status\":"+200+"}";
+			return "{\"resultado\": \"Error al crear calendario\", \"status\":"+500+"}";
+		}
+	}
+	
+	//METODO PARA EDITAR UN CALENDARIO Y LOS DATOS DE EDICION
+	public static String editarCalendarioEdicion(HttpServletRequest request) {
+		try {
+			//OBTENER DATOS DE LA PETICION
+			HttpSession sesion = request.getSession();
+			
+			BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));
+			String data = br.readLine();
+			System.out.println("Controlador calendario - editarCalendarioEdicion: " + data);
+			//CONVERTIR DATOS A JSONObject PARA MANEJAR LA INFORMACION
+			JSONObject json_editar_calendario = new JSONObject(data);
+			System.out.println("La prueba del arreglo es: " + json_editar_calendario.get("arreglo"));
+			JSONArray array_invitados = new JSONArray(json_editar_calendario.get("arreglo").toString());
+			//System.out.println(array_invitados.get(0));
+			for(int k=0; k<array_invitados.length(); k++) {
+				System.out.println(array_invitados.get(k));
+			}
+			
+			//EJECUTAR QUERY
+			Database DB = Database.getInstances();
+			System.out.println(DB.dbActualizarCalendario(json_editar_calendario.getInt("id-calendario"), json_editar_calendario.getString("nombre-editar-calendario"), json_editar_calendario.getString("color-editar-calendario")));
+			//System.out.println("ID: " + json_editar_calendario.getInt("id-calendario") + " Nombre: " + json_editar_calendario.getString("nombre-editar-calendario") + " Color: " + json_editar_calendario.getString("color-editar-calendario"));
+			ArrayList<String> lista_nombres_invitados = new ArrayList<>();
+			ArrayList<String> lista_correos_invitados = new ArrayList<>();
+			for(int i=0;i<json_editar_calendario.getInt("cantidad-invitados")+1;i++) {
+				String [] datos_invitado = {null, null};
+				try {
+					datos_invitado = DB.dbExisteUsuario(json_editar_calendario.getString("input-invitado"+i));
+				} catch (Exception e) {
+					//json_editar_calendario.put("input-invitado"+i, "");
+					datos_invitado[0] = null;
+					datos_invitado[1] = null;
+				}
+				
+				if(datos_invitado[0]!=null && datos_invitado[1]!=null) {
+					System.out.println(datos_invitado[0] + " - " + datos_invitado[1]);
+					lista_nombres_invitados.add(lista_nombres_invitados.size(), datos_invitado[0]);
+					lista_correos_invitados.add(lista_correos_invitados.size(), datos_invitado[1]);	
+				}
+			}
+			System.out.println(DB.dbActualizarDatosEdicion(sesion.getAttribute("usuario").toString(), json_editar_calendario.getInt("id-calendario"), lista_nombres_invitados, lista_correos_invitados));
+			
+			//RETORNAR RESPUESTA AL SERVLET PARA ENVIARLA AL CLIENTE
+			JSONObject json_respuesta = new JSONObject();
+			json_respuesta.put("resultado", "Peticion existosa");
+			json_respuesta.put("status", 200);
+			
+			return json_respuesta.toString();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "{\"resultado\": \"Error al editar calendario\", \"status\":"+500+"}";
 		}
 	}
 	

@@ -44,6 +44,7 @@ var contenedor_editar_invitados = document.getElementById("contenedor-editar-inv
 
 //FUNCION PARA MOSTRAR ADECUADAMENTE LOS DATOS DE LOS CALENDARIOS EN EL ASIDE
 var contador_editar_invitados;
+var id_calendario_editar;
 const mostrar_calendarios_aside = (data)=>{
 	for(let i=0;i<data.calendarios.length;i++){
 		let p = document.createElement("p");
@@ -53,7 +54,8 @@ const mostrar_calendarios_aside = (data)=>{
 	
 		//COLOCAR LOS DATOS DEL CALENDARIO EN EL MODAL PARA EDITAR CALENDARIO
 		p.addEventListener("click",()=>{
-			document.q
+			//document.q
+			id_calendario_editar = data.calendarios[i].id_calendario;
 			console.log(p.id,p.innerText);
 			input_nombre_editar_calendario.value=p.innerText;
 			input_color_editar_calendario.value=data.calendarios[i].color;
@@ -69,8 +71,8 @@ const mostrar_calendarios_aside = (data)=>{
 				input.type="text";
 				input.className="validate selected";
 				input.autocomplete="off";
-				input.name="editar-invitado"+j;
-				input.id="editar-invitado"+j;
+				input.name="input-invitado"+j;
+				//input.id="editar-invitado"+j;
 				input.placeholder="";
 				input.value=data.calendarios[i].invitados[j];
 				div.appendChild(input);
@@ -108,13 +110,61 @@ const mostrar_calendarios_aside = (data)=>{
 }
 //GUARDAR EDICION CALENDARIO
 var link_guardar_edicion_calendario = document.getElementById("link-guardar-edicion-calendario");
+var form_editar_calendario = document.getElementById("form-editar-calendario");
 const guardar_edicion_calendario = ()=>{
-	console.log("Datos del calendario a guardar: ", input_nombre_editar_calendario.value, input_color_editar_calendario.value);
-	console.log("guardar estos invitados");
+	//OBTENER LOS DATOS DEL FORM DATA DE EDICION DE CALENDARIO
+	var datos_form_editar_calendario = new FormData(form_editar_calendario);
+	datos_form_editar_calendario.append("cantidad-invitados",contador_editar_invitados);
+	datos_form_editar_calendario.append("id-calendario", id_calendario_editar);
+	
+	var arreglo_invitados = new Array();
+	console.log("el contador de editar invitados es: ", contador_editar_invitados);
+	for(let i=0; i<contador_editar_invitados; i++){
+		//let input_invitado = datos_form_editar_calendario;
+		if(datos_form_editar_calendario.get("input-invitado"+i)!=""){
+			arreglo_invitados.push(datos_form_editar_calendario.get("input-invitado"+i));
+		}
+	}
+	console.log("El arreglo de invitados es: " + arreglo_invitados);
+	
+	datos_form_editar_calendario.append("arreglo","['inv1', 'inv2', 'inv3']");
+	//CONVERTIR LOS DATOS DE ESE FORM DATA A JSON
+	var obj = {};
+	datos_form_editar_calendario.forEach(function(valor, llave){
+	    obj[llave] = valor;
+	});
+	var json = JSON.stringify(obj);
+	
+	//HACER FETCH A CALENDARIO (PUT) CON ESTA DATA DE ABAJO
+	console.log(json);
+	
+    fetch('Calendario', {
+    	method: 'PUT',
+    	body: json,
+    	headers: new Headers({'Content-Type': 'application/json'}),
+		})
+    //RESPUESTA CRUDA DEL SERVER
+    .then(response => response.json())
+    //RESPUESTA CON LOS RESULTADOS DEL SERVIDOR
+    .then(data => {
+        console.log('Respuesta del servidor:', data);
+		alert(data.resultado);
+		if(data.status==200){
+			window.open("/gcclone","_self");
+		}
+    })	    
+	//CATCH PARA OBTENER DETALLER POR SI ORURRE UN ERROR
+    .catch((error) => {
+        console.error('Error:', error);
+    });
+	
+	//console.log(datos_form_editar_calendario);
+	//console.log("Datos del calendario a guardar: ", input_nombre_editar_calendario.value, input_color_editar_calendario.value);
+/*	console.log("guardar estos invitados");
 	for(let i=0; i<contador_editar_invitados; i++){
 		let input_editar_invitado_n = document.getElementById("editar-invitado"+i);
 		console.log(input_editar_invitado_n.value);
-	}
+	}*/
 }
 link_guardar_edicion_calendario.onclick=guardar_edicion_calendario;
 
@@ -175,8 +225,12 @@ link_guardar_nuevo_calendario.onclick=guardar_nuevo_calendario;
 var link_agregar_invitado = document.getElementById("link-agregar-invitado");
 var contenedor_input_crear_calendario = document.getElementById("contenedor-input-crear-calendario");
 var contador_invitados=0;
-const crear_campo_invitado = () => {
-	console.log("crear campo invitado");
+const crear_campo_invitado = (contenedor, edit) => {
+	console.log("crear campo invitado", edit);
+	if(edit){
+		contador_invitados=contador_editar_invitados;
+		contador_editar_invitados++
+	}
 	
 	//DIV PARA EL CAMPO DE INVITADO
 	let div = document.createElement("div");
@@ -208,44 +262,19 @@ const crear_campo_invitado = () => {
 	a_remover.addEventListener("click",()=>{
 		div.remove();
 		div_remover.remove();
-		//contador_invitados--;
+		contador_invitados--;
 	})
 	
-	contenedor_input_crear_calendario.appendChild(div);
-	contenedor_input_crear_calendario.appendChild(div_remover);
+	contenedor.appendChild(div);
+	contenedor.appendChild(div_remover);
 	contador_invitados++;
 }
-link_agregar_invitado.onclick=crear_campo_invitado;
+link_agregar_invitado.onclick=()=>{crear_campo_invitado(contenedor_input_crear_calendario, false)};
 
-//prueba put
-var prueba_put = document.getElementById("prueba-put");
-const fetchput = () => {
-	let data = {username: 'example'};
-	let fd = new FormData();
-	fd.append('usuario', 'xd');
-	
-	    fetch('/gcclone/Calendario', {
-	    	method: 'PUT',
-	    	body: fd,
-			//mode: "no-cors",
-	    	headers: new Headers({'Content-Type': 'application/json'}),
-			})
-	    //RESPUESTA CRUDA DEL SERVER
-	    .then(response => response.json())
-	    //RESPUESTA CON LOS RESULTADOS DEL SERVIDOR
-	    .then(data => {
-	        console.log('Respuesta del servidor:', data.resultado);
-			alert(data.resultado);
-/*			if(data.status==200){
-				window.open("/gcclone","_self");
-			}*/
-	    })	    
-		//CATCH PARA OBTENER DETALLER POR SI ORURRE UN ERROR
-	    .catch((error) => {
-	        console.error('Error:', error);
-	    });
-}
-prueba_put.onclick=fetchput;
+//AGREGAR LA FUNCIONALIDAD DE AGREGAR INVITADO EN EL BOTON DEL MODAL EDITAR CALENDARIO
+var link_agregar_invitado_editar = document.getElementById("link-agregar-invitado-editar");
+var contenedor_input_editar_calendario = document.getElementById("contenedor-input-editar-calendario");
+link_agregar_invitado_editar.onclick=()=>{crear_campo_invitado(contenedor_input_editar_calendario, true)};
 
 //ACTIVAR LOS MODAL DE MATERIALIZE
 var instancia_modal_editar_calendario;

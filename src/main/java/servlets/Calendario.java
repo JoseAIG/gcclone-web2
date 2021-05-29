@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.json.JSONObject;
+
 import controllers.ControladorCalendario;
 import helpers.Database;
 
@@ -80,10 +82,26 @@ public class Calendario extends HttpServlet {
 	}
 	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));
-
-		String data = br.readLine();
-		System.out.println(data);
+//		BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));
+//
+//		String data = br.readLine();
+//		System.out.println(data);
+//		JSONObject json_editar_calendario = new JSONObject(data);
+//		System.out.println("El nombre del calendario es: " + json_editar_calendario.get("nombre-editar-calendario"));
+//		JSONObject json_respuesta = new JSONObject();
+//		json_respuesta.append("resultado", "Peticion existosa");
+//		json_respuesta.append("status", 200);
+		
+		
+//		response.setContentType("application/json");
+//		PrintWriter out = response.getWriter();
+//		out.println(json_respuesta);
+//		out.close();
+		
+		response.setContentType("application/json");
+		PrintWriter out = response.getWriter();
+		out.println(ControladorCalendario.editarCalendarioEdicion(request));
+		out.close();
 		
 //		System.out.println(request.getAttribute("usuario"));
 //		
