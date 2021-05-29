@@ -54,6 +54,8 @@ const mostrar_calendarios_aside = (data)=>{
 	
 		//COLOCAR LOS DATOS DEL CALENDARIO EN EL MODAL PARA EDITAR CALENDARIO
 		p.addEventListener("click",()=>{
+			//FUNCIONALIDAD BOTON ELIMINAR CALENDARIO EN FUNCION DE SU ID
+			eliminar_calendario(data.calendarios[i].id_calendario);
 			//document.q
 			id_calendario_editar = data.calendarios[i].id_calendario;
 			console.log(p.id,p.innerText);
@@ -72,7 +74,7 @@ const mostrar_calendarios_aside = (data)=>{
 				input.className="validate selected";
 				input.autocomplete="off";
 				input.name="input-invitado"+j;
-				//input.id="editar-invitado"+j;
+				input.id="editar-invitado"+j;
 				input.placeholder="";
 				input.value=data.calendarios[i].invitados[j];
 				div.appendChild(input);
@@ -103,6 +105,7 @@ const mostrar_calendarios_aside = (data)=>{
 				contenedor_editar_invitados.appendChild(div);
 				contenedor_editar_invitados.appendChild(div_remover);
 			}
+			
 		});
 		
 		div_contenedor_nombres_calendarios.appendChild(p);
@@ -118,11 +121,13 @@ const guardar_edicion_calendario = ()=>{
 	datos_form_editar_calendario.append("id-calendario", id_calendario_editar);
 	
 	var arreglo_invitados = new Array();
-	console.log("el contador de editar invitados es: ", contador_editar_invitados);
+	console.log("el contador de editar invitados es: ", contador_editar_invitados, "El contador invitados es: ", contador_invitados);
+	
 	for(let i=0; i<contador_editar_invitados; i++){
+		let input = document.getElementById("input-invitado"+i);
 		//let input_invitado = datos_form_editar_calendario;
-		if(datos_form_editar_calendario.get("input-invitado"+i)!=""){
-			arreglo_invitados.push(datos_form_editar_calendario.get("input-invitado"+i));
+		if(input && input.value!=""){
+			arreglo_invitados.push(datos_form_editar_calendario.get(input.value));
 		}
 	}
 	console.log("El arreglo de invitados es: " + arreglo_invitados);
@@ -240,6 +245,7 @@ const crear_campo_invitado = (contenedor, edit) => {
 	input.className="validate selected";
 	input.autocomplete="off";
 	input.name="input-invitado"+contador_invitados;
+	input.id="input-invitado"+contador_invitados;
 	//input.placeholder="invitado";
 	div.appendChild(input);
 	let label = document.createElement("label");
@@ -262,12 +268,18 @@ const crear_campo_invitado = (contenedor, edit) => {
 	a_remover.addEventListener("click",()=>{
 		div.remove();
 		div_remover.remove();
-		contador_invitados--;
+		//contador_invitados--;
+		if(edit){
+			contador_editar_invitados--
+		}else{
+			contador_invitados--;
+		}
 	})
 	
 	contenedor.appendChild(div);
 	contenedor.appendChild(div_remover);
 	contador_invitados++;
+	console.log("contador editar invitados: " + contador_editar_invitados, "contador invitados: " + contador_invitados);
 }
 link_agregar_invitado.onclick=()=>{crear_campo_invitado(contenedor_input_crear_calendario, false)};
 
@@ -275,6 +287,37 @@ link_agregar_invitado.onclick=()=>{crear_campo_invitado(contenedor_input_crear_c
 var link_agregar_invitado_editar = document.getElementById("link-agregar-invitado-editar");
 var contenedor_input_editar_calendario = document.getElementById("contenedor-input-editar-calendario");
 link_agregar_invitado_editar.onclick=()=>{crear_campo_invitado(contenedor_input_editar_calendario, true)};
+
+//ELIMINACION DE UN CALENDARIO
+var link_borrar_calendario = document.getElementById("link-borrar-calendario");
+function eliminar_calendario (id_calendario) {
+	link_borrar_calendario.onclick=()=>{
+	
+		let peticion = {
+			"id-calendario":id_calendario
+		}
+		
+	    fetch('Calendario', {
+	    	method: 'DELETE',
+	    	body: JSON.stringify(peticion),
+	    	headers: new Headers({'Content-Type': 'application/json'}),
+			})
+	    //RESPUESTA CRUDA DEL SERVER
+	    .then(response => response.json())
+	    //RESPUESTA CON LOS RESULTADOS DEL SERVIDOR
+	    .then(data => {
+	        console.log('Respuesta del servidor:', data);
+			alert(data.resultado);
+			if(data.status==200){
+				window.open("/gcclone","_self");
+			}
+	    })	    
+		//CATCH PARA OBTENER DETALLER POR SI ORURRE UN ERROR
+	    .catch((error) => {
+	        console.error('Error:', error);
+	    });
+	};
+}
 
 //ACTIVAR LOS MODAL DE MATERIALIZE
 var instancia_modal_editar_calendario;

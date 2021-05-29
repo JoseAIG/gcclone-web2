@@ -439,6 +439,24 @@ public class Database {
 		return true;
 	}
 	
+	//METODO PARA ELIMINAR UN CALENDARIO DE LA BASE DE DATOS
+	public Boolean dbEliminarCalendario (int id_calendario) {
+		try {
+			this.stmt = this.conn.createStatement();
+			this.stmt.executeUpdate("DELETE FROM calendarios WHERE id_calendario="+id_calendario+";");
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}finally {
+			try {
+				this.stmt.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return true;
+	}
+	
 	//METODO PARA CERRAR LA SESION DE LA BASE DE DATOS
 	public void dbClose() {
 		try {

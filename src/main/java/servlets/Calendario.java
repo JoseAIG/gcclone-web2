@@ -110,4 +110,11 @@ public class Calendario extends HttpServlet {
 //		out.println("{\"resultado\": \"Put satisfactorio\", \"status\":"+200+"}");
 	}
 
+	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		response.setContentType("application/json");
+		PrintWriter out = response.getWriter();
+		out.println(ControladorCalendario.eliminarCalendario(request));
+		out.close();
+	}
+	
 }

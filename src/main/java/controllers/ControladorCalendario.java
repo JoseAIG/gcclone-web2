@@ -172,4 +172,28 @@ public class ControladorCalendario {
 		}
 	}
 	
+	//METODO PARA ELIMINAR UN CALENDARIO TRAS LA PETICION DE UN CLIENTE
+	public static String eliminarCalendario(HttpServletRequest request) {
+		try {
+			BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));
+			String data = br.readLine();
+			System.out.println("Controlador calendario - eliminarCalendario: " + data);
+			JSONObject json_peticion = new JSONObject(data);
+			System.out.println(json_peticion.get("id-calendario").toString());
+			Database DB = Database.getInstances();
+			JSONObject json_respuesta = new JSONObject();
+			if(DB.dbEliminarCalendario(Integer.parseInt(json_peticion.get("id-calendario").toString()))) {
+				json_respuesta.put("resultado", "Calendario eliminado exitosamente");
+				json_respuesta.put("status", 200);
+				return json_respuesta.toString();
+			}else {
+				json_respuesta.put("resultado", "No se pudo eliminar el calendario");
+				json_respuesta.put("status", 500);
+				return json_respuesta.toString();
+			}
+		} catch (Exception e) {
+			return "{\"resultado\": \"Error al editar calendario\", \"status\":"+500+"}";
+		}
+	}
+	
 }
