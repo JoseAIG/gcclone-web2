@@ -1,0 +1,31 @@
+.div-dia{
+    height: 12em;
+    width: 7em;
+    display: inline-block;
+    text-align: center;
+}
+
+.div-hora{
+    /* border: 1px solid gray; */
+    border-left: 1px solid gray;
+    border-right: 1px solid gray;
+    height: 12em;
+    width: 7em;
+    display: inline-block;
+    text-align: center;
+}
+
+/* SEPARADOR DE HORAS */
+
+.separador-horas {
+    width: 100%; 
+    text-align: center; 
+    border-bottom: 1px solid #000; 
+    line-height: 0.1em;
+    margin: 10px 0 20px; 
+ } 
+ 
+p span { 
+     background:#fff; 
+     padding:0 10px; 
+}
