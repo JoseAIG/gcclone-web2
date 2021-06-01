@@ -2,6 +2,8 @@
  * 
  */
 
+//import dibujar_plantilla from './dashboard-actividades.js';
+
 /*var link_crear_calendario = document.getElementById("link-crear-calendario");
 link_crear_calendario.addEventListener('click',()=>{
 	console.log("crear calendario");
@@ -47,13 +49,37 @@ var contador_editar_invitados;
 var id_calendario_editar;
 const mostrar_calendarios_aside = (data)=>{
 	for(let i=0;i<data.calendarios.length;i++){
+		//CONTENEDOR "ETIQUETA" CALENDARIO (CHECKBOX, NOMBRE Y BOTON CONFIG)
+		let div = document.createElement("div");
+		
+		//BOTON CONFIGURACION DE CALENDARIO
+		let i_tag = document.createElement("i");
+		i_tag.className="material-icons right";
+		i_tag.textContent="settings";
+		i_tag.style='color: gray; cursor: pointer';
+		div.appendChild(i_tag);
+		
+		//CHECKBOX + NOMBRE DEL CALENDARIO
 		let p = document.createElement("p");
-		p.innerText=data.calendarios[i].nombre_calendario;
+		//p.innerText=data.calendarios[i].nombre_calendario;
 		p.id="calendario"+data.calendarios[i].id_calendario;
 		p.style='color:'+data.calendarios[i].color;
+				
+		let label = document.createElement("label");
+		let input_checkbox = document.createElement("input");
+		input_checkbox.type="checkbox";
+		let span = document.createElement("span");
+		span.className="grey lighten-2";
+		span.innerText=data.calendarios[i].nombre_calendario;
+		span.style='color:'+data.calendarios[i].color;
+		label.appendChild(input_checkbox);
+		label.appendChild(span);
+		p.appendChild(label);
+		div.appendChild(p);
+		
 	
 		//COLOCAR LOS DATOS DEL CALENDARIO EN EL MODAL PARA EDITAR CALENDARIO
-		p.addEventListener("click",()=>{
+		i_tag.addEventListener("click",()=>{
 			//FUNCIONALIDAD BOTON ELIMINAR CALENDARIO EN FUNCION DE SU ID
 			eliminar_calendario(data.calendarios[i].id_calendario);
 			//document.q
@@ -108,7 +134,18 @@ const mostrar_calendarios_aside = (data)=>{
 			
 		});
 		
-		div_contenedor_nombres_calendarios.appendChild(p);
+		//FUNCIONALIDAD CLICK DE LOS CHECKBOXES
+		input_checkbox.addEventListener('click',()=>{
+			//console.log("Checkbox",data.calendarios[i]);
+			console.log("------------");
+			if(input_checkbox.checked){
+				datos_actividades(false,"id-calendario: " + data.calendarios[i].id_calendario + " nombre-calendario: " + data.calendarios[i].nombre_calendario);
+			}else{
+				datos_actividades(true,"id-calendario: " + data.calendarios[i].id_calendario + " nombre-calendario: " + data.calendarios[i].nombre_calendario);
+			}
+		});
+		
+		div_contenedor_nombres_calendarios.appendChild(div);
 	}
 }
 //GUARDAR EDICION CALENDARIO

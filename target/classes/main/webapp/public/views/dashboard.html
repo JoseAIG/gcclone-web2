@@ -6,7 +6,7 @@
 		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 		<script src="public/scripts/materialize.min.js" defer></script>		
 		<script src="public/scripts/dashboard-perfil.js" defer></script>
-		<script src="public/scripts/dashboard-calendario.js" defer></script>
+		<script src="public/scripts/dashboard-calendario.js" type="module" defer></script>
 		<script src="public/scripts/dashboard-actividades.js" defer></script>
 		<link href="public/styles/dashboard-actividades.css" rel="stylesheet">
 		<title>GC Clone - Dashboard</title>
@@ -27,16 +27,16 @@
 	    <!-- ESTRUCTURA DE LA PAGINA DEBAJO DEL NAVBAR -->
     	<div class="row">
 			<!-- ASIDE NAVEGACION -->
-      		<aside class="col s2 grey" style="border:1px solid gray; height: 80vh;">
+      		<aside class="col s3 grey lighten-2" style="border:1px solid gray; height: 80vh;">
         		<!-- Grey navigation panel -->
         		<input type="date" id="selector-fecha">
         		<h5 class="center">Calendarios</h5>
         		<div id="contenedor-nombres-calendarios"></div>
-       		  	<a id="link-crear-calendario" class="btn-floating btn waves-effect waves-light teal right modal-trigger" data-target="modal-crear-calendario"><i class="material-icons">add</i></a>
+       		  	<a id="link-crear-calendario" class="btn-floating btn-large waves-effect waves-light teal right modal-trigger" data-target="modal-crear-calendario"><i class="material-icons">add</i></a>
         		
       		</aside>
 			<!-- SECTION DASHBOARD -->
-      		<section class="col s10" style="border:1px solid red; height: 80vh;">
+      		<section class="col s9" style="border:1px solid red; height: 80vh;">
         		<!-- Teal page content  -->
         		<div id="contenedor-divs-dia" class="center">
 	      		    <div id="div0" class="div-dia"></div>

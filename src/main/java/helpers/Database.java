@@ -457,6 +457,8 @@ public class Database {
 		return true;
 	}
 	
+	//METODO PARA OBTENER LOS DATOS DE LAS ACTIVIDADES DE UN CALENDARIO
+	
 	//METODO PARA CERRAR LA SESION DE LA BASE DE DATOS
 	public void dbClose() {
 		try {

@@ -3,10 +3,37 @@
  */
 
 let selectorFecha = document.getElementById("selector-fecha");
+selectorFecha.valueAsDate= new Date();
+dibujar_plantilla(selectorFecha.value);
+
 selectorFecha.addEventListener('change',()=>{dibujar_plantilla(selectorFecha.value)})
 //selectorFecha.addEventListener('change',()=>{console.log(selectorFecha.value)})
 
+var datos_actividades_calendario = new Array();
+function datos_actividades(remover,datos){
+	
+	if(remover){
+		for(let i=0; i<datos_actividades_calendario.length; i++){
+			if(datos_actividades_calendario[i]==datos){
+				datos_actividades_calendario.splice(i,1);
+			}
+		}
+		//IMPRESION DE LOS DATOS CONTENIDOS EN EL ARREGLO
+		for(let i=0; i<datos_actividades_calendario.length; i++){
+			console.log(datos_actividades_calendario[i]);
+		}
+	}else{
+		datos_actividades_calendario.push(datos);
+		for(let i=0; i<datos_actividades_calendario.length; i++){
+			console.log(datos_actividades_calendario[i]);
+		}		
+	}
+
+	//console.log("esto esta en actividades, datos: " + datos);
+}
+
 function dibujar_plantilla(fecha_a_dibujar){
+	console.log("dibujar plantilla");
 	//OBTENER LOS DATOS DE LAS FECHAS DEL INPUT DE FORMA INDIVIDUAL
     let fecha = new Date(fecha_a_dibujar);
     let dia = fecha.getDate();
@@ -28,10 +55,10 @@ function dibujar_plantilla(fecha_a_dibujar){
         for(let j=0; j<24; j=(j+0.5)){
 			if(j%1==0){
 				//SI ES UNA HORA EN PUNTO
-	            div_dia[i].innerHTML += `<div style="height:5em" class="div-hora" name="${i.toString()+j.toString()}" dia="${i}" hora="${j}" numerodia="${parseInt(diasSemana[i])}"><p class="separador-horas"><span>${j+":00"}</span></p></div> <br>`
+	            div_dia[i].innerHTML += `<div style="height:5em; cursor: pointer" class="div-hora" name="${i.toString()+j.toString()}" dia="${i}" hora="${j}" numerodia="${parseInt(diasSemana[i])}"><p class="separador-horas"><span>${j+":00"}</span></p></div> <br>`
 			}else{
 				//SI ES UNA HORA Y MEDIA
-            	div_dia[i].innerHTML += `<div style="height:5em" class="div-hora" name="${i.toString()+j.toString()}" dia="${i}" hora="${j}" numerodia="${parseInt(diasSemana[i])}"><p class="separador-horas"><span>${(j-0.5)+":30"}</span></p></div> <br>`				
+            	div_dia[i].innerHTML += `<div style="height:5em; cursor: pointer" class="div-hora" name="${i.toString()+j.toString()}" dia="${i}" hora="${j}" numerodia="${parseInt(diasSemana[i])}"><p class="separador-horas"><span>${(j-0.5)+":30"}</span></p></div> <br>`				
 			}
         }
         //main_aside.appendChild(div_dia[i]);
@@ -43,6 +70,7 @@ function dibujar_plantilla(fecha_a_dibujar){
         div_hora[i].style.opacity='0.5';
 		div_hora[i].addEventListener('click',()=>{
 			console.log("click en el div " + i, div_hora[i]);
+			console.log(div_hora[i].parentElement);
 			instancia_modal_crear_actividad.open();
 		});
         div_hora[i].addEventListener('mouseover',()=>{
@@ -54,14 +82,14 @@ function dibujar_plantilla(fecha_a_dibujar){
 	}
 }
 
-const obtenerInicioSemana = (fecha) => {
+function obtenerInicioSemana (fecha) {
     let numeroPrimerDia = fecha.getDate() - fecha.getDay();
     let fechaPrimerDia = fecha;
     fechaPrimerDia.setDate(numeroPrimerDia);
     return fechaPrimerDia;
 }
 
-const obtenerFinalSemana = (fecha) => {
+function obtenerFinalSemana (fecha) {
     //EL ULTIMO DIA DE LA SEMANA SERA EL NUMERO DE DIA ACTUAL + EL NUMERO DE DIAS DE LA SEMANA EMPEZANDO EN 0 - EL NUMERO DE DIA DE LA SEMANA ACTUAL
     let numeroUltimoDia = fecha.getDate() + 6 - fecha.getDay();
     let fechaUltimoDia = fecha;
