@@ -34,10 +34,15 @@ public class Perfil extends HttpServlet {
 
     //METODO doGet ENCARGADO DE RESPONDER LOS DATOS DEL USUARIO PARA QUE EL MISMO PUEDA EDITARLOS
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		response.setContentType("application/json");  
-		PrintWriter out = response.getWriter();
-		out.println(ControladorPerfil.obtenerDatosPerfil(request));
-		out.close();
+		//SE COMPRUEBA EL CONTENT-TYPE DE LA SOLICITUD. SI ES NULL, QUIERE DECIR QUE SE ESTA ACCEDIENDO DESDE LA URL AL ENDPOINT Y SE REDIRECCIONA AL DASHBOARD
+		if(request.getContentType()==null) {
+			response.sendRedirect("Dashboard");
+		}else {
+			response.setContentType("application/json");  
+			PrintWriter out = response.getWriter();
+			out.println(ControladorPerfil.obtenerDatosPerfil(request));
+			out.close();	
+		}
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

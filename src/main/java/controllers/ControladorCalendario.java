@@ -18,8 +18,10 @@ public class ControladorCalendario {
 		
 	}
 	
-	public static String obtenerCalendariosUsuario(String usuario) {
-		String resultado;
+	public static String obtenerCalendariosUsuario(HttpServletRequest request) {
+		HttpSession sesion = request.getSession();
+		String usuario = sesion.getAttribute("usuario").toString();
+		
 		Database DB = Database.getInstances();
 		
 		//String [] datos_ediciones = DB.dbObtenerDatosEdicionCalendario(usuario);

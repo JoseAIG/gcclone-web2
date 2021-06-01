@@ -12,9 +12,9 @@ link_crear_calendario.addEventListener('click',()=>{
 window.onload=()=>{
 	    fetch('/gcclone/Calendario', {
 	    	method: 'GET',
-/*	    	body: datos_form_crear_calendario,
-			mode: "no-cors",
-	    	headers: new Headers({'Content-Type': 'application/json'}),*/
+	    	//body: datos_form_crear_calendario,
+			//mode: "no-cors",
+	    	headers: new Headers({'Content-Type': 'application/json'}),
 			})
 	    //RESPUESTA CRUDA DEL SERVER
 	    .then(response => response.json())

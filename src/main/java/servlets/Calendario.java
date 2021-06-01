@@ -38,24 +38,15 @@ public class Calendario extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		//response.getWriter().append("Served at: ").append(request.getContextPath());
-		HttpSession sesion = request.getSession();
-//		Database DB = Database.getInstances();
-//		
-//		String [] datos_ediciones = DB.dbObtenerDatosEdicionCalendario(sesion.getAttribute("usuario").toString());
-//		System.out.println("Datos de ediciones: " + datos_ediciones[0]+datos_ediciones[1]+datos_ediciones[2]);
-//		
-//		String [] datos_calendarios = DB.dbObtenerDatosCalendario(Integer.parseInt(datos_ediciones[2]));
-//		System.out.println("Datos de ediciones: " + datos_calendarios[0]+datos_calendarios[1]+datos_calendarios[2]);
-
-		String calendarios = ControladorCalendario.obtenerCalendariosUsuario(sesion.getAttribute("usuario").toString());
-		
-		response.setContentType("application/json");
-		PrintWriter out = response.getWriter();
-		//out.println("{\"resultado\": \"Datos calendarios satisfactorio\", \"status\":"+200+", \"nombre\":\""+datos_calendarios[1]+"\", \"color\":\""+datos_calendarios[2]+"\"}");
-		out.println(calendarios);
-		out.close();
+		//SE COMPRUEBA EL CONTENT-TYPE DE LA SOLICITUD. SI ES NULL, QUIERE DECIR QUE SE ESTA ACCEDIENDO DESDE LA URL AL ENDPOINT Y SE REDIRECCIONA AL DASHBOARD
+		if(request.getContentType()==null) {
+			response.sendRedirect("Dashboard");
+		}else {
+			response.setContentType("application/json");
+			PrintWriter out = response.getWriter();
+			out.println(ControladorCalendario.obtenerCalendariosUsuario(request));
+			out.close();	
+		}
 	}
 
 	/**

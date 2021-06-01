@@ -34,9 +34,9 @@ var input_editar_clave = document.getElementById("editar-clave");
 const obtener_datos_perfil = () => {
     fetch('/gcclone/Perfil', {
     	method: 'GET',
-    	//body: datos_form,
+    	//body: "prueba",
 		//mode: "no-cors",
-    	//headers: new Headers({'Content-Type': 'application/json'}),
+    	headers: new Headers({'Content-Type': 'application/json'}),
 		})
     //RESPUESTA CRUDA DEL SERVER
     .then(response => response.json())
