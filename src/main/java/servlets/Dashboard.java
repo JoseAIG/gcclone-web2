@@ -52,12 +52,6 @@ public class Dashboard extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		doGet(request, response);
-	}
-	
-	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		//super.doDelete(req, resp);
 		HttpSession sesion = request.getSession();
 		sesion.invalidate();
 		
@@ -66,5 +60,6 @@ public class Dashboard extends HttpServlet {
 		out.println("{\"resultado\": \"Sesion finalizada\", \"status\":"+200+"}");
 		out.close();
 	}
+	
 
 }

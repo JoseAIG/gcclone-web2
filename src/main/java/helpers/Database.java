@@ -12,15 +12,15 @@ public class Database {
 	private ResultSet rs;
 	private String driverDB = "org.postgresql.Driver";
 	//LOCAL
-	private String dbName = "gcclone";
-	private String urlDB = "jdbc:postgresql://localhost:5432/" + this.dbName;
-	private String userDB = "postgres";
-	private String passDB = "masterkey";
+//	private String dbName = "gcclone";
+//	private String urlDB = "jdbc:postgresql://localhost:5432/" + this.dbName;
+//	private String userDB = "postgres";
+//	private String passDB = "masterkey";
 	//REMOTO EN HEROKU
-//	private String dbName = "dedr8acp5f19aa";
-//	private String urlDB = "jdbc:postgresql://ec2-52-70-67-123.compute-1.amazonaws.com:5432/" + this.dbName;
-//	private String userDB = "jiyqdixxxzgjww";
-//	private String passDB = "bd78b205becfd9122927ad9a733eb5d7101b26fb79887bfa86942bde475ec61d";
+	private String dbName = "dag91rnv1gm978";
+	private String urlDB = "jdbc:postgresql://ec2-3-215-57-87.compute-1.amazonaws.com:5432/" + this.dbName;
+	private String userDB = "dtqgnhgnhrsctt";
+	private String passDB = "12afd4794a6db97bb6cd443726c7f81888b8cfefc66c053d6174d472329b4c1c";
 	
 	//CONSTRUCTOR
 	private Database(){

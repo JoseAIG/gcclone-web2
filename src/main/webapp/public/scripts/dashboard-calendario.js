@@ -181,9 +181,6 @@ const guardar_edicion_calendario = ()=>{
 	});
 	var json = JSON.stringify(obj);
 	
-	//HACER FETCH A CALENDARIO (PUT) CON ESTA DATA DE ABAJO
-	console.log(json);
-	
     fetch('Calendario', {
     	method: 'PUT',
     	body: json,
@@ -196,7 +193,7 @@ const guardar_edicion_calendario = ()=>{
         console.log('Respuesta del servidor:', data);
 		alert(data.resultado);
 		if(data.status==200){
-			window.open("/gcclone","_self");
+			window.open("Dashboard","_self");
 		}
     })	    
 	//CATCH PARA OBTENER DETALLER POR SI ORURRE UN ERROR
@@ -241,8 +238,7 @@ const guardar_nuevo_calendario = ()=>{
 	if(datos_form_crear_calendario.get("nombre-calendario")==""){
 		alert("Ingrese un nombre para el calendario");
 	}else{
-		console.log("ok..");
-	    fetch('/gcclone/Calendario', {
+	    fetch('Calendario', {
 	    	method: 'POST',
 	    	body: datos_form_crear_calendario,
 			mode: "no-cors",
@@ -255,7 +251,7 @@ const guardar_nuevo_calendario = ()=>{
 	        console.log('Respuesta del servidor:', data.resultado);
 			alert(data.resultado);
 			if(data.status==200){
-				window.open("/gcclone","_self");
+				window.open("Dashboard","_self");
 			}
 	    })	    
 		//CATCH PARA OBTENER DETALLER POR SI ORURRE UN ERROR
@@ -350,7 +346,7 @@ function eliminar_calendario (id_calendario) {
 	        console.log('Respuesta del servidor:', data);
 			alert(data.resultado);
 			if(data.status==200){
-				window.open("/gcclone","_self");
+				window.open("Dashboard","_self");
 			}
 	    })	    
 		//CATCH PARA OBTENER DETALLER POR SI ORURRE UN ERROR

@@ -15,7 +15,7 @@ const enviar_datos = (e) => {
 	else if(!CorreoValido(datos_form.get("correo"))){
 		alert("Ingrese un correo valido");
 	}else{
-	    fetch('http://localhost:8080/gcclone/Registro', {
+	    fetch('Registro', {
 	    	method: 'POST',
 	    	body: datos_form,
 			mode: "no-cors",
@@ -28,7 +28,7 @@ const enviar_datos = (e) => {
 	        console.log('Respuesta del servidor:', data.resultado);
 			alert(data.resultado);
 			if(data.status==200){
-				window.open("/gcclone","_self");
+				window.open("/","_self");
 			}
 	    })	    
 		//CATCH PARA OBTENER DETALLER POR SI ORURRE UN ERROR
