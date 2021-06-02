@@ -10,7 +10,7 @@ link_crear_calendario.addEventListener('click',()=>{
 });*/
 
 window.onload=()=>{
-	    fetch('/gcclone/Calendario', {
+	    fetch('Calendario', {
 	    	method: 'GET',
 	    	//body: datos_form_crear_calendario,
 			//mode: "no-cors",
@@ -20,8 +20,8 @@ window.onload=()=>{
 	    .then(response => response.json())
 	    //RESPUESTA CON LOS RESULTADOS DEL SERVIDOR
 	    .then(data => {
-	        console.log('Respuesta del servidor:', data);
-			console.log(data.resultado);
+/*	        console.log('Respuesta del servidor:', data);
+			console.log(data.resultado);*/
 			mostrar_calendarios_aside(data);
 /*			console.log(data.calendarios);
 			console.log("Longitud array calendarios: " + data.calendarios.length);
@@ -138,10 +138,14 @@ const mostrar_calendarios_aside = (data)=>{
 		input_checkbox.addEventListener('click',()=>{
 			//console.log("Checkbox",data.calendarios[i]);
 			console.log("------------");
+			//AL CLICKEAR UN CHECKBOX SE COMPRUEBA SU ESTADO. SI ES SELECCIONADO SE LLAMA A LA FUNCION "datos_actividades" EN "dashboard-actividades.js"
+			//SI EL CHECKBOX ESTA ACTIVO, SE GUARDAN LOS DATOS EN EL ARREGLO DE ACTIVIDADES, SINO, SE REMUEVE (PRIMER PARAMETRO true)
 			if(input_checkbox.checked){
-				datos_actividades(false,"id-calendario: " + data.calendarios[i].id_calendario + " nombre-calendario: " + data.calendarios[i].nombre_calendario);
+				//datos_actividades(false,"id-calendario: " + data.calendarios[i].id_calendario + " nombre-calendario: " + data.calendarios[i].nombre_calendario);
+				toggle_datos_calendarios(false,data.calendarios[i]);
 			}else{
-				datos_actividades(true,"id-calendario: " + data.calendarios[i].id_calendario + " nombre-calendario: " + data.calendarios[i].nombre_calendario);
+				//datos_actividades(true,"id-calendario: " + data.calendarios[i].id_calendario + " nombre-calendario: " + data.calendarios[i].nombre_calendario);
+				toggle_datos_calendarios(true,data.calendarios[i]);			
 			}
 		});
 		

@@ -458,6 +458,36 @@ public class Database {
 	}
 	
 	//METODO PARA OBTENER LOS DATOS DE LAS ACTIVIDADES DE UN CALENDARIO
+	public ArrayList<String[]> dbObtenerActividadesCalendario( int id_calendario) {
+		ArrayList<String[]> actividades = new ArrayList<>();
+ 		try {
+			this.stmt = this.conn.createStatement();
+			this.rs = this.stmt.executeQuery("select *from actividades where id_calendario="+ id_calendario +"");
+			while(rs.next()) {
+				String[] datos_actividad = new String[8];
+				datos_actividad[0] = rs.getString("id_actividad");
+				datos_actividad[1] = rs.getString("id_calendario");
+				datos_actividad[2] = rs.getString("informacion");
+				datos_actividad[3] = rs.getString("fecha");
+				datos_actividad[4] = rs.getString("hora_inicio");
+				datos_actividad[5] = rs.getString("hora_fin");
+				datos_actividad[6] = rs.getString("duracion");
+				datos_actividad[7] = rs.getString("ruta_imagen");
+				actividades.add(datos_actividad);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				this.stmt.close();
+				this.rs.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return actividades;
+	}
+	
 	
 	//METODO PARA CERRAR LA SESION DE LA BASE DE DATOS
 	public void dbClose() {

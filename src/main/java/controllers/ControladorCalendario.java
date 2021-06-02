@@ -29,47 +29,106 @@ public class ControladorCalendario {
 		StringBuilder resultado_JSON = new StringBuilder();
 		//resultado_JSON.append(" {\"resultado\":\"Prueba armado json\", \"status\":"+200+", \"calendarios\": [{\"id_calendario\": \"4\", \"nombre_calendario\": \"calendario admin\", \"color\": \"rojo\"}]}");
 		
+		//CAMBIO A JSONOBJECT
+		JSONObject json_respuesta = new JSONObject();
+		json_respuesta.put("resultado", "prueba JSONObject");
+		json_respuesta.put("status", 200);
 		
+//		JSONArray arreglo_calendarios = new JSONArray();
+//		JSONObject calendario = new JSONObject();
+//		calendario.put("id_calendario", "test");
+//		calendario.put("nombre_calendario", "test");
+//		arreglo_calendarios.put(calendario);
+//		
+//		json_respuesta.put("calendarios", arreglo_calendarios);
 		
-		resultado_JSON.append(" {\"resultado\":\"Prueba armado json\", \"status\":"+200+", \"calendarios\": [");
+		//System.out.println("JSONObject a enviar: " + json_respuesta);
+		
+//		resultado_JSON.append(" {\"resultado\":\"Prueba armado json\", \"status\":"+200+", \"calendarios\": [");
+		
+//		for(int i=0; i<id_calendarios.size();i++) {
+//			//PRUEBA OBTENCION ACTIVIDADES
+//			ArrayList<String[]> actividades_calendario = DB.dbObtenerActividadesCalendario(id_calendarios.get(i));
+//			System.out.println("Impresion de las actividades del calendario");
+//			for(int j=0; j<actividades_calendario.size(); j++) {
+//				String[] actividad = actividades_calendario.get(i);
+//				System.out.print("Long de la act: " + actividad.length);
+//				System.out.println(" - id_actividad: " + actividad[0] + " id_calendario: " + actividad[1] + " informacion: " + actividad[2] + " fecha: " + actividad[3] + " hora_inicio: " + actividad[4] + " hora_fin: " + actividad[5] + " duracion: " + actividad[6] + " ruta_imagen: " + actividad[7]);
+//			}
+//			
+//			resultado_JSON.append("{");
+//			resultado_JSON.append(" \"id_calendario\": \""+ id_calendarios.get(i) +"\", ");
+//			String[] datos_calendario = DB.dbObtenerDatosCalendario(id_calendarios.get(i));
+//			resultado_JSON.append(" \"nombre_calendario\": \""+ datos_calendario[0] +"\", \"color\": \""+ datos_calendario[1] +"\", \"invitados\": [ ");
+//			
+//			ArrayList<String> invitados_calendario = DB.dbObtenerInvitadosCalendario(usuario,id_calendarios.get(i));
+//			for(int j=0; j<invitados_calendario.size();j++) {
+//				resultado_JSON.append(" \""+invitados_calendario.get(j)+"\" ");
+//				if(j==(invitados_calendario.size()-1)) {
+//				}else {
+//					resultado_JSON.append(",");
+//				}
+//			}
+//			resultado_JSON.append("]");
+//
+//			if(i==(id_calendarios.size()-1)) {
+//				resultado_JSON.append("}");
+//			}else {
+//				resultado_JSON.append("},");
+//			}
+//		}
+//		resultado_JSON.append("]}");
+//		System.out.println(resultado_JSON.toString());
+		
+		//ARMADO JSON CON JSONOBJECT
+		JSONArray arreglo_calendarios = new JSONArray();
 		
 		for(int i=0; i<id_calendarios.size();i++) {
-			resultado_JSON.append("{");
-			resultado_JSON.append(" \"id_calendario\": \""+ id_calendarios.get(i) +"\", ");
-			//System.out.print("Calendario ID: " + id_calendarios.get(i));
+			JSONObject calendario = new JSONObject();
 			String[] datos_calendario = DB.dbObtenerDatosCalendario(id_calendarios.get(i));
-			resultado_JSON.append(" \"nombre_calendario\": \""+ datos_calendario[0] +"\", \"color\": \""+ datos_calendario[1] +"\", \"invitados\": [ ");
-			
+			calendario.put("id_calendario", id_calendarios.get(i));
+			calendario.put("nombre_calendario", datos_calendario[0]);
+			calendario.put("color", datos_calendario[1]);
+
+			//INVITADOS DE UN CALENDARIO
+			JSONArray invitados = new JSONArray();
 			ArrayList<String> invitados_calendario = DB.dbObtenerInvitadosCalendario(usuario,id_calendarios.get(i));
-			for(int j=0; j<invitados_calendario.size();j++) {
-				resultado_JSON.append(" \""+invitados_calendario.get(j)+"\" ");
-				if(j==(invitados_calendario.size()-1)) {
-					//resultado_JSON.append("]");
-				}else {
-					resultado_JSON.append(",");
-				}
+			for(int j=0; j<invitados_calendario.size(); j++) {
+				invitados.put(invitados_calendario.get(j));
 			}
-			resultado_JSON.append("]");
+			calendario.put("invitados", invitados);
+			
+			//ACTIVIDADES DE UN CALENDARIO
+			JSONArray actividades = new JSONArray();
+			ArrayList<String[]> actividades_calendario = DB.dbObtenerActividadesCalendario(id_calendarios.get(i));
+			for(int j=0; j<actividades_calendario.size(); j++) {
+				String[] actividad = actividades_calendario.get(j);
+				//System.out.println(" - id_actividad: " + actividad[0] + " id_calendario: " + actividad[1] + " informacion: " + actividad[2] + " fecha: " + actividad[3] + " hora_inicio: " + actividad[4] + " hora_fin: " + actividad[5] + " duracion: " + actividad[6] + " ruta_imagen: " + actividad[7]);
+				JSONObject datos_actividad = new JSONObject();
+				datos_actividad.put("id_actividad", actividad[0]);
+				datos_actividad.put("id_calendario", actividad[1]);
+				datos_actividad.put("informacion", actividad[2]);
+				datos_actividad.put("fecha", actividad[3]);
+				datos_actividad.put("hora_inicio", actividad[4]);
+				datos_actividad.put("hora_fin", actividad[5]);
+				datos_actividad.put("duracion", actividad[6]);
+				datos_actividad.put("ruta_imagen", actividad[7]);
+				//INSERTAR DATOS DE LA ACTIVIDAD EN EL ARREGLO DE ACTIVIDADES
+				actividades.put(datos_actividad);
+			}
+			calendario.put("actividades", actividades);
 
-			if(i==(id_calendarios.size()-1)) {
-				resultado_JSON.append("}");
-			}else {
-				resultado_JSON.append("},");
-			}
-			//System.out.println(" Nombre: " + datos_calendario[0] + " Color: " + datos_calendario[1]);
+			//AL FINAL SE COLOCA EL CALENDARIO EN EL ARREGLO DE CALENDARIOS
+			arreglo_calendarios.put(calendario);
 		}
-		resultado_JSON.append("]}");
-		//System.out.println(resultado_JSON.toString());
 		
-		//resultado = "{\"resultado\": \"ID's de calendarios satisfactorio\", \"status\":"+200+"}";
-
+		//SE LE COLOCA EL ARREGLO DE CALENDARIOS AL JSON DE RESPUESTA
+		json_respuesta.put("calendarios",arreglo_calendarios);
 		
-//		String [] datos_calendarios = DB.dbObtenerDatosCalendario(Integer.parseInt(datos_ediciones[2]));
-//		System.out.println("Datos de ediciones: " + datos_calendarios[0]+datos_calendarios[1]+datos_calendarios[2]);
-//		resultado = "{\"resultado\": \"Datos calendarios satisfactorio\", \"status\":"+200+", \"nombre\":\""+datos_calendarios[1]+"\", \"color\":\""+datos_calendarios[2]+"\"}";
+		//System.out.println(json_respuesta.toString());
 		
 		//System.out.println(resultado_JSON.toString());
-		return resultado_JSON.toString();
+		return json_respuesta.toString();
 	}
 	
 	//METODO PARA CREAR UN NUEVO CALENDARIO
