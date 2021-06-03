@@ -23,6 +23,7 @@ window.onload=()=>{
 /*	        console.log('Respuesta del servidor:', data);
 			console.log(data.resultado);*/
 			mostrar_calendarios_aside(data);
+			agregar_calendarios_opciones_select(data.calendarios);
 /*			console.log(data.calendarios);
 			console.log("Longitud array calendarios: " + data.calendarios.length);
 			console.log(data.calendarios[0]);
@@ -152,6 +153,7 @@ const mostrar_calendarios_aside = (data)=>{
 		div_contenedor_nombres_calendarios.appendChild(div);
 	}
 }
+
 //GUARDAR EDICION CALENDARIO
 var link_guardar_edicion_calendario = document.getElementById("link-guardar-edicion-calendario");
 var form_editar_calendario = document.getElementById("form-editar-calendario");
@@ -369,5 +371,5 @@ document.addEventListener('DOMContentLoaded', function() {
    		}
 	}
    var modal_editar_calendario = document.querySelector('#modal-editar-calendario');
-   instancia_modal_editar_calendario = M.Modal.init(modal_editar_calendario, options);   
+   instancia_modal_editar_calendario = M.Modal.init(modal_editar_calendario, options); 
 });

@@ -9,6 +9,12 @@
 		<script src="public/scripts/dashboard-calendario.js" type="module" defer></script>
 		<script src="public/scripts/dashboard-actividades.js" defer></script>
 		<link href="public/styles/dashboard-actividades.css" rel="stylesheet">
+		
+		<!-- NOUISLIDER -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/wnumb/1.2.0/wNumb.min.js" integrity="sha512-igVQ7hyQVijOUlfg3OmcTZLwYJIBXU63xL9RC12xBHNpmGJAktDnzl9Iw0J4yrSaQtDxTTVlwhY730vphoVqJQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/14.7.0/nouislider.min.js" integrity="sha512-jWNpWAWx86B/GZV4Qsce63q5jxx/rpWnw812vh0RE+SBIo/mmepwOSQkY2eVQnMuE28pzUEO7ux0a5sJX91g8A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/12.0.0/nouislider.min.css" integrity="sha512-kSH0IqtUh1LRE0tlO8dWN7rbmdy5cqApopY6ABJ4U99HeKulW6iKG5KgrVfofEXQOYtdQGFjj2N/DUBnj3CNmQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/14.7.0/nouislider.min.css" integrity="sha512-40vN6DdyQoxRJCw0klEUwZfTTlcwkOLKpP8K8125hy9iF4fi8gPpWZp60qKC6MYAFaond8yQds7cTMVU8eMbgA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+		
 		<title>GC Clone - Dashboard</title>
 	</head>
 	<body>
@@ -17,8 +23,8 @@
 		  <div class="nav-wrapper teal">
 		    <a href="/gcclone" class="brand-logo left"><i class="material-icons">perm_contact_calendar</i>GC Clone</a>
 		    <ul class="right">
-		    	<li><a id="link-editar-perfil" class="modal-trigger" data-target="modal-editar-perfil"><i class="material-icons left ">person_outline</i>Editar perfil</a></li>
-		      	<li><a id="link-cerrar-sesion"><i class="material-icons left">power_settings_new</i>Cerrar Sesión</a></li>
+		    	<li><a id="link-editar-perfil" class="waves-effect waves-light modal-trigger" data-target="modal-editar-perfil"><i class="material-icons left ">person_outline</i>Editar perfil</a></li>
+		      	<li><a id="link-cerrar-sesion"><i class="waves-effect waves-light material-icons left">power_settings_new</i>Cerrar Sesión</a></li>
 		    </ul>
 		  </div>
 		</nav>
@@ -27,16 +33,17 @@
 	    <!-- ESTRUCTURA DE LA PAGINA DEBAJO DEL NAVBAR -->
     	<div class="row">
 			<!-- ASIDE NAVEGACION -->
-      		<aside class="col s3 grey lighten-2" style="border:1px solid gray; height: 80vh;">
+      		<aside class="col s3 grey lighten-2" style="border:1px solid gray; height: 91vh;">
         		<!-- Grey navigation panel -->
         		<input type="date" id="selector-fecha">
         		<h5 class="center">Calendarios</h5>
         		<div id="contenedor-nombres-calendarios"></div>
-       		  	<a id="link-crear-calendario" class="btn-floating btn-large waves-effect waves-light teal right modal-trigger" data-target="modal-crear-calendario"><i class="material-icons">add</i></a>
-        		
+        		<div class="center">
+     		       	<a id="link-crear-calendario" class="btn-floating btn-small waves-effect waves-light teal modal-trigger hoverable" data-target="modal-crear-calendario"><i class="material-icons">add</i></a>
+        		</div>        		
       		</aside>
 			<!-- SECTION DASHBOARD -->
-      		<section class="col s9" style="border:1px solid red; height: 80vh;">
+      		<section class="col s9" style="border:1px solid red; height: 91vh;">
         		<!-- Teal page content  -->
         		<div id="contenedor-divs-dia" class="center">
 	      		    <div id="div0" class="div-dia"></div>
@@ -47,6 +54,17 @@
 			        <div id="div5" class="div-dia"></div>
 			        <div id="div6" class="div-dia"></div>
 		        </div>
+		              			
+      			<div class="fixed-action-btn">
+				  <a class="btn-floating btn-large teal waves-effect waves-light hoverable"><i class="large material-icons">add</i></a>
+				  <ul>
+				    <li><a class="btn-floating blue tooltipped modal-trigger hoverable" data-position="left" data-tooltip="Nuevo calendario" data-target="modal-crear-calendario"><i class="material-icons">event</i></a></li>
+				    <li><a class="btn-floating yellow darken-1 tooltipped modal-trigger hoverable" data-position="left" data-tooltip="Nueva actividad" data-target="modal-crear-actividad"><i class="material-icons">bookmark</i></a></li>
+<!-- 				    <li><a class="btn-floating green"><i class="material-icons">publish</i></a></li>
+				    <li><a class="btn-floating blue"><i class="material-icons">attach_file</i></a></li> -->
+				  </ul>
+				</div>
+      			
       		</section>
     	</div>
     	
@@ -97,7 +115,7 @@
        					   		<label for="usuario">Nombre</label>
 		        			</div>
 		        			<div class="col s6 offset-s3">
-		        				<input type="color" name="color-calendario">
+		        				<input type="color" name="color-calendario" style="width: 100%">
 		        			</div>
 		        		</div>
 		        	</form>
@@ -158,13 +176,34 @@
 		        	<form class="col s12" id="form-crear-actividad">
 		        		<div class="row" id="contenedor-input-crear-actividad">
 		        			<div class="input-field col s6 offset-s3">
+       					   		<label for="input-detalle-crear-actividad">Detalle:</label>
        			         		<input id="input-detalle-crear-actividad" type="text" class="validate selected" name="detalle-actividad" autocomplete="off" placeholder="Entrenar">
-       					   		<label for="usuario">Detalle</label>
 		        			</div>
 		        			<div class="col s6 offset-s3">
-		        				<p class="range-field">
-									<input type="range" id="test5" class="rango-actividad" min="0" max="100" step="1"/>
-   								</p>
+		        				<label for="fecha-crear-actividad">Fecha de la actividad:</label>
+		        				<input type="date" id="fecha-crear-actividad" name="fecha-crear-actividad">
+		        			</div>
+		        			<div class="col s6 offset-s3">
+		        				<label for="rango-horas-crear-actividad">Rango de horas:</label>
+   								<div id="rango-horas-crear-actividad" style="margin-top: 3.5em; margin-bottom: 1.5em"></div>
+		        			</div>
+		        			<div class="col s6 offset-s3">
+		        				<label>Imagen actividad (opcional):</label>
+		        				<div class="file-field input-field">
+	        				      	<div class="btn">
+										<span>Imagen</span>
+			        					<input type="file" name="imagen-crear-actividad" id="imagen-crear-actividad">
+									</div>
+									<div class="file-path-wrapper">
+							  			<input class="file-path validate" type="text">
+									</div>
+		        				</div>
+		        			</div>
+		        			<div class="col s6 offset-s3">
+		        			   	<label for="select-calendario-crear-actividad">Calendario:</label>
+		        				<select name="select-calendario-crear-actividad" id="select-calendario-crear-actividad">
+		        					<option value="" disabled selected id="option-defecto">Seleccione un calendario</option>
+		        				</select>
 		        			</div>
 		        		</div>
 		        	</form>
@@ -178,5 +217,33 @@
 		  </div>
 		</div>
 		<!-- FIN MODAL CREAR ACTIVIDAD -->
+		
+		<!-- FOOTER -->
+<!--         <footer class="page-footer">
+          <div class="container">
+            <div class="row">
+              <div class="col l6 s12">
+                <h5 class="white-text">Footer Content</h5>
+                <p class="grey-text text-lighten-4">You can use rows and columns here to organize your footer content.</p>
+              </div>
+              <div class="col l4 offset-l2 s12">
+                <h5 class="white-text">Links</h5>
+                <ul>
+                  <li><a class="grey-text text-lighten-3" href="#!">Link 1</a></li>
+                  <li><a class="grey-text text-lighten-3" href="#!">Link 2</a></li>
+                  <li><a class="grey-text text-lighten-3" href="#!">Link 3</a></li>
+                  <li><a class="grey-text text-lighten-3" href="#!">Link 4</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="footer-copyright">
+            <div class="container">
+            © 2014 Copyright Text
+            <a class="grey-text text-lighten-4 right" href="#!">More Links</a>
+            </div>
+          </div>
+        </footer> -->
+       <!-- FIN DEL FOOTER -->
 	</body>
 </html>

@@ -1,3 +1,9 @@
+#selector-fecha{
+	margin-top: 1em;
+	margin-bottom: 1em;
+}
+
+
 .div-dia{
     height: 12em;
     width: 7em;
@@ -28,4 +34,22 @@
 p span { 
      background:#fff; 
      padding:0 10px; 
+}
+
+/* BOTON AGREGAR ACTIVIDAD */
+/* #link-crear-actividad{
+    position: fixed;
+    top: 90vh;
+    right: 2em;
+} */
+
+section, aside{
+	overflow-y: auto;
+    position: relative;
+    width: 100%;
+    padding: 1em;
+}
+
+footer{
+	margin-top: -3vh;
 }

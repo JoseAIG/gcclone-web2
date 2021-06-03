@@ -73,9 +73,11 @@ function obtener_numero_semana(fecha_actividad){
 }
 
 var actividades_en_la_semana = new Array();
+var colores_actividades = new Array();
 function obtener_actividades_semana(){
 	//LIMPIAR ARREGLO DE LAS ACTIVIDADES DE LA SEMANA
 	actividades_en_la_semana = [];
+	colores_actividades = [];
 	//SE RECORREN TODOS LOS CALENDARIOS DE LOS CHECKBOXES MARCADOS
 	for(let i=0; i<datos_calendarios.length; i++){
 		//SE RECORREN TODAS LAS ACTIVIDADES DE CADA CALENDARIO
@@ -89,6 +91,8 @@ function obtener_actividades_semana(){
 			}
 			if(obtener_numero_semana(datos_calendarios[i].actividades[j].fecha)==semana_fecha_principal){
 				actividades_en_la_semana.push(datos_calendarios[i].actividades[j]);
+				colores_actividades.push(datos_calendarios[i].color);
+				console.log(colores_actividades);
 			}
 
 
@@ -97,7 +101,7 @@ function obtener_actividades_semana(){
 	console.log(actividades_en_la_semana);
 }
 
-//LLAMADA A LA FUNCION DIBUJAR PLANTILLA LA PRIMERA VES QUE SE CORRE LA APP
+//LLAMADA A LA FUNCION DIBUJAR PLANTILLA LA PRIMERA VEZ QUE SE CORRE LA APP
 dibujar_plantilla(selectorFecha.value);
 
 var fechaPrincipal;
@@ -132,10 +136,10 @@ function dibujar_plantilla(fecha_a_dibujar){
         for(let j=0; j<24; j=(j+0.5)){
 			if(j%1==0){
 				//SI ES UNA HORA EN PUNTO
-	            div_dia[i].innerHTML += `<div style="height:5em; cursor: pointer" class="div-hora" name="${i.toString()+j.toString()}" dia="${i}" hora="${j}" numerodia="${parseInt(diasSemana[i])}"><p class="separador-horas"><span>${j+":00"}</span></p></div> <br>`
+	            div_dia[i].innerHTML += `<div style="height:5em; cursor: pointer" class="div-hora hoverable" name="${i.toString()+j.toString()}" dia="${i}" hora="${j}" numerodia="${parseInt(diasSemana[i])}"><p class="separador-horas"><span>${j+":00"}</span></p></div> <br>`
 			}else{
 				//SI ES UNA HORA Y MEDIA
-            	div_dia[i].innerHTML += `<div style="height:5em; cursor: pointer" class="div-hora" name="${i.toString()+j.toString()}" dia="${i}" hora="${j}" numerodia="${parseInt(diasSemana[i])}"><p class="separador-horas"><span>${(j-0.5)+":30"}</span></p></div> <br>`				
+            	div_dia[i].innerHTML += `<div style="height:5em; cursor: pointer" class="div-hora hoverable" name="${i.toString()+j.toString()}" dia="${i}" hora="${j}" numerodia="${parseInt(diasSemana[i])}"><p class="separador-horas"><span>${(j-0.5)+":30"}</span></p></div> <br>`				
 			}
         }
         //main_aside.appendChild(div_dia[i]);
@@ -148,7 +152,7 @@ function dibujar_plantilla(fecha_a_dibujar){
 		div_hora[i].addEventListener('click',()=>{
 			console.log("click en el div " + i, div_hora[i]);
 			//console.log(div_hora[i].parentElement);
-			instancia_modal_crear_actividad.open();
+			//instancia_modal_crear_actividad.open();
 		});
         div_hora[i].addEventListener('mouseover',()=>{
             div_hora[i].style.opacity='1';
@@ -171,11 +175,12 @@ function dibujar_plantilla(fecha_a_dibujar){
 			if(div_hora[j].getAttribute("dia")==dia_actividad.getDay() && ((actividades_en_la_semana[i].hora_inicio<=div_hora[j].getAttribute("hora")) && (div_hora[j].getAttribute("hora")<=actividades_en_la_semana[i].hora_fin))){
 				console.log("Hora del div:", div_hora[j].getAttribute("hora"), "hora inicio actividad: ", actividades_en_la_semana[i].hora_inicio, "Hora fin actividad: ", actividades_en_la_semana[i].hora_fin);
 				if(!flag){
-					div_hora[j-1].style.backgroundColor="gray";
+					div_hora[j-1].style.backgroundColor=colores_actividades[i];
+					div_hora[j-1].style.opacity='1';
 					div_hora[j-1].innerText+=actividades_en_la_semana[i].informacion;
 					flag=true;
 				}
-				div_hora[j].style.backgroundColor="red";
+				div_hora[j].style.backgroundColor=colores_actividades[i];
 			}
 		}
 	}
@@ -258,8 +263,57 @@ function nombre_dia_semana(numero_dia){
     return dia;
 }
 
+//INCLUIR LA LISTA DE CALENDARIO EN LAS OPCIONES DE LAS ETIQUETAS SELECT PARA CREAR CALENDARIOS
+var select_calendario_crear_actividad = document.getElementById('select-calendario-crear-actividad');
+function agregar_calendarios_opciones_select(calendarios){
+	console.log("agregar opciones para select... Calendarios: ", calendarios, select_calendario_crear_actividad);
+	for(let i=0; i<calendarios.length; i++){
+		let option = document.createElement("option");
+		option.value = calendarios[i].id_calendario;
+		option.text = calendarios[i].nombre_calendario;
+		select_calendario_crear_actividad.add(option);
+	}
+	
+    //VOLVER A INSTANCIAR LAS ETIQUETAS SELECT
+    var elems = document.querySelectorAll('select');
+    var instances = M.FormSelect.init(elems);
+}
+
+//CREAR ACTIVIDAD
+var link_guardar_nueva_actividad = document.getElementById("link-guardar-nueva-actividad");
+var form_crear_actividad = document.getElementById("form-crear-actividad");
+const crear_actividad = () => {
+	console.log("crear actividad");
+	let form_nueva_actividad = new FormData(form_crear_actividad);
+	//COMPROBAR CAMPOS DE LAS ACTIVIDADES
+	console.log(form_nueva_actividad.get('detalle-actividad'), form_nueva_actividad.get('fecha-crear-actividad'), form_nueva_actividad.get('imagen-crear-actividad'), form_nueva_actividad.get('select-calendario-crear-actividad'));
+	if(!form_nueva_actividad.get('detalle-actividad') || !form_nueva_actividad.get('fecha-crear-actividad') || form_nueva_actividad.get('select-calendario-crear-actividad')==null){
+		alert("llene todos los campos");
+	}else{
+		console.log("hacer fetch aqui");
+	}
+	//console.log(rango_horas_crear_actividad.noUiSlider.get());
+	//console.log(form_nueva_actividad.get('detalle-actividad'), form_nueva_actividad.get('fecha-crear-actividad'), form_nueva_actividad.get('imagen-crear-actividad'), form_nueva_actividad.get('select-calendario-crear-actividad'));
+}
+link_guardar_nueva_actividad.onclick=crear_actividad;
+
+//COMPONENTE RANGO DE HORAS (noUiSlider)
+//VER: https://refreshless.com/nouislider/
+var rango_horas_crear_actividad = document.getElementById('rango-horas-crear-actividad');
+noUiSlider.create(rango_horas_crear_actividad, {
+    start: [4, 12],
+    connect: true,
+    step: 0.5,
+    tooltips: true,
+    range: {
+        'min': 0,
+        'max': 24
+    }
+});
+
 //ELEMENTOS INTERNOS DEL MODAL CREAR ACTIVIDAD
 var input_detalle_crear_actividad = document.getElementById("input-detalle-crear-actividad");
+var fecha_crear_actividad = document.getElementById("fecha-crear-actividad");
 
 //ACTIVAR EL MODAL PARA ACTIVIDADES (MATERIALIZE)
 var instancia_modal_crear_actividad;
@@ -268,6 +322,13 @@ document.addEventListener('DOMContentLoaded', function() {
    let options = {
    		onCloseEnd: ()=>{
 			input_detalle_crear_actividad.value=null;
+			fecha_crear_actividad.value=null;
+			rango_horas_crear_actividad.noUiSlider.reset();
+			
+			document.getElementById("option-defecto").selected = 'selected';
+		    //VOLVER A INSTANCIAR LAS ETIQUETAS SELECT
+			var elems = document.querySelectorAll('select');
+			var instances = M.FormSelect.init(elems);
    		}
 	}
    var modal_crear_actividad = document.querySelector('#modal-crear-actividad');
@@ -276,5 +337,17 @@ document.addEventListener('DOMContentLoaded', function() {
 	//INPUT TYPE RANGE
 	var rango_actividad = document.querySelector('#rango-actividad');
 	instancia_rango_actividad = M.Range.init(rango_actividad);
+	
+	//BOTON FIJO AGREGADO
+   	var elems = document.querySelectorAll('.fixed-action-btn');
+   	var instances = M.FloatingActionButton.init(elems, options);
+   	
+   	//TOOLTIPS BOTONES AGREGADO
+    var elems = document.querySelectorAll('.tooltipped');
+    var instances = M.Tooltip.init(elems, options);
+    
+    //ETIQUETA SELECT
+    var elems = document.querySelectorAll('select');
+    var instances = M.FormSelect.init(elems);
 
 });
