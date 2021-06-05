@@ -458,7 +458,7 @@ public class Database {
 	}
 	
 	//METODO PARA OBTENER LOS DATOS DE LAS ACTIVIDADES DE UN CALENDARIO
-	public ArrayList<String[]> dbObtenerActividadesCalendario( int id_calendario) {
+	public ArrayList<String[]> dbObtenerActividadesCalendario (int id_calendario) {
 		ArrayList<String[]> actividades = new ArrayList<>();
  		try {
 			this.stmt = this.conn.createStatement();
@@ -509,6 +509,47 @@ public class Database {
 			}
 		}
 		
+		return true;
+	}
+	
+	//METODO PARA MODIFICAR (EDITAR) UNA ACTIVIDAD
+	public boolean dbModificarActividad (int id_actividad, Object[] datos_modificacion) {
+		try {
+			this.pstmt = this.conn.prepareStatement("UPDATE actividades SET informacion=?, fecha=?, hora_inicio=?, hora_fin=?, ruta_imagen=? WHERE id_actividad="+id_actividad+";");
+			this.pstmt.setString(1, (String) datos_modificacion[0]);
+			this.pstmt.setString(2, (String) datos_modificacion[1]);
+			this.pstmt.setDouble(3, Double.parseDouble(datos_modificacion[2].toString()));
+			this.pstmt.setDouble(4, Double.parseDouble(datos_modificacion[3].toString()));
+			this.pstmt.setString(5, (String) datos_modificacion[4]);
+			this.pstmt.executeUpdate();
+		}catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}finally {
+			try {
+				this.pstmt.close();
+			} catch (SQLException e) {
+				//e.printStackTrace();
+			}
+		}
+		return true;
+	}
+	
+	//METODO PARA ELIMINAR UNA ACTIVIDAD DE LA BASE DE DATOS
+	public boolean dbEliminarActividad (int id_actividad) {
+		try {
+			this.stmt = this.conn.createStatement();
+			this.stmt.executeUpdate("DELETE FROM actividades WHERE id_actividad="+id_actividad);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}finally {
+			try {
+				this.stmt.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 		return true;
 	}
 	

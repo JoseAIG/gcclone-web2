@@ -269,11 +269,21 @@ function dibujar_plantilla(fecha_a_dibujar){
 				//console.log("Hora del div:", div_hora[j].getAttribute("hora"), "hora inicio actividad: ", actividades_en_la_semana[i].hora_inicio, "Hora fin actividad: ", actividades_en_la_semana[i].hora_fin);
 				if(!flag){
 					//ESTE FLAG ES PARA REALIZAR EL ANIADIDO ADICIONAL DE DISENIO AL PRIMER DIV DE LA ACTIVIDAD
+					
+					//SI LA ACTIVIDAD COMIENZA EN UNA MEDIA HORA AUMENTAR EN UNA UNIDAD EL CONTEO INICIAL PARA EL DIBUJADO DE LA ACTIVIDAD EN PLANTILLA
+					if(actividades_en_la_semana[i].hora_inicio%1!=0){
+						j++;
+					}
+					
+					//INCLUIR EL DISENIO DEL DIV PRINCIPAL DE LA ACTIVIDAD
 					//div_hora[j].style.backgroundColor=colores_actividades[i];
 					div_hora[j].style.opacity='1';
 					div_hora[j].innerHTML+=actividades_en_la_semana[i].informacion;					
 			        
+			        //CONFIGURAR EL EVENTO PARA EDITAR ACTIVIDAD EN EL PRIMER DIV DE LA ACTIVIDAD
 					div_hora[j].addEventListener('click',()=>{
+						//
+						id_actividad_editar = div_hora[j].getAttribute("id-actividad");
 						//COLOCAR LOS DATOS DE LA ACTIVIDAD EN LOS CAMPOS DEL MODAL EDITAR ACTIVIDAD
 						input_detalle_editar_actividad.value = actividades_en_la_semana[i].informacion;
 						fecha_editar_actividad.value = actividades_en_la_semana[i].fecha;
@@ -291,6 +301,7 @@ function dibujar_plantilla(fecha_a_dibujar){
 					});*/
 				}
 				
+				//AGREGAR COMO ATRIBUTO EL ID DE LA ACTIVIDAD AL DIV Y PINTARLO DEL COLOR DEL CALENDARIO PERTINENTE
 				div_hora[j].setAttribute("id-actividad", actividades_en_la_semana[i].id_actividad);
 				div_hora[j].style.backgroundColor=colores_actividades[i];
 				
@@ -436,7 +447,76 @@ const crear_actividad = () => {
 }
 link_guardar_nueva_actividad.onclick=crear_actividad;
 
-//COMPONENTES RANGO DE HORAS (noUiSlider)
+//GUARDAR MODIFICACION ACTIVIDAD
+var id_actividad_editar;
+var link_guardar_editar_actividad = document.getElementById("link-guardar-editar-actividad");
+var form_editar_actividad = document.getElementById("form-editar-actividad");
+const modificar_actividad = () => {
+	console.log("modificar actividad, fetch aqui");
+	var datos_form_editar_actividad = new FormData(form_editar_actividad);
+	datos_form_editar_actividad.append("hora-inicio", rango_horas_editar_actividad.noUiSlider.get()[0]);
+	datos_form_editar_actividad.append("hora-fin", rango_horas_editar_actividad.noUiSlider.get()[1]);
+	datos_form_editar_actividad.append("id-actividad", id_actividad_editar);
+	
+	//CONVERTIR LOS DATOS DE ESE FORM DATA A JSON
+	var obj = {};
+	datos_form_editar_actividad.forEach(function(valor, llave){
+	    obj[llave] = valor;
+	});
+	var json = JSON.stringify(obj);
+	
+    fetch('Actividad', {
+    	method: 'PUT',
+    	body: json,
+    	headers: new Headers({'Content-Type': 'application/json'}),
+		})
+    //RESPUESTA CRUDA DEL SERVER
+    .then(response => response.json())
+    //RESPUESTA CON LOS RESULTADOS DEL SERVIDOR
+    .then(data => {
+        console.log('Respuesta del servidor:', data);
+		alert(data.resultado);
+		if(data.status==200){
+			window.open("Dashboard","_self");
+		}
+    })	    
+	//CATCH PARA OBTENER DETALLER POR SI ORURRE UN ERROR
+    .catch((error) => {
+        console.error('Error:', error);
+    });
+}
+link_guardar_editar_actividad.onclick=modificar_actividad;
+
+//ELIMINAR UNA ACTIVIDAD
+var link_eliminar_actividad = document.getElementById("link-eliminar-actividad");
+const eliminar_actividad = () =>{
+	console.log("eliminar la actividad: " + id_actividad_editar);
+			
+	let peticion = {"id-actividad":id_actividad_editar};
+		
+    fetch('Actividad', {
+    	method: 'DELETE',
+    	body: JSON.stringify(peticion),
+    	headers: new Headers({'Content-Type': 'application/json'}),
+		})
+    //RESPUESTA CRUDA DEL SERVER
+    .then(response => response.json())
+    //RESPUESTA CON LOS RESULTADOS DEL SERVIDOR
+    .then(data => {
+        console.log('Respuesta del servidor:', data);
+		alert(data.resultado);
+		if(data.status==200){
+			window.open("Dashboard","_self");
+		}
+    })	    
+	//CATCH PARA OBTENER DETALLER POR SI ORURRE UN ERROR
+    .catch((error) => {
+        console.error('Error:', error);
+    });
+}
+link_eliminar_actividad.onclick = eliminar_actividad;
+
+//COMPONENTES RANGO DE HORAS (noUiSlider) PARA LOS MODAL CREAR ACTIVIDAD Y MODIFICAR ACTIVIDAD
 //VER: https://refreshless.com/nouislider/
 var rango_horas_crear_actividad = document.getElementById('rango-horas-crear-actividad');
 noUiSlider.create(rango_horas_crear_actividad, {

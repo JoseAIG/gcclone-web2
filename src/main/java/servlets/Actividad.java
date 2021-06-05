@@ -40,39 +40,27 @@ public class Actividad extends HttpServlet {
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		System.out.println("ACTIVIDAD - POST");
-		
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {		
 		response.setContentType("application/json");
 		PrintWriter out = response.getWriter();
-		
-//		System.out.println(request.getParameter("select-calendario-crear-actividad"));
-//		System.out.println(request.getParameter("detalle-actividad"));
-//		System.out.println(request.getParameter("fecha-crear-actividad"));
-//		System.out.println(request.getParameter("hora-inicio"));
-//		System.out.println(request.getParameter("hora-fin"));
-//		System.out.println(request.getParameter("imagen-crear-actividad"));
-		
-//		Object[] datos_nueva_actividad = {
-//			request.getParameter("select-calendario-crear-actividad"), 
-//			request.getParameter("detalle-actividad"),
-//			request.getParameter("fecha-crear-actividad"),
-//			request.getParameter("hora-inicio"),
-//			request.getParameter("hora-fin"),
-//			"wip.png"
-//		};
-//		Database DB = Database.getInstances();
-//		if(DB.dbCrearActividad(datos_nueva_actividad)) {
-//			out.println("{\"resultado\": \"Actividad creada satisfactoriamente\", \"status\":"+200+"}");
-//		}else {
-//			out.println("{\"resultado\": \"No se pudo crear la actividad\", \"status\":"+500+"}");
-//		}
-		
 		out.println(ControladorActividad.crearActividad(request));
 		out.close();
-
-
-		
+	}
+	
+	@Override
+	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		response.setContentType("application/json");
+		PrintWriter out = response.getWriter();
+		out.println(ControladorActividad.modificarActividad(request));
+		out.close();
+	}
+	
+	@Override
+	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		response.setContentType("application/json");
+		PrintWriter out = response.getWriter();
+		out.println(ControladorActividad.eliminarActividad(request));
+		out.close();
 	}
 
 }
