@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import controllers.ControladorActividad;
 import helpers.Database;
 
 /**
@@ -51,20 +52,24 @@ public class Actividad extends HttpServlet {
 //		System.out.println(request.getParameter("hora-inicio"));
 //		System.out.println(request.getParameter("hora-fin"));
 //		System.out.println(request.getParameter("imagen-crear-actividad"));
-		Object[] datos_nueva_actividad = {
-			request.getParameter("select-calendario-crear-actividad"), 
-			request.getParameter("detalle-actividad"),
-			request.getParameter("fecha-crear-actividad"),
-			request.getParameter("hora-inicio"),
-			request.getParameter("hora-fin"),
-			"wip.png"
-		};
-		Database DB = Database.getInstances();
-		if(DB.dbCrearActividad(datos_nueva_actividad)) {
-			out.println("{\"resultado\": \"Actividad creada satisfactoriamente\", \"status\":"+200+"}");
-		}else {
-			out.println("{\"resultado\": \"No se pudo crear la actividad\", \"status\":"+500+"}");
-		}
+		
+//		Object[] datos_nueva_actividad = {
+//			request.getParameter("select-calendario-crear-actividad"), 
+//			request.getParameter("detalle-actividad"),
+//			request.getParameter("fecha-crear-actividad"),
+//			request.getParameter("hora-inicio"),
+//			request.getParameter("hora-fin"),
+//			"wip.png"
+//		};
+//		Database DB = Database.getInstances();
+//		if(DB.dbCrearActividad(datos_nueva_actividad)) {
+//			out.println("{\"resultado\": \"Actividad creada satisfactoriamente\", \"status\":"+200+"}");
+//		}else {
+//			out.println("{\"resultado\": \"No se pudo crear la actividad\", \"status\":"+500+"}");
+//		}
+		
+		out.println(ControladorActividad.crearActividad(request));
+		out.close();
 
 
 		

@@ -218,6 +218,59 @@
 		</div>
 		<!-- FIN MODAL CREAR ACTIVIDAD -->
 		
+		<!-- MODAL EDITAR ACTIVIDAD -->
+		<div id="modal-editar-actividad" class="modal hoverable">
+		  <div class="modal-content">
+		    <h4 class="center">Editar Actividad</h4>
+   		        <div class="row">
+		        	<form class="col s12" id="form-editar-actividad">
+		        		<div class="row" id="contenedor-input-editar-actividad">
+		        			<div class="input-field col s6 offset-s3">
+       					   		<label for="input-detalle-editar-actividad">Detalle:</label>
+       			         		<input id="input-detalle-editar-actividad" type="text" class="validate selected" name="detalle-editar-actividad" autocomplete="off" placeholder="Entrenar">
+		        			</div>
+		        			<div class="col s6 offset-s3">
+		        				<label for="fecha-editar-actividad">Fecha de la actividad:</label>
+		        				<input type="date" id="fecha-editar-actividad" name="fecha-editar-actividad">
+		        			</div>
+		        			<div class="col s6 offset-s3">
+		        				<label for="rango-horas-editar-actividad">Rango de horas:</label>
+   								<div id="rango-horas-editar-actividad" style="margin-top: 3.5em; margin-bottom: 1.5em"></div>
+		        			</div>
+		        			<div class="col s6 offset-s3">
+		        				<label>Imagen actividad (opcional):</label>
+		        				<div class="file-field input-field">
+	        				      	<div class="btn">
+										<span>Imagen</span>
+			        					<input type="file" name="imagen-editar-actividad" id="imagen-editar-actividad">
+									</div>
+									<div class="file-path-wrapper">
+							  			<input class="file-path validate" type="text">
+									</div>
+		        				</div>
+		        			</div>
+<!-- 		        			<div class="col s6 offset-s3">
+		        			   	<label for="select-calendario-editar-actividad">Calendario:</label>
+		        				<select name="select-calendario-editar-actividad" id="select-calendario-editar-actividad">
+		        					<option value="" disabled selected id="option-defecto">Seleccione un calendario</option>
+		        				</select>
+		        			</div> -->
+		        		</div>
+		        	</form>
+		        	<div class="col s12 center">
+		        		<a id="link-guardar-editar-actividad" class="waves-effect waves-light btn"><i class="material-icons left">save</i>Guardar</a>
+		        	</div>
+		        	<div class="col s12 center" style="margin-top: 1em">
+		        		<a id="link-eliminar-actividad" class="waves-effect waves-light btn red"><i class="material-icons left">delete</i>Eliminar actividad</a>
+		        	</div>
+		        </div>
+		  </div>
+		  <div class="modal-footer">
+		    <a class="modal-close waves-effect waves-green btn-flat">Cerrar</a>
+		  </div>
+		</div>
+		<!-- FIN MODAL EDITAR ACTIVIDAD -->
+		
 		<!-- FOOTER -->
 <!--         <footer class="page-footer">
           <div class="container">
