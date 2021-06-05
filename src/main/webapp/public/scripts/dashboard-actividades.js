@@ -136,10 +136,10 @@ function dibujar_plantilla(fecha_a_dibujar){
         for(let j=0; j<24; j=(j+0.5)){
 			if(j%1==0){
 				//SI ES UNA HORA EN PUNTO
-	            div_dia[i].innerHTML += `<div style="height:5em; cursor: pointer" class="div-hora hoverable" name="${i.toString()+j.toString()}" dia="${i}" hora="${j}" numerodia="${parseInt(diasSemana[i])}"><p class="separador-horas"><span>${j+":00"}</span></p></div> <br>`
+	            div_dia[i].innerHTML += `<div style="height:5em; cursor: pointer" class="div-hora hoverable" dia=${i} hora=${j} numerodia="${parseInt(diasSemana[i])}"><p class="separador-horas"><span>${j+":00"}</span></p></div> <br>`
 			}else{
 				//SI ES UNA HORA Y MEDIA
-            	div_dia[i].innerHTML += `<div style="height:5em; cursor: pointer" class="div-hora hoverable" name="${i.toString()+j.toString()}" dia="${i}" hora="${j}" numerodia="${parseInt(diasSemana[i])}"><p class="separador-horas"><span>${(j-0.5)+":30"}</span></p></div> <br>`				
+            	div_dia[i].innerHTML += `<div style="height:5em; cursor: pointer" class="div-hora hoverable" dia=${i} hora=${j} numerodia="${parseInt(diasSemana[i])}"><p class="separador-horas"><span>${(j-0.5)+":30"}</span></p></div> <br>`				
 			}
         }
         //main_aside.appendChild(div_dia[i]);
@@ -163,27 +163,116 @@ function dibujar_plantilla(fecha_a_dibujar){
 	}
 	
 	//RECORRER LAS ACTIVIDADES DE LA SEMANA
-	for(let i=0; i<actividades_en_la_semana.length; i++){
+/*	for(let i=0; i<actividades_en_la_semana.length; i++){
+		console.log("recorrer actividad: " + actividades_en_la_semana[i].informacion);
 		let dia_actividad = new Date(actividades_en_la_semana[i].fecha);
 		dia_actividad.setDate(dia_actividad.getDate()+1);
-		console.log(dia_actividad);
-		console.log(dia_actividad.getDay());
+		console.log("longitud div hora: " + div_hora.length);
+		console.log("Dia de la actividad: "+ actividades_en_la_semana[i].informacion + dia_actividad);
+		console.log("Numero de dia de la actividad: " + dia_actividad.getDay());
 		//RECORRER LOS BLOQUES DE HORAS Y COMPARAR CON LOS ATRIBUTOS DE LAS ACIVIDADES PARA PINTARLAS
 		let flag = false;
 		for(let j=0; j<div_hora.length; j++){
 			//console.log("Hora del div:", div_hora[j].getAttribute("hora"), "hora inicio actividad: ", actividades_en_la_semana[i].hora_inicio, "Hora fin actividad: ", actividades_en_la_semana[i].hora_fin);
-			if(div_hora[j].getAttribute("dia")==dia_actividad.getDay() && ((actividades_en_la_semana[i].hora_inicio<=div_hora[j].getAttribute("hora")) && (div_hora[j].getAttribute("hora")<=actividades_en_la_semana[i].hora_fin))){
-				console.log("Hora del div:", div_hora[j].getAttribute("hora"), "hora inicio actividad: ", actividades_en_la_semana[i].hora_inicio, "Hora fin actividad: ", actividades_en_la_semana[i].hora_fin);
+			//if(div_hora[j].getAttribute("dia")==dia_actividad.getDay() && ((actividades_en_la_semana[i].hora_inicio<=div_hora[j].getAttribute("hora")) && (div_hora[j].getAttribute("hora")<=actividades_en_la_semana[i].hora_fin))){
+			if(div_hora[j].getAttribute("dia")==dia_actividad.getDay()){
+				if((actividades_en_la_semana[i].hora_inicio<=div_hora[j].getAttribute("hora")) && (div_hora[j].getAttribute("hora")<=actividades_en_la_semana[i].hora_fin)){
+					//console.log("Hora del div:", div_hora[j].getAttribute("hora"), "hora inicio actividad: ", actividades_en_la_semana[i].hora_inicio, "Hora fin actividad: ", actividades_en_la_semana[i].hora_fin);
+					if(!flag){
+						div_hora[j-1].style.backgroundColor=colores_actividades[i];
+						div_hora[j-1].style.opacity='1';
+						div_hora[j-1].innerText+=actividades_en_la_semana[i].informacion;
+						flag=true;
+					}
+					div_hora[j].style.backgroundColor=colores_actividades[i];				
+				}
+				else{
+				if(div_hora[j].getAttribute("hora")==10 && div_hora[j].getAttribute("dia")==3 && dia_actividad.getDay()==3){
+					console.log("aqui 1");
+					console.log(actividades_en_la_semana[i]);
+				}
+			}
+			}else{
+				if(div_hora[j].getAttribute("hora")==10 && div_hora[j].getAttribute("dia")==3 && dia_actividad.getDay()==3){
+					console.log("aqui 2");
+				}
+			}
+		}
+	}*/
+	
+	//RECORRER LOS DIVS Y ACTIVIDADES DE LA SEMANA
+/*	for(let i=0; i<actividades_en_la_semana.length; i++){
+	
+		let dia_actividad = new Date(actividades_en_la_semana[i].fecha);
+		dia_actividad.setDate(dia_actividad.getDate()+1);
+		
+		for(let j=0; j<div_hora.length; j++){
+			
+			//DATOS DE LA ACTIVIDAD
+			let dia_semana_actividad = dia_actividad.getDay();
+			let hora_inicio_actividad = actividades_en_la_semana[i].hora_inicio;
+			let hora_fin_actividad = actividades_en_la_semana[i].hora_fin;
+			//console.log("DATOS DE LA ACTIVIDAD: ", "Dia semana act: " + dia_semana_actividad, "Hora inicio act: " + hora_inicio_actividad, "Hora fin act: " + hora_fin_actividad);
+			
+			//DATOS DEL DIV
+			let hora_del_div = div_hora[j].getAttribute("hora");
+			let dia_del_div = div_hora[j].getAttribute("dia");
+			//console.log("DATOS DEL DIV: ", "Dia del div: " + dia_del_div, "Hora del div: " + hora_del_div)
+			
+			if(dia_semana_actividad == dia_del_div){
+				//console.log("Evento este dia");
+				//console.log(hora_del_div);
+				//console.log("Hora del div: " + hora_del_div, "Hora inicio act: " + hora_inicio_actividad, "Hora fin act: " + hora_fin_actividad);
+				if(hora_inicio_actividad<=hora_del_div && hora_del_div<=hora_fin_actividad ){
+					console.log("pintar");
+					div_hora[j].style.backgroundColor="red";
+				}
+			}
+			
+		}
+	}*/
+	
+	//PINTADO MANUAL DIV HORA 10 (FUNCIONO)
+/*	for(let a=0; a<actividades_en_la_semana.length; a++){
+	
+		let dia_actividad = new Date(actividades_en_la_semana[a].fecha);
+		dia_actividad.setDate(dia_actividad.getDate()+1);
+	
+		for(let i=0; i<div_hora.length; i++){
+			if((parseInt(actividades_en_la_semana[a].hora_inicio))<=(parseInt(div_hora[i].getAttribute("hora"))) && (parseInt(div_hora[i].getAttribute("hora")))<=(parseInt(actividades_en_la_semana[a].hora_fin)) && div_hora[i].getAttribute("dia") == dia_actividad.getDay()){
+				console.log("el 10");
+				div_hora[i].style.backgroundColor="red";
+			}
+		}	
+	}*/
+	
+	//RECORRIDO FINAL DE LAS ACTIVIDADES POR LOS DIVS DE LAS HORAS
+	for(let i=0; i<actividades_en_la_semana.length; i++){
+		
+		let dia_actividad = new Date(actividades_en_la_semana[i].fecha);
+		dia_actividad.setDate(dia_actividad.getDate()+1);
+		
+		//RECORRER LOS BLOQUES DE HORAS Y COMPARAR CON LOS ATRIBUTOS DE LAS ACIVIDADES PARA PINTARLAS
+		let flag = false;
+		for(let j=0; j<div_hora.length; j++){
+			if((parseInt(actividades_en_la_semana[i].hora_inicio))<=(parseInt(div_hora[j].getAttribute("hora"))) && (parseInt(div_hora[j].getAttribute("hora")))<=(parseInt(actividades_en_la_semana[i].hora_fin-0.5)) && div_hora[j].getAttribute("dia") == dia_actividad.getDay()){
+				console.log("Hora inicio actividad: " + parseInt(actividades_en_la_semana[i].hora_inicio) , "Hora del div" + parseInt(div_hora[j].getAttribute("hora")), "Hora fin actividad: " + parseInt(actividades_en_la_semana[i].hora_fin));
+				//console.log("Hora del div:", div_hora[j].getAttribute("hora"), "hora inicio actividad: ", actividades_en_la_semana[i].hora_inicio, "Hora fin actividad: ", actividades_en_la_semana[i].hora_fin);
 				if(!flag){
-					div_hora[j-1].style.backgroundColor=colores_actividades[i];
-					div_hora[j-1].style.opacity='1';
-					div_hora[j-1].innerText+=actividades_en_la_semana[i].informacion;
+					div_hora[j].style.backgroundColor=colores_actividades[i];
+					div_hora[j].style.opacity='1';
+					div_hora[j].innerHTML+=actividades_en_la_semana[i].informacion;
 					flag=true;
+				}
+				if(actividades_en_la_semana[i].hora_fin%1==0 && div_hora[j].getAttribute("hora")!=23.5){
+					div_hora[j+1].style.backgroundColor=colores_actividades[i];
 				}
 				div_hora[j].style.backgroundColor=colores_actividades[i];
 			}
+			
 		}
 	}
+	
 }
 
 function obtenerInicioSemana (fecha) {
@@ -284,15 +373,38 @@ var link_guardar_nueva_actividad = document.getElementById("link-guardar-nueva-a
 var form_crear_actividad = document.getElementById("form-crear-actividad");
 const crear_actividad = () => {
 	console.log("crear actividad");
-	let form_nueva_actividad = new FormData(form_crear_actividad);
+	var form_nueva_actividad = new FormData(form_crear_actividad);
+	//AGREGAR LAS HORAS DE INICIO Y FIN AL FORM DATA
+	form_nueva_actividad.append("hora-inicio", rango_horas_crear_actividad.noUiSlider.get()[0]);
+	form_nueva_actividad.append("hora-fin", rango_horas_crear_actividad.noUiSlider.get()[1]);
 	//COMPROBAR CAMPOS DE LAS ACTIVIDADES
-	console.log(form_nueva_actividad.get('detalle-actividad'), form_nueva_actividad.get('fecha-crear-actividad'), form_nueva_actividad.get('imagen-crear-actividad'), form_nueva_actividad.get('select-calendario-crear-actividad'));
+	console.log(form_nueva_actividad.get('detalle-actividad'), form_nueva_actividad.get('fecha-crear-actividad'), form_nueva_actividad.get('imagen-crear-actividad'), form_nueva_actividad.get('select-calendario-crear-actividad'), form_nueva_actividad.get('hora-inicio'), form_nueva_actividad.get('hora-fin'));
 	if(!form_nueva_actividad.get('detalle-actividad') || !form_nueva_actividad.get('fecha-crear-actividad') || form_nueva_actividad.get('select-calendario-crear-actividad')==null){
 		alert("llene todos los campos");
 	}else{
 		console.log("hacer fetch aqui");
+	    fetch('Actividad', {
+	    	method: 'POST',
+	    	body: form_nueva_actividad,
+			mode: "no-cors",
+	    	headers: new Headers({'Content-Type': 'application/json'}),
+			})
+	    //RESPUESTA CRUDA DEL SERVER
+	    .then(response => response.json())
+	    //RESPUESTA CON LOS RESULTADOS DEL SERVIDOR
+	    .then(data => {
+	        console.log('Respuesta del servidor:', data.resultado);
+			alert(data.resultado);
+			if(data.status==200){
+				window.open("Dashboard","_self");
+			}
+	    })	    
+		//CATCH PARA OBTENER DETALLER POR SI ORURRE UN ERROR
+	    .catch((error) => {
+	        console.error('Error:', error);
+	    });
 	}
-	//console.log(rango_horas_crear_actividad.noUiSlider.get());
+	//console.log(rango_horas_crear_actividad.noUiSlider.get()[0], rango_horas_crear_actividad.noUiSlider.get()[1]);
 	//console.log(form_nueva_actividad.get('detalle-actividad'), form_nueva_actividad.get('fecha-crear-actividad'), form_nueva_actividad.get('imagen-crear-actividad'), form_nueva_actividad.get('select-calendario-crear-actividad'));
 }
 link_guardar_nueva_actividad.onclick=crear_actividad;

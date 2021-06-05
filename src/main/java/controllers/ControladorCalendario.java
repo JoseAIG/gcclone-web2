@@ -111,8 +111,7 @@ public class ControladorCalendario {
 				datos_actividad.put("fecha", actividad[3]);
 				datos_actividad.put("hora_inicio", actividad[4]);
 				datos_actividad.put("hora_fin", actividad[5]);
-				datos_actividad.put("duracion", actividad[6]);
-				datos_actividad.put("ruta_imagen", actividad[7]);
+				datos_actividad.put("ruta_imagen", actividad[6]);
 				//INSERTAR DATOS DE LA ACTIVIDAD EN EL ARREGLO DE ACTIVIDADES
 				actividades.put(datos_actividad);
 			}

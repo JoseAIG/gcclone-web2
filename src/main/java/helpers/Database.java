@@ -12,15 +12,15 @@ public class Database {
 	private ResultSet rs;
 	private String driverDB = "org.postgresql.Driver";
 	//LOCAL
-//	private String dbName = "gcclone";
-//	private String urlDB = "jdbc:postgresql://localhost:5432/" + this.dbName;
-//	private String userDB = "postgres";
-//	private String passDB = "masterkey";
+	private String dbName = "gcclone";
+	private String urlDB = "jdbc:postgresql://localhost:5432/" + this.dbName;
+	private String userDB = "postgres";
+	private String passDB = "masterkey";
 	//REMOTO EN HEROKU
-	private String dbName = "dag91rnv1gm978";
-	private String urlDB = "jdbc:postgresql://ec2-3-215-57-87.compute-1.amazonaws.com:5432/" + this.dbName;
-	private String userDB = "dtqgnhgnhrsctt";
-	private String passDB = "12afd4794a6db97bb6cd443726c7f81888b8cfefc66c053d6174d472329b4c1c";
+//	private String dbName = "dag91rnv1gm978";
+//	private String urlDB = "jdbc:postgresql://ec2-3-215-57-87.compute-1.amazonaws.com:5432/" + this.dbName;
+//	private String userDB = "dtqgnhgnhrsctt";
+//	private String passDB = "12afd4794a6db97bb6cd443726c7f81888b8cfefc66c053d6174d472329b4c1c";
 	
 	//CONSTRUCTOR
 	private Database(){
@@ -471,8 +471,7 @@ public class Database {
 				datos_actividad[3] = rs.getString("fecha");
 				datos_actividad[4] = rs.getString("hora_inicio");
 				datos_actividad[5] = rs.getString("hora_fin");
-				datos_actividad[6] = rs.getString("duracion");
-				datos_actividad[7] = rs.getString("ruta_imagen");
+				datos_actividad[6] = rs.getString("ruta_imagen");
 				actividades.add(datos_actividad);
 			}
 		} catch (Exception e) {
@@ -486,6 +485,31 @@ public class Database {
 			}
 		}
 		return actividades;
+	}
+	
+	//METODO PARA CREAR UNA NUEVA ACTIVIDAD
+	public boolean dbCrearActividad (Object[] datos_actividad) {
+		try {
+			this.pstmt = this.conn.prepareStatement("INSERT INTO actividades (id_calendario, informacion, fecha, hora_inicio, hora_fin, ruta_imagen) VALUES (?,?,?,?,?,?)");
+			this.pstmt.setInt(1,  Integer.parseInt(datos_actividad[0].toString()));
+			this.pstmt.setString(2, (String) datos_actividad[1]);
+			this.pstmt.setString(3, (String) datos_actividad[2]);
+			this.pstmt.setDouble(4, Double.parseDouble(datos_actividad[3].toString()));
+			this.pstmt.setDouble(5, Double.parseDouble(datos_actividad[4].toString()));
+			this.pstmt.setString(6, (String) datos_actividad[5]);
+			this.pstmt.executeUpdate();
+		}catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}finally {
+			try {
+				this.pstmt.close();
+			} catch (SQLException e) {
+				//e.printStackTrace();
+			}
+		}
+		
+		return true;
 	}
 	
 	
