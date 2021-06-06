@@ -44,21 +44,22 @@ public class ControladorActividad {
 						
 			//OBTENER LAS PARTES DEL ARCHIVO IMAGEN DEL CLIENTE
 			Part part_imagen = request.getPart("imagen-crear-actividad");
-			System.out.println("Nombre del archivo: " + part_imagen.getSubmittedFileName());
-			
+			//System.out.println("Nombre del archivo: " + part_imagen.getSubmittedFileName());
+			System.out.println("Nombre del archivo: " + getSubmittedFileName(part_imagen));
+
 			String ruta_almacenar_db;
-			if(part_imagen.getSubmittedFileName().equals("")) {
+			if(getSubmittedFileName(part_imagen).equals("")) {
 				//SI NO INGRESO UNA IMAGEN SE ALMACENA NULL EN EL CAMPO RUTA EN LA BASE DE DATOS
 				System.out.println("almacenar null");
 				ruta_almacenar_db = null;
 			}else {
 				//SI EL ARCHIVO NO ES NULO, ALMACENARLO EN "activity-images/test"
-				String ruta_guardar_imagen = ruta_activity_images+"\\test\\"+part_imagen.getSubmittedFileName();
+				String ruta_guardar_imagen = ruta_activity_images+"\\test\\"+getSubmittedFileName(part_imagen);
 				File archivo = new File(ruta_guardar_imagen);
 				System.out.println(archivo.getAbsolutePath());
 				part_imagen.write(ruta_guardar_imagen);
 				//SE COLOCA LA RUTA DEL ARCHIVO EN LA BASE DE DATOS
-				ruta_almacenar_db = "public/activity-images/test/"+part_imagen.getSubmittedFileName();
+				ruta_almacenar_db = "public/activity-images/test/"+getSubmittedFileName(part_imagen);
 			}
 //			String ruta_guardar_imagen = ruta_activity_images+"\\test\\"+part_imagen.getSubmittedFileName();
 //			File archivo = new File(ruta_guardar_imagen);
@@ -136,6 +137,16 @@ public class ControladorActividad {
 		} catch (Exception e) {
 			return "{\"resultado\": \"Error al eliminar actividad\", \"status\":"+500+"}";
 		}
+	}
+	
+	private static String getSubmittedFileName(Part part) {
+	    for (String cd : part.getHeader("content-disposition").split(";")) {
+	        if (cd.trim().startsWith("filename")) {
+	            String fileName = cd.substring(cd.indexOf('=') + 1).trim().replace("\"", "");
+	            return fileName.substring(fileName.lastIndexOf('/') + 1).substring(fileName.lastIndexOf('\\') + 1); // MSIE fix.
+	        }
+	    }
+	    return null;
 	}
 
 }
