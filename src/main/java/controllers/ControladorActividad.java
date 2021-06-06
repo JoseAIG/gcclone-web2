@@ -38,9 +38,9 @@ public class ControladorActividad {
 			//System.out.println("archprueba: " + archprueba.exists());
 			
 			//PROPERTIES
-			Properties prop = new Properties();
-			prop.load(ControladorActividad.class.getResourceAsStream("/properties/db.properties"));
-			System.out.println(prop.getProperty("prueba"));
+//			Properties prop = new Properties();
+//			prop.load(ControladorActividad.class.getResourceAsStream("/properties/db.propertiess"));
+//			System.out.println(prop.getProperty("prueba"));
 						
 			//OBTENER LAS PARTES DEL ARCHIVO IMAGEN DEL CLIENTE
 			Part part_imagen = request.getPart("imagen-crear-actividad");
