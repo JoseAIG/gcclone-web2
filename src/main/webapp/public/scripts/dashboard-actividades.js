@@ -278,7 +278,11 @@ function dibujar_plantilla(fecha_a_dibujar){
 					//INCLUIR EL DISENIO DEL DIV PRINCIPAL DE LA ACTIVIDAD
 					//div_hora[j].style.backgroundColor=colores_actividades[i];
 					div_hora[j].style.opacity='1';
-					div_hora[j].innerHTML+=actividades_en_la_semana[i].informacion;					
+					div_hora[j].innerHTML+=actividades_en_la_semana[i].informacion;	
+					//SI LA ACTIVIDAD TIENE UNA IMAGEN, MOSTRARLA
+					if(actividades_en_la_semana[i].ruta_imagen){
+			        	div_hora[j].innerHTML+=`<br><img alt="img" src="${actividades_en_la_semana[i].ruta_imagen}" style="width:3em">`;					
+					}			
 			        
 			        //CONFIGURAR EL EVENTO PARA EDITAR ACTIVIDAD EN EL PRIMER DIV DE LA ACTIVIDAD
 					div_hora[j].addEventListener('click',()=>{
