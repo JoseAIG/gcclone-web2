@@ -2,6 +2,7 @@ package helpers;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Properties;
 
 public class Database {
 
@@ -11,24 +12,41 @@ public class Database {
 	private PreparedStatement pstmt;
 	private ResultSet rs;
 	private String driverDB = "org.postgresql.Driver";
+	
+	private Properties properties = new Properties();
+	
 	//LOCAL
-	private String dbName = "gcclone";
-	private String urlDB = "jdbc:postgresql://localhost:5432/" + this.dbName;
-	private String userDB = "postgres";
-	private String passDB = "masterkey";
+//	private String dbName = "gcclone";
+//	private String urlDB = "jdbc:postgresql://localhost:5432/" + this.dbName;
+//	private String userDB = "postgres";
+//	private String passDB = "masterkey";
 	//REMOTO EN HEROKU
 //	private String dbName = "dag91rnv1gm978";
 //	private String urlDB = "jdbc:postgresql://ec2-3-215-57-87.compute-1.amazonaws.com:5432/" + this.dbName;
 //	private String userDB = "dtqgnhgnhrsctt";
 //	private String passDB = "12afd4794a6db97bb6cd443726c7f81888b8cfefc66c053d6174d472329b4c1c";
 	
+	private String dbName;
+	private String urlDB;
+	private String userDB;
+	private String passDB;
+	
 	//CONSTRUCTOR
 	private Database(){
 		try {
+			//LEER PROPIEDADES
+			properties.load(this.getClass().getResourceAsStream("/properties/db.properties"));
+			
+			dbName = properties.getProperty("dbName");
+			urlDB = properties.getProperty("urlDB") + this.dbName;
+			userDB = properties.getProperty("userDB");
+			passDB = properties.getProperty("passDB");
+			
+			//ESTABLECER CONEXION
 			Class.forName(driverDB);
 			this.conn = DriverManager.getConnection(urlDB, userDB, passDB);
 			System.out.println("Conexion establecida");
-		} catch (ClassNotFoundException | SQLException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
