@@ -37,25 +37,18 @@ public class Database {
 		try {
 			//CLASE PROPERTIESREADER
 			PR = PropertiesReader.getInstance();
-			
-			//LEER PROPIEDADES
-			//properties.load(this.getClass().getResourceAsStream("/db.properties"));
-			
-//			dbName = properties.getProperty("dbName");
-//			urlDB = properties.getProperty("urlDB") + this.dbName;
-//			userDB = properties.getProperty("userDB");
-//			passDB = properties.getProperty("passDB");
-			
-//			dbName = properties.getProperty("dbName_local");
-//			urlDB = properties.getProperty("urlDB_local") + this.dbName;
-//			userDB = properties.getProperty("userDB_local");
-//			passDB = properties.getProperty("passDB_local");
-			
+
+			//REMOTO
+			dbName = PR.obtenerPropiedad("dbName");
+			urlDB = PR.obtenerPropiedad("urlDB") + this.dbName;
+			userDB = PR.obtenerPropiedad("userDB");
+			passDB = PR.obtenerPropiedad("passDB");
+						
 			//LOCAL
-			dbName = PR.obtenerPropiedad("localDBName");
-			urlDB = PR.obtenerPropiedad("localUrlDB") + this.dbName;
-			userDB = PR.obtenerPropiedad("localUserDB");
-			passDB = PR.obtenerPropiedad("localPassDB");
+//			dbName = PR.obtenerPropiedad("localDBName");
+//			urlDB = PR.obtenerPropiedad("localUrlDB") + this.dbName;
+//			userDB = PR.obtenerPropiedad("localUserDB");
+//			passDB = PR.obtenerPropiedad("localPassDB");
 			
 			//ESTABLECER CONEXION
 			Class.forName(driverDB);
