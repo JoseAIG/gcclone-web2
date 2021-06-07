@@ -35,7 +35,7 @@ public class Database {
 	private Database(){
 		try {
 			//LEER PROPIEDADES
-			properties.load(this.getClass().getResourceAsStream("WEB-INF/db.properties"));
+			properties.load(this.getClass().getResourceAsStream("/db.properties"));
 			
 			dbName = properties.getProperty("dbName");
 			urlDB = properties.getProperty("urlDB") + this.dbName;
