@@ -13,7 +13,8 @@ public class Database {
 	private ResultSet rs;
 	private String driverDB = "org.postgresql.Driver";
 	
-	private Properties properties = new Properties();
+	//private Properties properties = new Properties();
+	private PropertiesReader PR;
 	
 	//LOCAL
 //	private String dbName = "gcclone";
@@ -34,13 +35,27 @@ public class Database {
 	//CONSTRUCTOR
 	private Database(){
 		try {
-			//LEER PROPIEDADES
-			properties.load(this.getClass().getResourceAsStream("/db.properties"));
+			//CLASE PROPERTIESREADER
+			PR = PropertiesReader.getInstance();
 			
-			dbName = properties.getProperty("dbName");
-			urlDB = properties.getProperty("urlDB") + this.dbName;
-			userDB = properties.getProperty("userDB");
-			passDB = properties.getProperty("passDB");
+			//LEER PROPIEDADES
+			//properties.load(this.getClass().getResourceAsStream("/db.properties"));
+			
+//			dbName = properties.getProperty("dbName");
+//			urlDB = properties.getProperty("urlDB") + this.dbName;
+//			userDB = properties.getProperty("userDB");
+//			passDB = properties.getProperty("passDB");
+			
+//			dbName = properties.getProperty("dbName_local");
+//			urlDB = properties.getProperty("urlDB_local") + this.dbName;
+//			userDB = properties.getProperty("userDB_local");
+//			passDB = properties.getProperty("passDB_local");
+			
+			//LOCAL
+			dbName = PR.obtenerPropiedad("localDBName");
+			urlDB = PR.obtenerPropiedad("localUrlDB") + this.dbName;
+			userDB = PR.obtenerPropiedad("localUserDB");
+			passDB = PR.obtenerPropiedad("localPassDB");
 			
 			//ESTABLECER CONEXION
 			Class.forName(driverDB);
@@ -56,48 +71,6 @@ public class Database {
 		return DB;
 	}
 	
-//	//METODO DE STATEMENT
-//	public ResultSet dbStatement(String query) {
-//		try {
-//			this.stmt = this.conn.createStatement();
-//			this.rs = this.stmt.executeQuery(query);
-//			while(rs.next()) {
-//				System.out.print(rs.getString("usuario"));
-//				System.out.println(rs.getInt("edad"));
-//			}
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//		}finally {
-//			try {
-//				this.stmt.close();
-//				this.rs.close();
-//			} catch (SQLException e) {
-//				e.printStackTrace();
-//			}
-//		}
-//		return rs;
-//	}
-	
-//	//METODO DE PREPARESTATEMENT (REGISTRO)
-//	public boolean dbPrepareStatement(String query, Object[] obj) {
-//		try {
-//			this.pstmt = this.conn.prepareStatement(query);
-//			this.pstmt.setString(1, (String) obj[0]);
-//			this.pstmt.setString(2, (String) obj[1]);
-//			this.pstmt.setString(3, (String) obj[2]);
-//			this.pstmt.executeUpdate();
-//		} catch (SQLException e) {
-////			e.printStackTrace();
-//			return false;
-//		} finally {
-//			try {
-//				this.pstmt.close();
-//			} catch (SQLException e) {
-//				e.printStackTrace();
-//			}
-//		}
-//		return true;
-//	}
 	
 	//METODO PARA REGISTRAR USUARIO CON COMPROBACION DE USUARIO EXISTENTE
 	public String dbRegistroUsuario(Object[] datos) {
@@ -114,7 +87,8 @@ public class Database {
 				}
 			}
 			//REGISTRO DE USUARIO
-			this.pstmt = this.conn.prepareStatement("insert into usuarios (nombre_usuario, correo, clave) values (?,?,?)");
+			//this.pstmt = this.conn.prepareStatement("insert into usuarios (nombre_usuario, correo, clave) values (?,?,?)");
+			this.pstmt = this.conn.prepareStatement(PR.obtenerPropiedad("registroUsuario"));
 			this.pstmt.setString(1, (String) datos[0]);
 			this.pstmt.setString(2, (String) datos[1]);
 			this.pstmt.setString(3, (String) datos[2]);
@@ -139,7 +113,8 @@ public class Database {
 	public boolean dbLogin (Object[] datos) {
 		try {
 			this.stmt = this.conn.createStatement();
-			this.rs = this.stmt.executeQuery("select *from usuarios");
+			//this.rs = this.stmt.executeQuery("select *from usuarios");
+			this.rs = this.stmt.executeQuery(PR.obtenerPropiedad("login"));
 			while(rs.next()) {
 				String usuario = rs.getString("nombre_usuario");
 				String correo = rs.getString("correo");
@@ -278,12 +253,14 @@ public class Database {
 		try {
 			//OBTENER ID DEL ULTIMO CALENDARIO
 			this.stmt = this.conn.createStatement();
-			this.rs = this.stmt.executeQuery("SELECT MAX(id_calendario) FROM calendarios");
+			//this.rs = this.stmt.executeQuery("SELECT MAX(id_calendario) FROM calendarios");
+			this.rs = this.stmt.executeQuery(PR.obtenerPropiedad("obtenerIdCalendario"));
 			while(rs.next()) {
 				id_calendario_creado = (rs.getInt("max")+1);
 			}
 			//INGRESAR LOS DATOS DEL CALENDARIO CON SU ID RESPECTIVO
-			this.pstmt = this.conn.prepareStatement("INSERT INTO calendarios (id_calendario, nombre, color) VALUES (?,?,?)");
+			//this.pstmt = this.conn.prepareStatement("INSERT INTO calendarios (id_calendario, nombre, color) VALUES (?,?,?)");
+			this.pstmt = this.conn.prepareStatement(PR.obtenerPropiedad("crearCalendario"));
 			this.pstmt.setInt(1,  id_calendario_creado);
 			this.pstmt.setString(2, (String) datos_calendario[0]);
 			this.pstmt.setString(3, (String) datos_calendario[1]);
@@ -308,7 +285,8 @@ public class Database {
 	//METODO PARA CREAR DATOS DE EDICION PARA UN CALENDARIO ESPECIFICO
 	public Boolean dbCrearDatosEdicionCalendario(Object[] datos_ediciones) {
 		try {
-			this.pstmt = this.conn.prepareStatement("INSERT INTO ediciones (nombre_usuario, correo, id_calendario) VALUES (?,?,?)");
+			//this.pstmt = this.conn.prepareStatement("INSERT INTO ediciones (nombre_usuario, correo, id_calendario) VALUES (?,?,?)");
+			this.pstmt = this.conn.prepareStatement(PR.obtenerPropiedad("crearDatosEdicion"));
 			this.pstmt.setString(1, (String) datos_ediciones[0]);
 			this.pstmt.setString(2, (String) datos_ediciones[1]);
 			this.pstmt.setInt(3,  (int) datos_ediciones[2]);
@@ -367,7 +345,8 @@ public class Database {
 		String[] datos_calendario = new String[2];
 		try {
 			this.stmt = this.conn.createStatement();
-			this.rs = this.stmt.executeQuery("select *from calendarios where id_calendario ='"+id_calendario+"';");
+			//this.rs = this.stmt.executeQuery("select *from calendarios where id_calendario ='"+id_calendario+"';");
+			this.rs = this.stmt.executeQuery(PR.obtenerPropiedad("obtenerDatosCalendario")+id_calendario);
 			while(rs.next()) {
 //				datos[0] = rs.getString("id_calendario");
 //				datos[1] = rs.getString("nombre");
@@ -413,7 +392,8 @@ public class Database {
 	//METODO PARA ACTUALIZAR UN CALENDARIO + DATOS DE EDICION DE CALENDARIO
 	public Boolean dbActualizarCalendario(int id_calendario, String nuevo_nombre, String nuevo_color) {
 		try {
-			this.pstmt = this.conn.prepareStatement("UPDATE calendarios SET nombre = ?, color = ? WHERE id_calendario="+id_calendario+";");
+			//this.pstmt = this.conn.prepareStatement("UPDATE calendarios SET nombre = ?, color = ? WHERE id_calendario="+id_calendario+";");
+			this.pstmt = this.conn.prepareStatement(PR.obtenerPropiedad("actualizarCalendario")+id_calendario);
 			this.pstmt.setString(1, (String) nuevo_nombre);
 			this.pstmt.setString(2, (String) nuevo_color);
 			this.pstmt.executeUpdate();
@@ -461,7 +441,8 @@ public class Database {
 	public Boolean dbEliminarCalendario (int id_calendario) {
 		try {
 			this.stmt = this.conn.createStatement();
-			this.stmt.executeUpdate("DELETE FROM calendarios WHERE id_calendario="+id_calendario+";");
+			//this.stmt.executeUpdate("DELETE FROM calendarios WHERE id_calendario="+id_calendario+";");
+			this.stmt.executeUpdate(PR.obtenerPropiedad("eliminarCalendario")+id_calendario);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
@@ -480,7 +461,8 @@ public class Database {
 		ArrayList<String[]> actividades = new ArrayList<>();
  		try {
 			this.stmt = this.conn.createStatement();
-			this.rs = this.stmt.executeQuery("select *from actividades where id_calendario="+ id_calendario +"");
+			//this.rs = this.stmt.executeQuery("select *from actividades where id_calendario="+ id_calendario +"");
+			this.rs = this.stmt.executeQuery(PR.obtenerPropiedad("obtenerActividadesCalendario")+ id_calendario);
 			while(rs.next()) {
 				String[] datos_actividad = new String[8];
 				datos_actividad[0] = rs.getString("id_actividad");
@@ -508,7 +490,8 @@ public class Database {
 	//METODO PARA CREAR UNA NUEVA ACTIVIDAD
 	public boolean dbCrearActividad (Object[] datos_actividad) {
 		try {
-			this.pstmt = this.conn.prepareStatement("INSERT INTO actividades (id_calendario, informacion, fecha, hora_inicio, hora_fin, ruta_imagen) VALUES (?,?,?,?,?,?)");
+			//this.pstmt = this.conn.prepareStatement("INSERT INTO actividades (id_calendario, informacion, fecha, hora_inicio, hora_fin, ruta_imagen) VALUES (?,?,?,?,?,?)");
+			this.pstmt = this.conn.prepareStatement(PR.obtenerPropiedad("crearActividad"));
 			this.pstmt.setInt(1,  Integer.parseInt(datos_actividad[0].toString()));
 			this.pstmt.setString(2, (String) datos_actividad[1]);
 			this.pstmt.setString(3, (String) datos_actividad[2]);
@@ -533,7 +516,8 @@ public class Database {
 	//METODO PARA MODIFICAR (EDITAR) UNA ACTIVIDAD
 	public boolean dbModificarActividad (int id_actividad, Object[] datos_modificacion) {
 		try {
-			this.pstmt = this.conn.prepareStatement("UPDATE actividades SET informacion=?, fecha=?, hora_inicio=?, hora_fin=?, ruta_imagen=? WHERE id_actividad="+id_actividad+";");
+			//this.pstmt = this.conn.prepareStatement("UPDATE actividades SET informacion=?, fecha=?, hora_inicio=?, hora_fin=?, ruta_imagen=? WHERE id_actividad="+id_actividad+";");
+			this.pstmt = this.conn.prepareStatement(PR.obtenerPropiedad("modificarActividad")+id_actividad);
 			this.pstmt.setString(1, (String) datos_modificacion[0]);
 			this.pstmt.setString(2, (String) datos_modificacion[1]);
 			this.pstmt.setDouble(3, Double.parseDouble(datos_modificacion[2].toString()));
@@ -557,7 +541,8 @@ public class Database {
 	public boolean dbEliminarActividad (int id_actividad) {
 		try {
 			this.stmt = this.conn.createStatement();
-			this.stmt.executeUpdate("DELETE FROM actividades WHERE id_actividad="+id_actividad);
+			//this.stmt.executeUpdate("DELETE FROM actividades WHERE id_actividad="+id_actividad);
+			this.stmt.executeUpdate(PR.obtenerPropiedad("eliminarActividad")+id_actividad);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
