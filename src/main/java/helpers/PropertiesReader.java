@@ -12,7 +12,7 @@ public class PropertiesReader {
 	private PropertiesReader() {
 		try {
 			properties = new Properties();
-			properties.load(this.getClass().getResourceAsStream("/properties/db.properties"));
+			properties.load(this.getClass().getResourceAsStream("/resources/db.properties"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
