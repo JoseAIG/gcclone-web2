@@ -21,7 +21,7 @@ function mostrar_avisos(actividades_semana){
 	for(let i=0; i<actividades_semana.length;i++){
 		//SE CREA UN NUEVO OBJETO DATE CON LA FECHA DE LA ACTIVIDAD
 		let fecha_evento = new Date(actividades_semana[i].fecha);
-		console.log(fecha_evento.getDate()+1);
+		//console.log(fecha_evento.getDate()+1);
 		//SI EL NUMERO DE DIA DEL EVENTO DE LA SEMANA ES EL MISMO NUMERO DE DIA DEL DIA ACTUAL
 		if(fecha_evento.getDate()+1 == fecha_actual.getDate()){			
 			//SI LA HORA DE LA FECHA ACTUAL ES MAYOR A LA HORA FINAL DE UNA ACTIVIDAD, LA MISMA SE DESCRIBE COMO CONCLUIDA 

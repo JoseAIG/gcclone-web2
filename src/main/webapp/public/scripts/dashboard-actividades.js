@@ -431,7 +431,7 @@ const crear_actividad = () => {
 	    .then(response => response.json())
 	    //RESPUESTA CON LOS RESULTADOS DEL SERVIDOR
 	    .then(data => {
-	        console.log('Respuesta del servidor:', data.resultado);
+	        console.log('Respuesta del servidor:', data);
 			alert(data.resultado);
 			if(data.status==200){
 				window.open("Dashboard","_self");

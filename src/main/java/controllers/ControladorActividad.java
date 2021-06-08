@@ -25,15 +25,19 @@ public class ControladorActividad {
 	
 	//METODO ESTATICO PARA CREAR ACTIVIDADES
 	public static String crearActividad(HttpServletRequest request) {
+		String estado_directorio = null;
+		String ruta_imagen_guardar = null;
+		boolean resultado_carga = false;
 		try {
 //			String path = request.getSession().getServletContext().getRealPath("public/activity-images/");
 //			File file = new File(path);
 //			String fullPathToYourWebappRoot = file.getCanonicalPath();
 //			System.out.println("a: " +fullPathToYourWebappRoot);
 			
-			String ruta_activity_images= request.getSession().getServletContext().getRealPath("public/activity-images/");
-			System.out.println("Ruta activity images: " + ruta_activity_images);
-			System.out.println("getAbsolutePath: " + new File("public/activity-images/").getAbsolutePath());
+//			String ruta_activity_images= request.getSession().getServletContext().getRealPath("public/activity-images/");
+//			System.out.println("Ruta activity images: " + ruta_activity_images);
+//			System.out.println("getAbsolutePath: " + new File("public/activity-images/").getAbsolutePath());
+			
 			//String ruta_a_activity_images_act_21 = request.getSession().getServletContext().getRealPath("public/activity-images/act-21/kitten.jpg");
 			//File archprueba = new File(ruta_a_activity_images_act_21);
 			//System.out.println(ruta_a_activity_images_act_21);
@@ -54,8 +58,10 @@ public class ControladorActividad {
 			String carpeta_imagenes_raiz = "/imagenes/actividades/test/";
 			File directorio = new File(carpeta_imagenes_raiz);
 			if(directorio.mkdirs()) {
+				estado_directorio = "ruta creada: " + directorio.getAbsolutePath();
 				System.out.println("ruta creada: " + directorio.getAbsolutePath());
 			}else {
+				estado_directorio= "no se creo la ruta";
 				System.out.println("No se pudo crear la ruta");
 			}
 
@@ -63,7 +69,9 @@ public class ControladorActividad {
 			if(getSubmittedFileName(part_imagen).equals("")) {
 				//SI NO INGRESO UNA IMAGEN SE ALMACENA NULL EN EL CAMPO RUTA EN LA BASE DE DATOS
 				System.out.println("almacenar null");
+				ruta_imagen_guardar = null;
 				ruta_almacenar_db = null;
+				resultado_carga=false;
 			}else {
 				//SI EL ARCHIVO NO ES NULO, ALMACENARLO EN "activity-images/test"
 //				String ruta_guardar_imagen = ruta_activity_images+"\\test\\"+getSubmittedFileName(part_imagen);
@@ -79,9 +87,13 @@ public class ControladorActividad {
 				InputStream inputStreamPart = part_imagen.getInputStream();
 				FileOutputStream outputStream = new FileOutputStream(carpeta_imagenes_raiz+getSubmittedFileName(part_imagen));
 				System.out.println("Ruta de la imagen que se cargara: " + carpeta_imagenes_raiz+getSubmittedFileName(part_imagen));
+				ruta_imagen_guardar= carpeta_imagenes_raiz+getSubmittedFileName(part_imagen);
+				//ruta_imagen_guardar= directorio.getAbsolutePath()+File.separator+getSubmittedFileName(part_imagen);
 				System.out.println("Ruta absoluta de la imagen a cargar: " + directorio.getAbsolutePath()+File.separator+getSubmittedFileName(part_imagen));
-				System.out.println("resultado de la carga: " + cargar(inputStreamPart, outputStream));
+				//System.out.println("resultado de la carga: " + cargar(inputStreamPart, outputStream));
+				resultado_carga = cargar(inputStreamPart, outputStream);
 				ruta_almacenar_db = carpeta_imagenes_raiz+getSubmittedFileName(part_imagen);
+				//ruta_almacenar_db = directorio.getAbsolutePath()+File.separator+getSubmittedFileName(part_imagen);
 			}
 //			String ruta_guardar_imagen = ruta_activity_images+"\\test\\"+part_imagen.getSubmittedFileName();
 //			File archivo = new File(ruta_guardar_imagen);
@@ -103,13 +115,18 @@ public class ControladorActividad {
 			//INGRESAR EN LA BASE DE DATOS LA INFORMACION DE LA ACTIVIDAD
 			Database DB = Database.getInstances();
 			if(DB.dbCrearActividad(datos_nueva_actividad)) {
-				return("{\"resultado\": \"Actividad creada satisfactoriamente\", \"status\":"+200+"}");
+				System.out.println(1);
+				String respuesta = "{\"resultado\": \"Actividad creada satisfactoriamente\", \"status\":"+200+", \"estado-directorio\":\""+estado_directorio+"\", \"ruta-imagen-guardar\":\""+ruta_imagen_guardar+"\", \"resultado-carga\":\""+resultado_carga+"\" }";
+				System.out.println(respuesta);
+				return(respuesta);
 			}else {
-				return("{\"resultado\": \"No se pudo crear la actividad\", \"status\":"+500+"}");
+				System.out.println(2);
+				return("{\"resultado\": \"No se pudo ingresar la actividad en la base de datos\", \"status\":"+500+", \"estado-directorio\":\""+estado_directorio+"\", \"ruta-imagen-guardar\":\""+ruta_imagen_guardar+"\", \"resultado-carga\":\""+resultado_carga+"\"}");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			return("{\"resultado\": \"No se pudo crear la actividad\", \"status\":"+500+"}");
+			System.out.println(3);
+			return("{\"resultado\": \"No se pudo crear la actividad\", \"status\":"+500+", \"estado-directorio\":\""+estado_directorio+"\", \"ruta-imagen-guardar\":\""+ruta_imagen_guardar+"\", \"resultado-carga\":\""+resultado_carga+"\"}");
 		}
 		
 	}
