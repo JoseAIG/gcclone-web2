@@ -36,14 +36,9 @@ p span {
      padding:0 10px; 
 }
 
-/* BOTON AGREGAR ACTIVIDAD */
-/* #link-crear-actividad{
-    position: fixed;
-    top: 90vh;
-    right: 2em;
-} */
-
 section, aside{
+	height: 88vh;
+	border-bottom: 1px solid grey;
 	overflow-y: auto;
     position: relative;
     width: 100%;

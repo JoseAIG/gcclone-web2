@@ -2,17 +2,19 @@
 <html>
 	<head>
 		<meta charset="ISO-8859-1">
+		<!-- MATERIALIZE -->
 		<link href="public/styles/materialize.min.css" rel="stylesheet">
 		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 		<script src="public/scripts/materialize.min.js" defer></script>		
-		<script src="public/scripts/dashboard-perfil.js" defer></script>
+		<!-- JS's DASHBOARD -->
+		<script src="public/scripts/dashboard-perfil.js" defer></script>		
 		<script src="public/scripts/dashboard-calendario.js" type="module" defer></script>
+		<script src="public/scripts/dashboard-aviso.js" defer></script>
 		<script src="public/scripts/dashboard-actividades.js" defer></script>
 		<link href="public/styles/dashboard-actividades.css" rel="stylesheet">
-		
 		<!-- NOUISLIDER -->
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/wnumb/1.2.0/wNumb.min.js" integrity="sha512-igVQ7hyQVijOUlfg3OmcTZLwYJIBXU63xL9RC12xBHNpmGJAktDnzl9Iw0J4yrSaQtDxTTVlwhY730vphoVqJQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/14.7.0/nouislider.min.js" integrity="sha512-jWNpWAWx86B/GZV4Qsce63q5jxx/rpWnw812vh0RE+SBIo/mmepwOSQkY2eVQnMuE28pzUEO7ux0a5sJX91g8A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/12.0.0/nouislider.min.css" integrity="sha512-kSH0IqtUh1LRE0tlO8dWN7rbmdy5cqApopY6ABJ4U99HeKulW6iKG5KgrVfofEXQOYtdQGFjj2N/DUBnj3CNmQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<!-- 		<script src="https://cdnjs.cloudflare.com/ajax/libs/wnumb/1.2.0/wNumb.min.js" integrity="sha512-igVQ7hyQVijOUlfg3OmcTZLwYJIBXU63xL9RC12xBHNpmGJAktDnzl9Iw0J4yrSaQtDxTTVlwhY730vphoVqJQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+ -->		<script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/14.7.0/nouislider.min.js" integrity="sha512-jWNpWAWx86B/GZV4Qsce63q5jxx/rpWnw812vh0RE+SBIo/mmepwOSQkY2eVQnMuE28pzUEO7ux0a5sJX91g8A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/12.0.0/nouislider.min.css" integrity="sha512-kSH0IqtUh1LRE0tlO8dWN7rbmdy5cqApopY6ABJ4U99HeKulW6iKG5KgrVfofEXQOYtdQGFjj2N/DUBnj3CNmQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/14.7.0/nouislider.min.css" integrity="sha512-40vN6DdyQoxRJCw0klEUwZfTTlcwkOLKpP8K8125hy9iF4fi8gPpWZp60qKC6MYAFaond8yQds7cTMVU8eMbgA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 		
 		<title>GC Clone - Dashboard</title>
@@ -33,7 +35,7 @@
 	    <!-- ESTRUCTURA DE LA PAGINA DEBAJO DEL NAVBAR -->
     	<div class="row">
 			<!-- ASIDE NAVEGACION -->
-      		<aside class="col s3 grey lighten-2" style="border:1px solid gray; height: 91vh;">
+      		<aside class="col s3 grey lighten-2">
         		<!-- Grey navigation panel -->
         		<input type="date" id="selector-fecha">
         		<h5 class="center">Calendarios</h5>
@@ -43,7 +45,7 @@
         		</div>        		
       		</aside>
 			<!-- SECTION DASHBOARD -->
-      		<section class="col s9" style="border:1px solid red; height: 91vh;">
+      		<section class="col s9">
         		<!-- Teal page content  -->
         		<div id="contenedor-divs-dia" class="center">
 	      		    <div id="div0" class="div-dia"></div>
@@ -59,7 +61,7 @@
 				  <a class="btn-floating btn-large teal waves-effect waves-light hoverable"><i class="large material-icons">add</i></a>
 				  <ul>
 				    <li><a class="btn-floating blue tooltipped modal-trigger hoverable" data-position="left" data-tooltip="Nuevo calendario" data-target="modal-crear-calendario"><i class="material-icons">event</i></a></li>
-				    <li><a class="btn-floating yellow darken-1 tooltipped modal-trigger hoverable" data-position="left" data-tooltip="Nueva actividad" data-target="modal-crear-actividad"><i class="material-icons">bookmark</i></a></li>
+				    <li><a class="btn-floating yellow darken-1 tooltipped modal-trigger hoverable pulse" data-position="left" data-tooltip="Nueva actividad" data-target="modal-crear-actividad"><i class="material-icons">bookmark</i></a></li>
 <!-- 				    <li><a class="btn-floating green"><i class="material-icons">publish</i></a></li>
 				    <li><a class="btn-floating blue"><i class="material-icons">attach_file</i></a></li> -->
 				  </ul>
@@ -269,8 +271,8 @@
 		    <a class="modal-close waves-effect waves-green btn-flat">Cerrar</a>
 		  </div>
 		</div>
-		<!-- FIN MODAL EDITAR ACTIVIDAD -->
-		
+		<!-- FIN MODAL EDITAR ACTIVIDAD -->		
+		<img alt="prueba" src="http://localhost:8080/gcclone/public/activity-images/logo-uru.jpg">
 		<!-- FOOTER -->
 <!--         <footer class="page-footer">
           <div class="container">

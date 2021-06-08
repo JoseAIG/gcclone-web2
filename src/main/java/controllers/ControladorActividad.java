@@ -3,6 +3,7 @@ package controllers;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.file.Paths;
@@ -25,13 +26,14 @@ public class ControladorActividad {
 	//METODO ESTATICO PARA CREAR ACTIVIDADES
 	public static String crearActividad(HttpServletRequest request) {
 		try {
-//			String path = request.getSession().getServletContext().getRealPath("WEB-INF/../");
+//			String path = request.getSession().getServletContext().getRealPath("public/activity-images/");
 //			File file = new File(path);
 //			String fullPathToYourWebappRoot = file.getCanonicalPath();
 //			System.out.println("a: " +fullPathToYourWebappRoot);
 			
-			
 			String ruta_activity_images= request.getSession().getServletContext().getRealPath("public/activity-images/");
+			System.out.println("Ruta activity images: " + ruta_activity_images);
+			System.out.println("getAbsolutePath: " + new File("public/activity-images/").getAbsolutePath());
 			//String ruta_a_activity_images_act_21 = request.getSession().getServletContext().getRealPath("public/activity-images/act-21/kitten.jpg");
 			//File archprueba = new File(ruta_a_activity_images_act_21);
 			//System.out.println(ruta_a_activity_images_act_21);
@@ -44,8 +46,18 @@ public class ControladorActividad {
 						
 			//OBTENER LAS PARTES DEL ARCHIVO IMAGEN DEL CLIENTE
 			Part part_imagen = request.getPart("imagen-crear-actividad");
+			System.out.println(part_imagen.getSize());
 			//System.out.println("Nombre del archivo: " + part_imagen.getSubmittedFileName());
 			System.out.println("Nombre del archivo: " + getSubmittedFileName(part_imagen));
+			
+			//MKDIRS
+			String carpeta_imagenes_raiz = "/imagenes/actividades/test/";
+			File directorio = new File(carpeta_imagenes_raiz);
+			if(directorio.mkdirs()) {
+				System.out.println("ruta creada: " + directorio.getAbsolutePath());
+			}else {
+				System.out.println("No se pudo crear la ruta");
+			}
 
 			String ruta_almacenar_db;
 			if(getSubmittedFileName(part_imagen).equals("")) {
@@ -54,12 +66,22 @@ public class ControladorActividad {
 				ruta_almacenar_db = null;
 			}else {
 				//SI EL ARCHIVO NO ES NULO, ALMACENARLO EN "activity-images/test"
-				String ruta_guardar_imagen = ruta_activity_images+"\\test\\"+getSubmittedFileName(part_imagen);
-				File archivo = new File(ruta_guardar_imagen);
-				System.out.println(archivo.getAbsolutePath());
-				part_imagen.write(ruta_guardar_imagen);
-				//SE COLOCA LA RUTA DEL ARCHIVO EN LA BASE DE DATOS
-				ruta_almacenar_db = "public/activity-images/test/"+getSubmittedFileName(part_imagen);
+//				String ruta_guardar_imagen = ruta_activity_images+"\\test\\"+getSubmittedFileName(part_imagen);
+//				File archivo = new File(ruta_guardar_imagen);
+//				System.out.println(archivo.getAbsolutePath());
+//				part_imagen.write(ruta_guardar_imagen);
+//				//SE COLOCA LA RUTA DEL ARCHIVO EN LA BASE DE DATOS
+//				ruta_almacenar_db = "public/activity-images/test/"+getSubmittedFileName(part_imagen);
+				
+				//MKDIRS
+				//part_imagen.write(carpeta_imagenes_raiz+getSubmittedFileName(part_imagen));
+				//System.out.println("La imagen se guerdo en: " + directorio.getAbsolutePath()+"\\"+getSubmittedFileName(part_imagen));
+				InputStream inputStreamPart = part_imagen.getInputStream();
+				FileOutputStream outputStream = new FileOutputStream(carpeta_imagenes_raiz+getSubmittedFileName(part_imagen));
+				System.out.println("Ruta de la imagen que se cargara: " + carpeta_imagenes_raiz+getSubmittedFileName(part_imagen));
+				System.out.println("Ruta absoluta de la imagen a cargar: " + directorio.getAbsolutePath()+File.separator+getSubmittedFileName(part_imagen));
+				System.out.println("resultado de la carga: " + cargar(inputStreamPart, outputStream));
+				ruta_almacenar_db = carpeta_imagenes_raiz+getSubmittedFileName(part_imagen);
 			}
 //			String ruta_guardar_imagen = ruta_activity_images+"\\test\\"+part_imagen.getSubmittedFileName();
 //			File archivo = new File(ruta_guardar_imagen);
@@ -147,6 +169,23 @@ public class ControladorActividad {
 	        }
 	    }
 	    return null;
+	}
+	
+	//METODO PARA CARGAR LA IMAGEN
+	private static boolean cargar(InputStream input, FileOutputStream output) {
+		int lectura = 0;
+		final byte[] bytes = new byte[1024];
+		
+		try {
+			while((lectura = input.read(bytes)) != -1) {
+				output.write(bytes, 0, lectura);
+			}
+			output.close();
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 
 }

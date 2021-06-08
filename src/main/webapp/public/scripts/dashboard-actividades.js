@@ -2,19 +2,12 @@
  * 
  */
 
-//PROTOTYOE FUNCION "getWeek" PARA OBTENER EL NUMERO DE LA SEMANA EN UN ANIO DE UNA FECHA
-//VER: https://weeknumber.com/how-to/javascript
-Date.prototype.getWeek = function() {
-  var date = new Date(this.getTime());
-  date.setHours(0, 0, 0, 0);
-  // Thursday in current week decides the year.
-  date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
-  // January 4 is always in week 1.
-  var week1 = new Date(date.getFullYear(), 0, 4);
-  // Adjust to Thursday in week 1 and count number of weeks from date to week1.
-  return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000
-                        - 3 + (week1.getDay() + 6) % 7) / 7);
-}
+//PROTOTYOE numeroSemana PARA OBTENER EL NUMERO DE LA SEMANA EN UN ANIO DE UNA FECHA
+Date.prototype.numeroSemana = function() {
+	//SE OBTIENE EL PRIMER DIA DEL ANIO ACTUAL
+    var primer_dia_anio = new Date(this.getFullYear(),0,1);
+    return Math.ceil((((this - primer_dia_anio) / 86400000) + primer_dia_anio.getDay()+1)/7);
+};
 
 let selectorFecha = document.getElementById("selector-fecha");
 selectorFecha.valueAsDate= new Date();
@@ -63,13 +56,14 @@ function obtener_numero_semana(fecha_actividad){
 
 	let fecha_corregida = new Date(anio,mes,(dia+1));
 	//console.log("La fecha del evento es "+fecha_corregida, "El numero de semana es: "+fecha_corregida.getWeek());
-	console.log(fecha_corregida.getWeek());
+	console.log("numeroSemana:" + fecha_corregida.numeroSemana());
 	
-	if(fecha_corregida.getDay()==0){
-		return (fecha_corregida.getWeek()+1);
-	}else{
-		return fecha_corregida.getWeek();		
-	}
+	//if(fecha_corregida.getDay()==0){
+		//return (fecha_corregida.getWeek()+1);
+	//}else{
+		//return fecha_corregida.getWeek();		
+	return fecha_corregida.numeroSemana();
+	//}
 }
 
 var actividades_en_la_semana = new Array();
@@ -85,10 +79,12 @@ function obtener_actividades_semana(){
 			//console.log(datos_calendarios[i].actividades[j]);
 			//SI EL NUMERO DE LA SEMANA DE UNA ACTIVIDAD ES IGUAL AL NUMERO DE LA SEMANA DE LA FECHA PRINCIPAL, SE GUARDA LA ACTIVIDAD EN EL ARREGLO DE ACTIVIDADES DE LA PRESENTE SEMANA
 			//EN EL CASO QUE EL DIA DE LA FECHA SEA DOMINGO, SE LE SUMA 1 AL NUMERO DE SEMANA, DADO QUE LAS SEMANAS CAMBIAN DE NUMERO LOS LUNES Y QUEREMOS QUE EL DOMINGO PERTENEZCA A ESA MISMA SEMANA
-			let semana_fecha_principal = fechaPrincipal.getWeek();
+/*			let semana_fecha_principal = fechaPrincipal.getWeek();
 			if(fechaPrincipal.getDay()==0){
 				semana_fecha_principal++;
-			}
+			}*/
+			let semana_fecha_principal = fechaPrincipal.numeroSemana();
+			
 			if(obtener_numero_semana(datos_calendarios[i].actividades[j].fecha)==semana_fecha_principal){
 				actividades_en_la_semana.push(datos_calendarios[i].actividades[j]);
 				colores_actividades.push(datos_calendarios[i].color);
@@ -99,6 +95,7 @@ function obtener_actividades_semana(){
 		}
 	}
 	console.log(actividades_en_la_semana);
+	mostrar_avisos(actividades_en_la_semana);
 }
 
 //LLAMADA A LA FUNCION DIBUJAR PLANTILLA LA PRIMERA VEZ QUE SE CORRE LA APP
@@ -118,7 +115,7 @@ function dibujar_plantilla(fecha_a_dibujar){
     //console.log("dia: " + dia, "mes: " + mes, "anio: " + anio);
 
 	fechaPrincipal = new Date(anio,mes,(dia+1));
-	console.log("semana de la fecha principal: " + fechaPrincipal.getWeek());
+	console.log("numeroSemana:" + fechaPrincipal.numeroSemana());
 	
 	obtener_actividades_semana();
 	console.log("Dibujar plantilla - Actividades de la semana: ", actividades_en_la_semana);
@@ -312,8 +309,7 @@ function dibujar_plantilla(fecha_a_dibujar){
 			}
 			
 		}
-	}
-	
+	}	
 }
 
 function obtenerInicioSemana (fecha) {
