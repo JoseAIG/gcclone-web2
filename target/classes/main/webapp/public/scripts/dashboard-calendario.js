@@ -20,8 +20,8 @@ window.onload=()=>{
 	    .then(response => response.json())
 	    //RESPUESTA CON LOS RESULTADOS DEL SERVIDOR
 	    .then(data => {
-/*	        console.log('Respuesta del servidor:', data);
-			console.log(data.resultado);*/
+	        console.log('Respuesta del servidor:', data);
+/*			console.log(data.resultado);*/
 			mostrar_calendarios_aside(data);
 			agregar_calendarios_opciones_select(data.calendarios);
 /*			console.log(data.calendarios);
@@ -185,8 +185,10 @@ const guardar_edicion_calendario = ()=>{
 	
     fetch('Calendario', {
     	method: 'PUT',
-    	body: json,
-    	headers: new Headers({'Content-Type': 'application/json'}),
+    	//body: json,
+    	body: datos_form_editar_calendario,
+    	//headers: undefined,
+    	//headers: new Headers({'Content-Type': 'multipart/form-data'}),
 		})
     //RESPUESTA CRUDA DEL SERVER
     .then(response => response.json())
@@ -331,15 +333,16 @@ link_agregar_invitado_editar.onclick=()=>{crear_campo_invitado(contenedor_input_
 var link_borrar_calendario = document.getElementById("link-borrar-calendario");
 function eliminar_calendario (id_calendario) {
 	link_borrar_calendario.onclick=()=>{
-	
-		let peticion = {
+	let form_peticion = new FormData();
+	form_peticion.append("id-calendario",id_calendario);
+/*		let peticion = {
 			"id-calendario":id_calendario
-		}
+		}*/
 		
 	    fetch('Calendario', {
 	    	method: 'DELETE',
-	    	body: JSON.stringify(peticion),
-	    	headers: new Headers({'Content-Type': 'application/json'}),
+	    	//body: JSON.stringify(peticion),
+	    	body: form_peticion,
 			})
 	    //RESPUESTA CRUDA DEL SERVER
 	    .then(response => response.json())

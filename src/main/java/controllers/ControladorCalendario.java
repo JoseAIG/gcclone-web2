@@ -30,9 +30,9 @@ public class ControladorCalendario {
 		//resultado_JSON.append(" {\"resultado\":\"Prueba armado json\", \"status\":"+200+", \"calendarios\": [{\"id_calendario\": \"4\", \"nombre_calendario\": \"calendario admin\", \"color\": \"rojo\"}]}");
 		
 		//CAMBIO A JSONOBJECT
-		JSONObject json_respuesta = new JSONObject();
-		json_respuesta.put("resultado", "prueba JSONObject");
-		json_respuesta.put("status", 200);
+//		JSONObject json_respuesta = new JSONObject();
+//		json_respuesta.put("resultado", "prueba JSONObject");
+//		json_respuesta.put("status", 200);
 		
 //		JSONArray arreglo_calendarios = new JSONArray();
 //		JSONObject calendario = new JSONObject();
@@ -44,90 +44,119 @@ public class ControladorCalendario {
 		
 		//System.out.println("JSONObject a enviar: " + json_respuesta);
 		
-//		resultado_JSON.append(" {\"resultado\":\"Prueba armado json\", \"status\":"+200+", \"calendarios\": [");
+		resultado_JSON.append(" {\"resultado\":\"Armado json StringBuilder\", \"status\":"+200+", \"calendarios\": [");
 		
-//		for(int i=0; i<id_calendarios.size();i++) {
-//			//PRUEBA OBTENCION ACTIVIDADES
-//			ArrayList<String[]> actividades_calendario = DB.dbObtenerActividadesCalendario(id_calendarios.get(i));
+		for(int i=0; i<id_calendarios.size();i++) {
+			//PRUEBA OBTENCION ACTIVIDADES
+			ArrayList<String[]> actividades_calendario = DB.dbObtenerActividadesCalendario(id_calendarios.get(i));
 //			System.out.println("Impresion de las actividades del calendario");
 //			for(int j=0; j<actividades_calendario.size(); j++) {
 //				String[] actividad = actividades_calendario.get(i);
 //				System.out.print("Long de la act: " + actividad.length);
 //				System.out.println(" - id_actividad: " + actividad[0] + " id_calendario: " + actividad[1] + " informacion: " + actividad[2] + " fecha: " + actividad[3] + " hora_inicio: " + actividad[4] + " hora_fin: " + actividad[5] + " duracion: " + actividad[6] + " ruta_imagen: " + actividad[7]);
 //			}
-//			
-//			resultado_JSON.append("{");
-//			resultado_JSON.append(" \"id_calendario\": \""+ id_calendarios.get(i) +"\", ");
-//			String[] datos_calendario = DB.dbObtenerDatosCalendario(id_calendarios.get(i));
-//			resultado_JSON.append(" \"nombre_calendario\": \""+ datos_calendario[0] +"\", \"color\": \""+ datos_calendario[1] +"\", \"invitados\": [ ");
-//			
-//			ArrayList<String> invitados_calendario = DB.dbObtenerInvitadosCalendario(usuario,id_calendarios.get(i));
-//			for(int j=0; j<invitados_calendario.size();j++) {
-//				resultado_JSON.append(" \""+invitados_calendario.get(j)+"\" ");
+			
+			resultado_JSON.append("{");
+			resultado_JSON.append(" \"id_calendario\": \""+ id_calendarios.get(i) +"\", ");
+			String[] datos_calendario = DB.dbObtenerDatosCalendario(id_calendarios.get(i));
+			resultado_JSON.append(" \"nombre_calendario\": \""+ datos_calendario[0] +"\", \"color\": \""+ datos_calendario[1] +"\", \"invitados\":[");
+			
+			//INVITADOS
+			ArrayList<String> invitados_calendario = DB.dbObtenerInvitadosCalendario(usuario,id_calendarios.get(i));
+			for(int j=0; j<invitados_calendario.size();j++) {
+				resultado_JSON.append(" \""+invitados_calendario.get(j)+"\" ");
 //				if(j==(invitados_calendario.size()-1)) {
 //				}else {
 //					resultado_JSON.append(",");
 //				}
-//			}
-//			resultado_JSON.append("]");
-//
-//			if(i==(id_calendarios.size()-1)) {
-//				resultado_JSON.append("}");
-//			}else {
-//				resultado_JSON.append("},");
-//			}
-//		}
-//		resultado_JSON.append("]}");
-//		System.out.println(resultado_JSON.toString());
+				if(j!=(invitados_calendario.size()-1)) {
+					resultado_JSON.append(",");
+				}
+			}
+			resultado_JSON.append("], \"actividades\":[");
+			//ACTIVIDADES
+			ArrayList<String[]> lista_actividades = DB.dbObtenerActividadesCalendario(id_calendarios.get(i));
+			for(int j=0; j<lista_actividades.size(); j++) {
+				String[] actividad = actividades_calendario.get(j);
+				resultado_JSON.append("{");
+				resultado_JSON.append("\"id_actividad\": \""+actividad[0]+"\",");
+				resultado_JSON.append("\"id_calendario\": \""+actividad[1]+"\",");
+				resultado_JSON.append("\"informacion\": \""+actividad[2]+"\",");
+				resultado_JSON.append("\"fecha\": \""+actividad[3]+"\",");
+				resultado_JSON.append("\"hora_inicio\": \""+actividad[4]+"\",");
+				resultado_JSON.append("\"hora_fin\": \""+actividad[5]+"\"");
+				if(actividad[6]!=null) {
+					resultado_JSON.append(",\"ruta_imagen\": \""+actividad[6]+"\"");					
+				}
+
+				resultado_JSON.append("}");
+				if(j!=(lista_actividades.size()-1)) {
+					resultado_JSON.append(",");
+				}
+			}
+			resultado_JSON.append("]");
+			
+			
+			//CERRADO DEL JSON
+			if(i==(id_calendarios.size()-1)) {
+				resultado_JSON.append("}");
+			}else {
+				resultado_JSON.append("},");
+			}
+		}
+		resultado_JSON.append("]}");
+		System.out.println(resultado_JSON.toString());
+		
 		
 		//ARMADO JSON CON JSONOBJECT
-		JSONArray arreglo_calendarios = new JSONArray();
-		
-		for(int i=0; i<id_calendarios.size();i++) {
-			JSONObject calendario = new JSONObject();
-			String[] datos_calendario = DB.dbObtenerDatosCalendario(id_calendarios.get(i));
-			calendario.put("id_calendario", id_calendarios.get(i));
-			calendario.put("nombre_calendario", datos_calendario[0]);
-			calendario.put("color", datos_calendario[1]);
-
-			//INVITADOS DE UN CALENDARIO
-			JSONArray invitados = new JSONArray();
-			ArrayList<String> invitados_calendario = DB.dbObtenerInvitadosCalendario(usuario,id_calendarios.get(i));
-			for(int j=0; j<invitados_calendario.size(); j++) {
-				invitados.put(invitados_calendario.get(j));
-			}
-			calendario.put("invitados", invitados);
-			
-			//ACTIVIDADES DE UN CALENDARIO
-			JSONArray actividades = new JSONArray();
-			ArrayList<String[]> actividades_calendario = DB.dbObtenerActividadesCalendario(id_calendarios.get(i));
-			for(int j=0; j<actividades_calendario.size(); j++) {
-				String[] actividad = actividades_calendario.get(j);
-				//System.out.println(" - id_actividad: " + actividad[0] + " id_calendario: " + actividad[1] + " informacion: " + actividad[2] + " fecha: " + actividad[3] + " hora_inicio: " + actividad[4] + " hora_fin: " + actividad[5] + " duracion: " + actividad[6] + " ruta_imagen: " + actividad[7]);
-				JSONObject datos_actividad = new JSONObject();
-				datos_actividad.put("id_actividad", actividad[0]);
-				datos_actividad.put("id_calendario", actividad[1]);
-				datos_actividad.put("informacion", actividad[2]);
-				datos_actividad.put("fecha", actividad[3]);
-				datos_actividad.put("hora_inicio", actividad[4]);
-				datos_actividad.put("hora_fin", actividad[5]);
-				datos_actividad.put("ruta_imagen", actividad[6]);
-				//INSERTAR DATOS DE LA ACTIVIDAD EN EL ARREGLO DE ACTIVIDADES
-				actividades.put(datos_actividad);
-			}
-			calendario.put("actividades", actividades);
-
-			//AL FINAL SE COLOCA EL CALENDARIO EN EL ARREGLO DE CALENDARIOS
-			arreglo_calendarios.put(calendario);
-		}
-		
-		//SE LE COLOCA EL ARREGLO DE CALENDARIOS AL JSON DE RESPUESTA
-		json_respuesta.put("calendarios",arreglo_calendarios);
-		
-		//System.out.println(json_respuesta.toString());
+//		JSONArray arreglo_calendarios = new JSONArray();
+//		
+//		for(int i=0; i<id_calendarios.size();i++) {
+//			JSONObject calendario = new JSONObject();
+//			String[] datos_calendario = DB.dbObtenerDatosCalendario(id_calendarios.get(i));
+//			calendario.put("id_calendario", id_calendarios.get(i));
+//			calendario.put("nombre_calendario", datos_calendario[0]);
+//			calendario.put("color", datos_calendario[1]);
+//
+//			//INVITADOS DE UN CALENDARIO
+//			JSONArray invitados = new JSONArray();
+//			ArrayList<String> invitados_calendario = DB.dbObtenerInvitadosCalendario(usuario,id_calendarios.get(i));
+//			for(int j=0; j<invitados_calendario.size(); j++) {
+//				invitados.put(invitados_calendario.get(j));
+//			}
+//			calendario.put("invitados", invitados);
+//			
+//			//ACTIVIDADES DE UN CALENDARIO
+//			JSONArray actividades = new JSONArray();
+//			ArrayList<String[]> actividades_calendario = DB.dbObtenerActividadesCalendario(id_calendarios.get(i));
+//			for(int j=0; j<actividades_calendario.size(); j++) {
+//				String[] actividad = actividades_calendario.get(j);
+//				//System.out.println(" - id_actividad: " + actividad[0] + " id_calendario: " + actividad[1] + " informacion: " + actividad[2] + " fecha: " + actividad[3] + " hora_inicio: " + actividad[4] + " hora_fin: " + actividad[5] + " duracion: " + actividad[6] + " ruta_imagen: " + actividad[7]);
+//				JSONObject datos_actividad = new JSONObject();
+//				datos_actividad.put("id_actividad", actividad[0]);
+//				datos_actividad.put("id_calendario", actividad[1]);
+//				datos_actividad.put("informacion", actividad[2]);
+//				datos_actividad.put("fecha", actividad[3]);
+//				datos_actividad.put("hora_inicio", actividad[4]);
+//				datos_actividad.put("hora_fin", actividad[5]);
+//				datos_actividad.put("ruta_imagen", actividad[6]);
+//				//INSERTAR DATOS DE LA ACTIVIDAD EN EL ARREGLO DE ACTIVIDADES
+//				actividades.put(datos_actividad);
+//			}
+//			calendario.put("actividades", actividades);
+//
+//			//AL FINAL SE COLOCA EL CALENDARIO EN EL ARREGLO DE CALENDARIOS
+//			arreglo_calendarios.put(calendario);
+//		}
+//		
+//		//SE LE COLOCA EL ARREGLO DE CALENDARIOS AL JSON DE RESPUESTA
+//		json_respuesta.put("calendarios",arreglo_calendarios);
+//		
+//		System.out.println(json_respuesta.toString());
 		
 		//System.out.println(resultado_JSON.toString());
-		return json_respuesta.toString();
+		//return json_respuesta.toString();
+		return resultado_JSON.toString();
 	}
 	
 	//METODO PARA CREAR UN NUEVO CALENDARIO
@@ -179,33 +208,81 @@ public class ControladorCalendario {
 	}
 	
 	//METODO PARA EDITAR UN CALENDARIO Y LOS DATOS DE EDICION
+//	public static String editarCalendarioEdicion(HttpServletRequest request) {
+//		try {
+//			//OBTENER DATOS DE LA PETICION
+//			HttpSession sesion = request.getSession();
+//			
+//			BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));
+//			String data = br.readLine();
+//			System.out.println("Controlador calendario - editarCalendarioEdicion: " + data);
+//			//CONVERTIR DATOS A JSONObject PARA MANEJAR LA INFORMACION
+//			JSONObject json_editar_calendario = new JSONObject(data);
+//			System.out.println("La prueba del arreglo es: " + json_editar_calendario.get("arreglo"));
+//			JSONArray array_invitados = new JSONArray(json_editar_calendario.get("arreglo").toString());
+//			//System.out.println(array_invitados.get(0));
+//			for(int k=0; k<array_invitados.length(); k++) {
+//				System.out.println(array_invitados.get(k));
+//			}
+//			
+//			//EJECUTAR ACTUALIZACION DEL CALENDARIO
+//			Database DB = Database.getInstances();
+//			System.out.println(DB.dbActualizarCalendario(json_editar_calendario.getInt("id-calendario"), json_editar_calendario.getString("nombre-editar-calendario"), json_editar_calendario.getString("color-editar-calendario")));
+//			//System.out.println("ID: " + json_editar_calendario.getInt("id-calendario") + " Nombre: " + json_editar_calendario.getString("nombre-editar-calendario") + " Color: " + json_editar_calendario.getString("color-editar-calendario"));
+//			ArrayList<String> lista_nombres_invitados = new ArrayList<>();
+//			ArrayList<String> lista_correos_invitados = new ArrayList<>();
+//			for(int i=0;i<json_editar_calendario.getInt("cantidad-invitados")+1;i++) {
+//				String [] datos_invitado = {null, null};
+//				try {
+//					datos_invitado = DB.dbExisteUsuario(json_editar_calendario.getString("input-invitado"+i));
+//				} catch (Exception e) {
+//					//json_editar_calendario.put("input-invitado"+i, "");
+//					datos_invitado[0] = null;
+//					datos_invitado[1] = null;
+//				}
+//				
+//				if(datos_invitado[0]!=null && datos_invitado[1]!=null) {
+//					System.out.println(datos_invitado[0] + " - " + datos_invitado[1]);
+//					lista_nombres_invitados.add(lista_nombres_invitados.size(), datos_invitado[0]);
+//					lista_correos_invitados.add(lista_correos_invitados.size(), datos_invitado[1]);	
+//				}
+//			}
+//			System.out.println(DB.dbActualizarDatosEdicion(sesion.getAttribute("usuario").toString(), json_editar_calendario.getInt("id-calendario"), lista_nombres_invitados, lista_correos_invitados));
+//			
+//			//RETORNAR RESPUESTA AL SERVLET PARA ENVIARLA AL CLIENTE
+////			JSONObject json_respuesta = new JSONObject();
+////			json_respuesta.put("resultado", "Peticion existosa");
+////			json_respuesta.put("status", 200);
+//			
+//			//return json_respuesta.toString();
+//			return "{\"resultado\": \"Calendario editado satisfactoriamente\", \"status\":"+200+"}";
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			return "{\"resultado\": \"Error al editar calendario\", \"status\":"+500+"}";
+//		}
+//	}
+	
 	public static String editarCalendarioEdicion(HttpServletRequest request) {
 		try {
 			//OBTENER DATOS DE LA PETICION
 			HttpSession sesion = request.getSession();
 			
-			BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));
-			String data = br.readLine();
-			System.out.println("Controlador calendario - editarCalendarioEdicion: " + data);
-			//CONVERTIR DATOS A JSONObject PARA MANEJAR LA INFORMACION
-			JSONObject json_editar_calendario = new JSONObject(data);
-			System.out.println("La prueba del arreglo es: " + json_editar_calendario.get("arreglo"));
-			JSONArray array_invitados = new JSONArray(json_editar_calendario.get("arreglo").toString());
+			System.out.println("La prueba del arreglo es: " + request.getParameter("arreglo"));
 			//System.out.println(array_invitados.get(0));
-			for(int k=0; k<array_invitados.length(); k++) {
-				System.out.println(array_invitados.get(k));
-			}
+//			for(int k=0; k<array_invitados.length(); k++) {
+//				System.out.println(array_invitados.get(k));
+//			}
 			
-			//EJECUTAR QUERY
+			//EJECUTAR ACTUALIZACION DEL CALENDARIO
 			Database DB = Database.getInstances();
-			System.out.println(DB.dbActualizarCalendario(json_editar_calendario.getInt("id-calendario"), json_editar_calendario.getString("nombre-editar-calendario"), json_editar_calendario.getString("color-editar-calendario")));
+			System.out.println(DB.dbActualizarCalendario(Integer.parseInt(request.getParameter("id-calendario")), request.getParameter("nombre-editar-calendario"), request.getParameter("color-editar-calendario")));
 			//System.out.println("ID: " + json_editar_calendario.getInt("id-calendario") + " Nombre: " + json_editar_calendario.getString("nombre-editar-calendario") + " Color: " + json_editar_calendario.getString("color-editar-calendario"));
 			ArrayList<String> lista_nombres_invitados = new ArrayList<>();
 			ArrayList<String> lista_correos_invitados = new ArrayList<>();
-			for(int i=0;i<json_editar_calendario.getInt("cantidad-invitados")+1;i++) {
+			for(int i=0;i<Integer.parseInt(request.getParameter("cantidad-invitados")+1);i++) {
 				String [] datos_invitado = {null, null};
 				try {
-					datos_invitado = DB.dbExisteUsuario(json_editar_calendario.getString("input-invitado"+i));
+					datos_invitado = DB.dbExisteUsuario(request.getParameter("input-invitado"+i));
 				} catch (Exception e) {
 					//json_editar_calendario.put("input-invitado"+i, "");
 					datos_invitado[0] = null;
@@ -218,14 +295,9 @@ public class ControladorCalendario {
 					lista_correos_invitados.add(lista_correos_invitados.size(), datos_invitado[1]);	
 				}
 			}
-			System.out.println(DB.dbActualizarDatosEdicion(sesion.getAttribute("usuario").toString(), json_editar_calendario.getInt("id-calendario"), lista_nombres_invitados, lista_correos_invitados));
+			System.out.println(DB.dbActualizarDatosEdicion(sesion.getAttribute("usuario").toString(), Integer.parseInt(request.getParameter("id-calendario")), lista_nombres_invitados, lista_correos_invitados));
 			
-			//RETORNAR RESPUESTA AL SERVLET PARA ENVIARLA AL CLIENTE
-			JSONObject json_respuesta = new JSONObject();
-			json_respuesta.put("resultado", "Peticion existosa");
-			json_respuesta.put("status", 200);
-			
-			return json_respuesta.toString();
+			return "{\"resultado\": \"Calendario editado satisfactoriamente\", \"status\":"+200+"}";
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "{\"resultado\": \"Error al editar calendario\", \"status\":"+500+"}";
@@ -233,23 +305,40 @@ public class ControladorCalendario {
 	}
 	
 	//METODO PARA ELIMINAR UN CALENDARIO TRAS LA PETICION DE UN CLIENTE
+//	public static String eliminarCalendario(HttpServletRequest request) {
+//		try {
+//			BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));
+//			String data = br.readLine();
+//			System.out.println("Controlador calendario - eliminarCalendario: " + data);
+//			//JSONObject json_peticion = new JSONObject(data);
+//			//System.out.println(json_peticion.get("id-calendario").toString());
+//			Database DB = Database.getInstances();
+//			//JSONObject json_respuesta = new JSONObject();
+////			if(DB.dbEliminarCalendario(Integer.parseInt(json_peticion.get("id-calendario").toString()))) {
+//			if(DB.dbEliminarCalendario(Integer.parseInt(data))) {
+////				json_respuesta.put("resultado", "Calendario eliminado exitosamente");
+////				json_respuesta.put("status", 200);
+////				return json_respuesta.toString();
+//				return "{\"resultado\": \"Calendario eliminado exitosamente\", \"status\":"+200+"}";
+//			}else {
+////				json_respuesta.put("resultado", "No se pudo eliminar el calendario");
+////				json_respuesta.put("status", 500);
+////				return json_respuesta.toString();
+//				return "{\"resultado\": \"No se pudo eliminar el calendario\", \"status\":"+500+"}";
+//			}
+//		} catch (Exception e) {
+//			return "{\"resultado\": \"Error al editar calendario\", \"status\":"+500+"}";
+//		}
+//	}
+	
 	public static String eliminarCalendario(HttpServletRequest request) {
 		try {
-			BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));
-			String data = br.readLine();
-			System.out.println("Controlador calendario - eliminarCalendario: " + data);
-			JSONObject json_peticion = new JSONObject(data);
-			System.out.println(json_peticion.get("id-calendario").toString());
+			System.out.println("Controlador calendario - eliminarCalendario - Parametro peticion " + request.getParameter("id-calendario"));
 			Database DB = Database.getInstances();
-			JSONObject json_respuesta = new JSONObject();
-			if(DB.dbEliminarCalendario(Integer.parseInt(json_peticion.get("id-calendario").toString()))) {
-				json_respuesta.put("resultado", "Calendario eliminado exitosamente");
-				json_respuesta.put("status", 200);
-				return json_respuesta.toString();
+			if(DB.dbEliminarCalendario(Integer.parseInt(request.getParameter("id-calendario")))) {
+				return "{\"resultado\": \"Calendario eliminado exitosamente\", \"status\":"+200+"}";
 			}else {
-				json_respuesta.put("resultado", "No se pudo eliminar el calendario");
-				json_respuesta.put("status", 500);
-				return json_respuesta.toString();
+				return "{\"resultado\": \"No se pudo eliminar el calendario\", \"status\":"+500+"}";
 			}
 		} catch (Exception e) {
 			return "{\"resultado\": \"Error al editar calendario\", \"status\":"+500+"}";
