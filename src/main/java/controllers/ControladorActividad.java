@@ -55,7 +55,7 @@ public class ControladorActividad {
 			System.out.println("Nombre del archivo: " + getSubmittedFileName(part_imagen));
 			
 			//MKDIRS
-			String carpeta_imagenes_raiz = "/imagenes/actividades/test/";
+			String carpeta_imagenes_raiz = "/imagenes/actividades/";
 			File directorio = new File(carpeta_imagenes_raiz);
 			if(directorio.mkdirs()) {
 				estado_directorio = "ruta creada: " + directorio.getAbsolutePath();
@@ -145,7 +145,8 @@ public class ControladorActividad {
 				json_editar_actividad.get("fecha-editar-actividad"),
 				json_editar_actividad.get("hora-inicio"),
 				json_editar_actividad.get("hora-fin"),
-				"wip-edicion.png"
+				//"wip-edicion.png"
+				null
 			};
 
 			Database DB = Database.getInstances();
@@ -162,7 +163,7 @@ public class ControladorActividad {
 	
 	public static String eliminarActividad(HttpServletRequest request) {
 		try {
-			//OBTENER DATOS DE ENTRADA Y CONVERTIRLO A JSONOBJECT
+			//OBTENER DATOS DE ENTRADA Y CONVERTIRLO A JSON PARA OBTENER EL ID DE LA ACTIVIDAD
 			BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));
 			String data = br.readLine();
 			System.out.println("Controlador actividad - eliminarActividad: " + data);

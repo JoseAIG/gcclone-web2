@@ -7,12 +7,15 @@ import java.util.Base64;
 
 public class Hashing {
 
+	private static PropertiesReader PR;
+	
 	public Hashing() {
 		// TODO Auto-generated constructor stub
 	}
 	
 	public static String obtenerHash(String texto) {
-		String secret = "gcclone-web2";
+		PR = PropertiesReader.getInstance();
+		String secret = PR.obtenerPropiedad("hashSecret");
 		String cadena = secret + texto;
 		try {
 			MessageDigest md = MessageDigest.getInstance("SHA-256");
