@@ -1,39 +1,22 @@
 /**
- * 
+ * dashboard-calendario.js: FUNCIONALIDADES DE LOS CALENDARIOS EN EL DASHBOARD
  */
 
-//import dibujar_plantilla from './dashboard-actividades.js';
-
-/*var link_crear_calendario = document.getElementById("link-crear-calendario");
-link_crear_calendario.addEventListener('click',()=>{
-	console.log("crear calendario");
-});*/
-
+//OBTENER LOS CALENDARIOS DEL USUARIO AL CARGAR LA PAGINA
 window.onload=()=>{
 	    fetch('Calendario', {
 	    	method: 'GET',
-	    	//body: datos_form_crear_calendario,
-			//mode: "no-cors",
-	    	headers: new Headers({'Content-Type': 'application/json'}),
+	    	headers: {'Content-Type': 'application/json'}
 			})
 	    //RESPUESTA CRUDA DEL SERVER
 	    .then(response => response.json())
 	    //RESPUESTA CON LOS RESULTADOS DEL SERVIDOR
 	    .then(data => {
 	        console.log('Respuesta del servidor:', data);
-/*			console.log(data.resultado);*/
 			mostrar_calendarios_aside(data);
 			agregar_calendarios_opciones_select(data.calendarios);
-/*			console.log(data.calendarios);
-			console.log("Longitud array calendarios: " + data.calendarios.length);
-			console.log(data.calendarios[0]);
-			console.log(data.calendarios[0].nombre_calendario);*/
-
-/*			if(data.status==200){
-				window.open("/gcclone","_self");
-			}*/
 	    })	    
-		//CATCH PARA OBTENER DETALLER POR SI ORURRE UN ERROR
+		//CATCH PARA OBTENER DETALLE POR SI ORURRE UN ERROR
 	    .catch((error) => {
 	        console.error('Error:', error);
 	    });
@@ -56,7 +39,7 @@ const mostrar_calendarios_aside = (data)=>{
 		//BOTON CONFIGURACION DE CALENDARIO
 		let i_tag = document.createElement("i");
 		i_tag.className="material-icons right";
-		i_tag.textContent="settings";
+		i_tag.textContent="edit";
 		i_tag.style='color: gray; cursor: pointer';
 		div.appendChild(i_tag);
 		
@@ -83,15 +66,13 @@ const mostrar_calendarios_aside = (data)=>{
 		i_tag.addEventListener("click",()=>{
 			//FUNCIONALIDAD BOTON ELIMINAR CALENDARIO EN FUNCION DE SU ID
 			eliminar_calendario(data.calendarios[i].id_calendario);
-			//document.q
+			//COLOCAR LOS DATOS DEL CALENDARIO EN LOS CAMPOS DEL MODAL
 			id_calendario_editar = data.calendarios[i].id_calendario;
-			console.log(p.id,p.innerText);
 			input_nombre_editar_calendario.value=p.innerText;
 			input_color_editar_calendario.value=data.calendarios[i].color;
 			instancia_modal_editar_calendario.open();
 			contador_editar_invitados = data.calendarios[i].invitados.length;
-			console.log("Cantidad invitados: " + data.calendarios[i].invitados.length, data.calendarios[i].invitados);
-			//let contenedor_input_editar_calendario = document.getElementById("contenedor-input-editar-calendario");
+			//AGREGAR LAS ENTRADAS DE LOS INVITADOS DEL CALENDARIO
 			for(let j=0; j<data.calendarios[i].invitados.length; j++){
 				//DIV PARA EL CAMPO DE INVITADO
 				let div = document.createElement("div");
@@ -106,10 +87,6 @@ const mostrar_calendarios_aside = (data)=>{
 				input.value=data.calendarios[i].invitados[j];
 				div.appendChild(input);
 				console.log(input);
-/*				let label = document.createElement("label");
-				label.for="input-invitado"+contador_invitados;
-				label.innerText="Invitado";
-				div.appendChild(label);*/
 				
 				//DIV PARA BOTON REMOVER CAMPO INVITADO
 				let div_remover = document.createElement("div");
@@ -137,15 +114,11 @@ const mostrar_calendarios_aside = (data)=>{
 		
 		//FUNCIONALIDAD CLICK DE LOS CHECKBOXES
 		input_checkbox.addEventListener('click',()=>{
-			//console.log("Checkbox",data.calendarios[i]);
-			console.log("------------");
-			//AL CLICKEAR UN CHECKBOX SE COMPRUEBA SU ESTADO. SI ES SELECCIONADO SE LLAMA A LA FUNCION "datos_actividades" EN "dashboard-actividades.js"
-			//SI EL CHECKBOX ESTA ACTIVO, SE GUARDAN LOS DATOS EN EL ARREGLO DE ACTIVIDADES, SINO, SE REMUEVE (PRIMER PARAMETRO true)
+			//AL CLICKEAR UN CHECKBOX SE COMPRUEBA SU ESTADO. SI ES SELECCIONADO SE LLAMA A LA FUNCION "toggle_datos_calendarios" EN "dashboard-actividades.js"
+			//SI EL CHECKBOX ESTA ACTIVO, SE GUARDAN LOS DATOS EN EL ARREGLO DE DATOS CALENDARIOS SELECCIONADOS EN "dashboard-actividades.js", SINO, SE REMUEVE (PRIMER PARAMETRO true)
 			if(input_checkbox.checked){
-				//datos_actividades(false,"id-calendario: " + data.calendarios[i].id_calendario + " nombre-calendario: " + data.calendarios[i].nombre_calendario);
 				toggle_datos_calendarios(false,data.calendarios[i]);
 			}else{
-				//datos_actividades(true,"id-calendario: " + data.calendarios[i].id_calendario + " nombre-calendario: " + data.calendarios[i].nombre_calendario);
 				toggle_datos_calendarios(true,data.calendarios[i]);			
 			}
 		});
@@ -163,30 +136,10 @@ const guardar_edicion_calendario = ()=>{
 	datos_form_editar_calendario.append("cantidad-invitados",contador_editar_invitados);
 	datos_form_editar_calendario.append("id-calendario", id_calendario_editar);
 	
-	var arreglo_invitados = new Array();
-	console.log("el contador de editar invitados es: ", contador_editar_invitados, "El contador invitados es: ", contador_invitados);
-	
-	for(let i=0; i<contador_editar_invitados; i++){
-		let input = document.getElementById("input-invitado"+i);
-		//let input_invitado = datos_form_editar_calendario;
-		if(input && input.value!=""){
-			arreglo_invitados.push(datos_form_editar_calendario.get(input.value));
-		}
-	}
-	console.log("El arreglo de invitados es: " + arreglo_invitados);
-	
-	datos_form_editar_calendario.append("arreglo","['inv1', 'inv2', 'inv3']");
-	//CONVERTIR LOS DATOS DE ESE FORM DATA A JSON
-	var obj = {};
-	datos_form_editar_calendario.forEach(function(valor, llave){
-	    obj[llave] = valor;
-	});
-	var json = JSON.stringify(obj);
-	
     fetch('Calendario', {
     	method: 'PUT',
     	body: datos_form_editar_calendario
-		})
+	})
     //RESPUESTA CRUDA DEL SERVER
     .then(response => response.json())
     //RESPUESTA CON LOS RESULTADOS DEL SERVIDOR
@@ -197,7 +150,7 @@ const guardar_edicion_calendario = ()=>{
 			window.open("Dashboard","_self");
 		}
     })	    
-	//CATCH PARA OBTENER DETALLER POR SI ORURRE UN ERROR
+	//CATCH PARA OBTENER DETALLE POR SI ORURRE UN ERROR
     .catch((error) => {
         console.error('Error:', error);
     });
@@ -206,19 +159,14 @@ link_guardar_edicion_calendario.onclick=guardar_edicion_calendario;
 
 //CREAR NUEVO CALENDARIO
 var link_guardar_nuevo_calendario = document.getElementById("link-guardar-nuevo-calendario");
-//var input_nombre_calendario = document.getElementById("input-nombre-calendario");
 var form_crear_calendario = document.getElementById("form-crear-calendario");
 const guardar_nuevo_calendario = ()=>{
 	var datos_form_crear_calendario = new FormData(form_crear_calendario);
-	//console.log("datos form: " + datos_form_crear_calendario.get("nombre-calendario"));
-	//console.log("invitados: " + datos_form_crear_calendario.get("input-invitado0"), datos_form_crear_calendario.get("input-invitado1"), contador_invitados);
 	datos_form_crear_calendario.append("cantidad-invitados", contador_invitados);
 	for(let i=0;i<contador_invitados;i++){
 		if(datos_form_crear_calendario.get("input-invitado"+i)!=null){
-			console.log(datos_form_crear_calendario.get("input-invitado"+i));
 			for(let j=0; j<contador_invitados;j++){
 				if(i!=j && datos_form_crear_calendario.get("input-invitado"+i)==datos_form_crear_calendario.get("input-invitado"+j)){
-					console.log("Son iguales: ", datos_form_crear_calendario.get("input-invitado"+i), datos_form_crear_calendario.get("input-invitado"+j));
 					alert("No puede duplicarse un invitado");
 					return;
 				}
@@ -226,8 +174,6 @@ const guardar_nuevo_calendario = ()=>{
 		}
 	}
 	
-	//console.log("guardar nuevo calendario");
-	//console.log(input_nombre_calendario.value);
 	if(datos_form_crear_calendario.get("nombre-calendario")==""){
 		alert("Ingrese un nombre para el calendario");
 	}else{
@@ -235,8 +181,8 @@ const guardar_nuevo_calendario = ()=>{
 	    	method: 'POST',
 	    	body: datos_form_crear_calendario,
 			mode: "no-cors",
-	    	headers: new Headers({'Content-Type': 'application/json'}),
-			})
+	    	headers: {'Content-Type': 'application/json'}
+		})
 	    //RESPUESTA CRUDA DEL SERVER
 	    .then(response => response.json())
 	    //RESPUESTA CON LOS RESULTADOS DEL SERVIDOR
@@ -247,12 +193,11 @@ const guardar_nuevo_calendario = ()=>{
 				window.open("Dashboard","_self");
 			}
 	    })	    
-		//CATCH PARA OBTENER DETALLER POR SI ORURRE UN ERROR
+		//CATCH PARA OBTENER DETALLE POR SI ORURRE UN ERROR
 	    .catch((error) => {
 	        console.error('Error:', error);
 	    });
 	}
-	//window.open("Dashboard","_self");
 }
 link_guardar_nuevo_calendario.onclick=guardar_nuevo_calendario;
 
@@ -298,7 +243,6 @@ const crear_campo_invitado = (contenedor, edit) => {
 	a_remover.addEventListener("click",()=>{
 		div.remove();
 		div_remover.remove();
-		//contador_invitados--;
 		if(edit){
 			contador_editar_invitados--
 		}else{
@@ -338,14 +282,14 @@ function eliminar_calendario (id_calendario) {
 				window.open("Dashboard","_self");
 			}
 	    })	    
-		//CATCH PARA OBTENER DETALLER POR SI ORURRE UN ERROR
+		//CATCH PARA OBTENER DETALLE POR SI ORURRE UN ERROR
 	    .catch((error) => {
 	        console.error('Error:', error);
 	    });
 	};
 }
 
-//ACTIVAR LOS MODAL DE MATERIALIZE
+//HABILITAR MODAL MATERIALIZE
 var instancia_modal_editar_calendario;
 document.addEventListener('DOMContentLoaded', function() {
    var elems = document.querySelectorAll('.modal');

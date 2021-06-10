@@ -36,7 +36,3 @@ function mostrar_avisos(actividades_semana){
 		}
 	}
 }
-
-function notificacion(texto){
-	//let div
-}

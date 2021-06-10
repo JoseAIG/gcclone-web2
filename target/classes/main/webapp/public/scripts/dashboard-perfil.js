@@ -1,15 +1,12 @@
 /**
- * 
+ * dashboard-perfil.js: FUNCIONALIDADES PERFIL USUARIO DENTRO DEL DASHBOARD
  */
 
 //FUNCIONALIDAD PARA CERRAR SESION
 var link_cerrar_sesion = document.getElementById("link-cerrar-sesion");
 const cerrar_sesion = ()=>{
 	    fetch('Dashboard', {
-	    	method: 'POST',
-	    	//body: datos_form,
-			//mode: "no-cors",
-	    	//headers: new Headers({'Content-Type': 'application/json'}),
+	    	method: 'POST'
 			})
 	    //RESPUESTA CRUDA DEL SERVER
 	    .then(response => response.json())
@@ -19,7 +16,7 @@ const cerrar_sesion = ()=>{
 			alert(data.resultado);
 			window.open("/","_self");
 	    })	    
-		//CATCH PARA OBTENER DETALLER POR SI ORURRE UN ERROR
+		//CATCH PARA OBTENER DETALLE POR SI ORURRE UN ERROR
 	    .catch((error) => {
 	        console.error('Error:', error);
 	    });
@@ -34,9 +31,7 @@ var input_editar_clave = document.getElementById("editar-clave");
 const obtener_datos_perfil = () => {
     fetch('Perfil', {
     	method: 'GET',
-    	//body: "prueba",
-		//mode: "no-cors",
-    	headers: new Headers({'Content-Type': 'application/json'}),
+    	headers: {'Content-Type': 'application/json'}
 		})
     //RESPUESTA CRUDA DEL SERVER
     .then(response => response.json())
@@ -47,11 +42,10 @@ const obtener_datos_perfil = () => {
 		input_editar_nombre_usuario.disabled=false;
 		input_editar_correo.value=data.correo;
 		input_editar_correo.disabled=false;
-		//input_editar_clave.value=data.clave;
 		input_editar_clave.value="";
 		input_editar_clave.disabled=false;
     })	    
-	//CATCH PARA OBTENER DETALLER POR SI ORURRE UN ERROR
+	//CATCH PARA OBTENER DETALLE POR SI ORURRE UN ERROR
     .catch((error) => {
         console.error('Error:', error);
     });
@@ -62,11 +56,7 @@ link_editar_perfil.onclick=obtener_datos_perfil;
 var form_editar_perfil = document.getElementById("form-editar-perfil");
 var link_guardar_perfil = document.getElementById("link-guardar-perfil");
 const guardar_datos_perfil = () => {
-	var datos_form_editar_perfil = new FormData(form_editar_perfil);
-	console.log(datos_form_editar_perfil);
-	console.log("Usuario: "+datos_form_editar_perfil.get("usuario"), "Correo: " + datos_form_editar_perfil.get("correo"), "Clave: " + datos_form_editar_perfil.get("clave"));
-
-	
+	var datos_form_editar_perfil = new FormData(form_editar_perfil);	
     fetch('Perfil', {
     	method: 'POST',
     	body: datos_form_editar_perfil,
@@ -83,7 +73,7 @@ const guardar_datos_perfil = () => {
 			window.open("Dashboard","_self");				
 		}
     })	    
-	//CATCH PARA OBTENER DETALLER POR SI ORURRE UN ERROR
+	//CATCH PARA OBTENER DETALLE POR SI ORURRE UN ERROR
     .catch((error) => {
         console.error('Error:', error);
     });
@@ -93,23 +83,23 @@ link_guardar_perfil.onclick=guardar_datos_perfil;
 //FUNCIONALIDAD PARA ELIMINAR UN PERFIL
 var link_borrar_perfil = document.getElementById("link-borrar-perfil");
 const borrar_perfil = () => {
-	    fetch('Perfil', {
-	    	method: 'DELETE',
-		})
-	    //RESPUESTA CRUDA DEL SERVER
-	    .then(response => response.json())
-	    //RESPUESTA CON LOS RESULTADOS DEL SERVIDOR
-	    .then(data => {
-	        console.log('Respuesta del servidor:', data);
-			alert(data.resultado);
-			if(data.status==200){
-				window.open("/","_self");				
-			}
-	    })	    
-		//CATCH PARA OBTENER DETALLER POR SI ORURRE UN ERROR
-	    .catch((error) => {
-	        console.error('Error:', error);
-	    });
+    fetch('Perfil', {
+    	method: 'DELETE'
+	})
+    //RESPUESTA CRUDA DEL SERVER
+    .then(response => response.json())
+    //RESPUESTA CON LOS RESULTADOS DEL SERVIDOR
+    .then(data => {
+        console.log('Respuesta del servidor:', data);
+		alert(data.resultado);
+		if(data.status==200){
+			window.open("/","_self");				
+		}
+    })	    
+	//CATCH PARA OBTENER DETALLE POR SI ORURRE UN ERROR
+    .catch((error) => {
+        console.error('Error:', error);
+    });
 }
 link_borrar_perfil.onclick=borrar_perfil;
 

@@ -4,9 +4,8 @@
 var form_registro = document.getElementById("form-registro");
 var boton_registro = document.getElementById("boton-registro");
 
-const enviar_datos = (e) => {
+const enviar_datos = () => {
 	var datos_form = new FormData(form_registro);
-	//console.log(datos_form,datos_form.get("usuario"),datos_form.get("correo"),datos_form.get("clave"));
 	
 	//COMPROBACION QUE LOS CAMPOS QUE INGRESO EL USUARIO ESTEN COMPLETOS
 	if(datos_form.get("usuario")=="" || datos_form.get("correo")=="" || datos_form.get("clave")=="" ){
@@ -19,7 +18,7 @@ const enviar_datos = (e) => {
 	    	method: 'POST',
 	    	body: datos_form,
 			mode: "no-cors",
-	    	headers: new Headers({'Content-Type': 'application/json'}),
+	    	headers:{'Content-Type': 'application/json'}
 			})
 	    //RESPUESTA CRUDA DEL SERVER
 	    .then(response => response.json())
@@ -31,7 +30,7 @@ const enviar_datos = (e) => {
 				window.open("/","_self");
 			}
 	    })	    
-		//CATCH PARA OBTENER DETALLER POR SI ORURRE UN ERROR
+		//CATCH PARA OBTENER DETALLE POR SI ORURRE UN ERROR
 	    .catch((error) => {
 	        console.error('Error:', error);
 	    });

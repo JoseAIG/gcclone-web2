@@ -1,5 +1,5 @@
 /**
- * 
+ * login.js: FUNCIONALIDADES DE LA VISTA DE LOGIN
  */
 
 var form_login = document.getElementById("form-login");
@@ -17,7 +17,7 @@ const iniciar_sesion = () => {
 	    	method: 'POST',
 	    	body: datos_form,
 			mode: "no-cors",
-	    	headers: new Headers({'Content-Type': 'application/json'}),
+	    	headers: {'Content-Type': 'application/json'}
 			})
 	    //RESPUESTA CRUDA DEL SERVER
 	    .then(response => response.json())
@@ -26,12 +26,10 @@ const iniciar_sesion = () => {
 	        console.log('Respuesta del servidor:', data);
 	        alert(data.resultado);
 			if(data.status==200){
-				//console.log("redireccionar aqui");
-				//alert("redireccionar!");
 				window.open("Dashboard","_self");
 			}
 	    })
-	    //CATCH PARA OBTENER DETALLER POR SI ORURRE UN ERROR
+	    //CATCH PARA OBTENER DETALLE POR SI ORURRE UN ERROR
 	    .catch((error) => {
 	        console.error('Error:', error);
 	    });
