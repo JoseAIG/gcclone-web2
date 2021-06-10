@@ -570,11 +570,11 @@ document.addEventListener('DOMContentLoaded', function() {
 	
 	//BOTON FIJO AGREGADO
    	var elems = document.querySelectorAll('.fixed-action-btn');
-   	var instances = M.FloatingActionButton.init(elems, options);
+   	var instances = M.FloatingActionButton.init(elems);
    	
    	//TOOLTIPS BOTONES AGREGADO
     var elems = document.querySelectorAll('.tooltipped');
-    var instances = M.Tooltip.init(elems, options);
+    var instances = M.Tooltip.init(elems);
     
     //ETIQUETA SELECT
     var elems = document.querySelectorAll('select');

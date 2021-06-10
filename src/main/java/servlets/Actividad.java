@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import controllers.ControladorActividad;
-import helpers.Database;
 
 /**
  * Servlet implementation class Actividad

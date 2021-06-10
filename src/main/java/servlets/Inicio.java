@@ -21,17 +21,12 @@ public class Inicio extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession sesion = request.getSession();
-		System.out.println(sesion.getAttribute("usuario"));
 		if(sesion.getAttribute("usuario")==null) {
 			response.setContentType("text/html");
 			request.getRequestDispatcher("/public/views/inicio.html").include(request, response); 
 		}else {
 			response.sendRedirect("Dashboard");
 		}
-	}
-
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		doGet(request, response);
 	}
 
 }

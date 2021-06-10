@@ -15,22 +15,23 @@ public class ControladorRegistro {
 	public static String registrarUsuario(HttpServletRequest request) {
 		String resultado_registro;
 		try {			
+			//OBTENER LOS DATOS DEL NUEVO USUARIO
 			String usuario = request.getParameter("usuario");
 			String correo = request.getParameter("correo");
 			String clave = request.getParameter("clave");
 			
+			//OBTENER EL HASH DE LA CLAVE Y GUARDAR EN UN OBJETO LOS DATOS
 			String hash_clave = Hashing.obtenerHash(clave);
 			Object[] datos_usuario = {usuario, correo, hash_clave};
 			
+			//SE EJECUTA EL REGISTRO DEL USUARIO EN LA BASE DE DATOS (EN ESE METODO SE COMPRUEBA SI EL USUARIO EXISTE O NO)
 			Database DB = Database.getInstances();
 			resultado_registro = DB.dbRegistroUsuario(datos_usuario);
-			System.out.println(resultado_registro);
 			
+			//SE GENERA RESPUESTA EN FUNCION DEL RESULTADO DEL REGISTRO
 			if(resultado_registro.equals("Operacion exitosa")) {
-				System.out.println("redireccionamiento aqui...");
 				return "{\"resultado\": \""+resultado_registro+"\", \"status\":"+200+"}";
 			}else {
-				System.out.println("No se redireccionara.");
 				return "{\"resultado\": \""+resultado_registro+"\", \"status\":"+422+"}";
 			}
 		} catch (Exception e) {

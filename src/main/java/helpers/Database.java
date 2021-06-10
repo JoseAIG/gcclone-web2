@@ -2,7 +2,6 @@ package helpers;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Properties;
 
 public class Database {
 
@@ -13,19 +12,7 @@ public class Database {
 	private ResultSet rs;
 	private String driverDB = "org.postgresql.Driver";
 	
-	//private Properties properties = new Properties();
 	private PropertiesReader PR;
-	
-	//LOCAL
-//	private String dbName = "gcclone";
-//	private String urlDB = "jdbc:postgresql://localhost:5432/" + this.dbName;
-//	private String userDB = "postgres";
-//	private String passDB = "masterkey";
-	//REMOTO EN HEROKU
-//	private String dbName = "dag91rnv1gm978";
-//	private String urlDB = "jdbc:postgresql://ec2-3-215-57-87.compute-1.amazonaws.com:5432/" + this.dbName;
-//	private String userDB = "dtqgnhgnhrsctt";
-//	private String passDB = "12afd4794a6db97bb6cd443726c7f81888b8cfefc66c053d6174d472329b4c1c";
 	
 	private String dbName;
 	private String urlDB;
@@ -211,32 +198,6 @@ public class Database {
 			}
 		}
 		return true;
-	}
-	
-	//METODO PARA CONOCER SI UN USUARIO EXISTE Y RETORNAR SU NOMBRE Y CORREO
-	public String[] dbExisteUsuario (String usuario) {
-		String [] datos = new String[2];
-		try {
-			this.stmt = this.conn.createStatement();
-			this.rs = this.stmt.executeQuery("select *from usuarios where nombre_usuario ='"+usuario+"' OR correo='"+usuario+"';");
-			while(rs.next()) {
-				datos[0] = rs.getString("nombre_usuario");
-				datos[1] = rs.getString("correo");
-				if(!(usuario.equals(datos[0]) || usuario.equals(datos[1]))) {
-					return null;
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}finally {
-			try {
-				this.stmt.close();
-				this.rs.close();
-			} catch (Exception ex) {
-				ex.printStackTrace();
-			}
-		}
-		return datos;
 	}
 	
 	//METODO PARA CREAR UN NUEVO CALENDARIO, RETORNA EL ID DEL CALENDARIO CREADO

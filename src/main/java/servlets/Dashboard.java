@@ -10,8 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import helpers.Database;
-
 /**
  * Servlet implementation class Dashboard
  */
@@ -32,7 +30,6 @@ public class Dashboard extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession sesion = request.getSession();
-		System.out.println(sesion.getAttribute("usuario"));
 		if(sesion.getAttribute("usuario")==null) {
 			response.sendRedirect("/");
 		}else {
