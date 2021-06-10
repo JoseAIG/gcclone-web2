@@ -31,20 +31,13 @@ public class Dashboard extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		//response.getWriter().append("Served at: ").append(request.getContextPath());
 		HttpSession sesion = request.getSession();
 		System.out.println(sesion.getAttribute("usuario"));
 		if(sesion.getAttribute("usuario")==null) {
-			System.out.println("usuario nulo, redireccionar a pagina principal");
-			response.sendRedirect("/gcclone");
+			response.sendRedirect("/");
 		}else {
-			System.out.println("usuario NO nulo, mostrar dashboard");
-			//response.setContentType("text/html");
 			request.getRequestDispatcher("/public/views/dashboard.html").include(request, response);
 		}
-//		response.setContentType("text/html");
-//		request.getRequestDispatcher("/public/views/dashboard.html").include(request, response);
 	}
 
 	/**

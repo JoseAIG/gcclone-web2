@@ -185,10 +185,7 @@ const guardar_edicion_calendario = ()=>{
 	
     fetch('Calendario', {
     	method: 'PUT',
-    	//body: json,
-    	body: datos_form_editar_calendario,
-    	//headers: undefined,
-    	//headers: new Headers({'Content-Type': 'multipart/form-data'}),
+    	body: datos_form_editar_calendario
 		})
     //RESPUESTA CRUDA DEL SERVER
     .then(response => response.json())
@@ -204,14 +201,6 @@ const guardar_edicion_calendario = ()=>{
     .catch((error) => {
         console.error('Error:', error);
     });
-	
-	//console.log(datos_form_editar_calendario);
-	//console.log("Datos del calendario a guardar: ", input_nombre_editar_calendario.value, input_color_editar_calendario.value);
-/*	console.log("guardar estos invitados");
-	for(let i=0; i<contador_editar_invitados; i++){
-		let input_editar_invitado_n = document.getElementById("editar-invitado"+i);
-		console.log(input_editar_invitado_n.value);
-	}*/
 }
 link_guardar_edicion_calendario.onclick=guardar_edicion_calendario;
 
@@ -335,13 +324,8 @@ function eliminar_calendario (id_calendario) {
 	link_borrar_calendario.onclick=()=>{
 	let form_peticion = new FormData();
 	form_peticion.append("id-calendario",id_calendario);
-/*		let peticion = {
-			"id-calendario":id_calendario
-		}*/
-		
 	    fetch('Calendario', {
 	    	method: 'DELETE',
-	    	//body: JSON.stringify(peticion),
 	    	body: form_peticion,
 			})
 	    //RESPUESTA CRUDA DEL SERVER
@@ -369,7 +353,6 @@ document.addEventListener('DOMContentLoaded', function() {
    
    let options = {
    		onCloseEnd: ()=>{
-   			console.log("cerrado")
    			contenedor_editar_invitados.innerHTML='';
    		}
 	}

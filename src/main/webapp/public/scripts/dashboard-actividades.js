@@ -457,14 +457,7 @@ const modificar_actividad = () => {
 	datos_form_editar_actividad.append("hora-inicio", rango_horas_editar_actividad.noUiSlider.get()[0]);
 	datos_form_editar_actividad.append("hora-fin", rango_horas_editar_actividad.noUiSlider.get()[1]);
 	datos_form_editar_actividad.append("id-actividad", id_actividad_editar);
-	
-	//CONVERTIR LOS DATOS DE ESE FORM DATA A JSON
-/*	var obj = {};
-	datos_form_editar_actividad.forEach(function(valor, llave){
-	    obj[llave] = valor;
-	});
-	var json = JSON.stringify(obj);*/
-	
+
     fetch('Actividad', {
     	method: 'PUT',
     	body: datos_form_editar_actividad

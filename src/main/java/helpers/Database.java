@@ -103,31 +103,31 @@ public class Database {
 	}
 	
 	//METODO PARA OBTENER COINCIDENCIAS DE USUARIO Y CLAVE PARA LOGIN
-	public boolean dbLogin (Object[] datos) {
-		try {
-			this.stmt = this.conn.createStatement();
-			//this.rs = this.stmt.executeQuery("select *from usuarios");
-			this.rs = this.stmt.executeQuery(PR.obtenerPropiedad("login"));
-			while(rs.next()) {
-				String usuario = rs.getString("nombre_usuario");
-				String correo = rs.getString("correo");
-				String clave = rs.getString("clave");
-				if((usuario.equals(datos[0]) || correo.equals(datos[0])) && clave.equals(datos[1])) {
-					return true;
-				}
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}finally {
-			try {
-				this.stmt.close();
-				this.rs.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-		return false;
-	}
+//	public boolean dbLogin (Object[] datos) {
+//		try {
+//			this.stmt = this.conn.createStatement();
+//			//this.rs = this.stmt.executeQuery("select *from usuarios");
+//			this.rs = this.stmt.executeQuery(PR.obtenerPropiedad("login"));
+//			while(rs.next()) {
+//				String usuario = rs.getString("nombre_usuario");
+//				String correo = rs.getString("correo");
+//				String clave = rs.getString("clave");
+//				if((usuario.equals(datos[0]) || correo.equals(datos[0])) && clave.equals(datos[1])) {
+//					return true;
+//				}
+//			}
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		}finally {
+//			try {
+//				this.stmt.close();
+//				this.rs.close();
+//			} catch (SQLException e) {
+//				e.printStackTrace();
+//			}
+//		}
+//		return false;
+//	}
 	
 	//METODO PARA OBTENER LOS DATOS DE UN USUARIO
 	public String[] dbObtenerDatosUsuario(String usuario) {
