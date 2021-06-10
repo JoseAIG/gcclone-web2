@@ -459,16 +459,17 @@ const modificar_actividad = () => {
 	datos_form_editar_actividad.append("id-actividad", id_actividad_editar);
 	
 	//CONVERTIR LOS DATOS DE ESE FORM DATA A JSON
-	var obj = {};
+/*	var obj = {};
 	datos_form_editar_actividad.forEach(function(valor, llave){
 	    obj[llave] = valor;
 	});
-	var json = JSON.stringify(obj);
+	var json = JSON.stringify(obj);*/
 	
     fetch('Actividad', {
     	method: 'PUT',
-    	body: json,
-    	headers: new Headers({'Content-Type': 'application/json'}),
+    	body: datos_form_editar_actividad
+    	//body: json,
+    	//headers: new Headers({'Content-Type': 'application/json'}),
 		})
     //RESPUESTA CRUDA DEL SERVER
     .then(response => response.json())
@@ -489,15 +490,13 @@ link_guardar_editar_actividad.onclick=modificar_actividad;
 
 //ELIMINAR UNA ACTIVIDAD
 var link_eliminar_actividad = document.getElementById("link-eliminar-actividad");
-const eliminar_actividad = () =>{
-	console.log("eliminar la actividad: " + id_actividad_editar);
-			
-	let peticion = {"id-actividad":id_actividad_editar};
+const eliminar_actividad = () =>{		
+	let form_eliminar_actividad = new FormData();
+	form_eliminar_actividad.append("id-actividad",id_actividad_editar);
 		
     fetch('Actividad', {
     	method: 'DELETE',
-    	body: JSON.stringify(peticion),
-    	headers: new Headers({'Content-Type': 'application/json'}),
+    	body: form_eliminar_actividad
 		})
     //RESPUESTA CRUDA DEL SERVER
     .then(response => response.json())

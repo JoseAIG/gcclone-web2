@@ -39,16 +39,16 @@ public class Database {
 			PR = PropertiesReader.getInstance();
 
 			//REMOTO
-			dbName = PR.obtenerPropiedad("dbName");
-			urlDB = PR.obtenerPropiedad("urlDB") + this.dbName;
-			userDB = PR.obtenerPropiedad("userDB");
-			passDB = PR.obtenerPropiedad("passDB");
+//			dbName = PR.obtenerPropiedad("dbName");
+//			urlDB = PR.obtenerPropiedad("urlDB") + this.dbName;
+//			userDB = PR.obtenerPropiedad("userDB");
+//			passDB = PR.obtenerPropiedad("passDB");
 						
 			//LOCAL
-//			dbName = PR.obtenerPropiedad("localDBName");
-//			urlDB = PR.obtenerPropiedad("localUrlDB") + this.dbName;
-//			userDB = PR.obtenerPropiedad("localUserDB");
-//			passDB = PR.obtenerPropiedad("localPassDB");
+			dbName = PR.obtenerPropiedad("localDBName");
+			urlDB = PR.obtenerPropiedad("localUrlDB") + this.dbName;
+			userDB = PR.obtenerPropiedad("localUserDB");
+			passDB = PR.obtenerPropiedad("localPassDB");
 			
 			//ESTABLECER CONEXION
 			Class.forName(driverDB);
