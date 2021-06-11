@@ -15,72 +15,76 @@ public class ControladorCalendario {
 	
 	//METODO PARA OBTENER LOS CALENDARIOS DE UN USUARIO
 	public static String obtenerCalendariosUsuario(HttpServletRequest request) {
-		HttpSession sesion = request.getSession();
-		String usuario = sesion.getAttribute("usuario").toString();
-		
-		Database DB = Database.getInstances();
-		
-		//OBTENER LOS ID'S DE LOS CALENDARIOS A LOS QUE TIENE ACCESO UN USUARIO
-		ArrayList<Integer> id_calendarios = DB.dbObtenerIDsCalendarios(usuario);
-		
-		//OBJETO STRINGBUILDER PARA ARMAR LA RESPUESTA CON LOS DATOS DE LOS CALENDARIOS (INCLUYENDO ACTIVIDADES)
-		StringBuilder resultado_JSON = new StringBuilder();
-		resultado_JSON.append(" {\"resultado\":\"Armado json StringBuilder\", \"status\":"+200+", \"calendarios\": [");
-		
-		//SE RECORREN LOS CALENDARIOS
-		for(int i=0; i<id_calendarios.size();i++) {
-			//OBTENCION ACTIVIDADES DE UN CALENDARIO
-			ArrayList<String[]> actividades_calendario = DB.dbObtenerActividadesCalendario(id_calendarios.get(i));
+		try {
+			HttpSession sesion = request.getSession();
+			String usuario = sesion.getAttribute("usuario").toString();
 			
-			resultado_JSON.append("{");
-			resultado_JSON.append(" \"id_calendario\": \""+ id_calendarios.get(i) +"\", ");
-			String[] datos_calendario = DB.dbObtenerDatosCalendario(id_calendarios.get(i));
-			resultado_JSON.append(" \"nombre_calendario\": \""+ datos_calendario[0] +"\", \"color\": \""+ datos_calendario[1] +"\", \"invitados\":[");
+			Database DB = Database.getInstances();
 			
-			//SE OBTIENEN LOS INVITADOS/COLABORADORES QUE POSEE EL CALENDARIO, SE RECORREN Y SE HACE APPEND
-			ArrayList<String> invitados_calendario = DB.dbObtenerInvitadosCalendario(usuario,id_calendarios.get(i));
-			for(int j=0; j<invitados_calendario.size();j++) {
-				resultado_JSON.append(" \""+invitados_calendario.get(j)+"\" ");
-				if(j!=(invitados_calendario.size()-1)) {
-					resultado_JSON.append(",");
-				}
-			}
-			resultado_JSON.append("], \"actividades\":[");
+			//OBTENER LOS ID'S DE LOS CALENDARIOS A LOS QUE TIENE ACCESO UN USUARIO
+			ArrayList<Integer> id_calendarios = DB.dbObtenerIDsCalendarios(usuario);
 			
-			//SE OBTIENEN LAS ACTIVIDADES PERTENECIENTES A UN CALENDARIO, SE RECORREN Y SE HACE APPEND
-			ArrayList<String[]> lista_actividades = DB.dbObtenerActividadesCalendario(id_calendarios.get(i));
-			for(int j=0; j<lista_actividades.size(); j++) {
-				String[] actividad = actividades_calendario.get(j);
+			//OBJETO STRINGBUILDER PARA ARMAR LA RESPUESTA CON LOS DATOS DE LOS CALENDARIOS (INCLUYENDO ACTIVIDADES)
+			StringBuilder resultado_JSON = new StringBuilder();
+			resultado_JSON.append(" {\"resultado\":\"Armado json StringBuilder\", \"status\":"+200+", \"calendarios\": [");
+			
+			//SE RECORREN LOS CALENDARIOS
+			for(int i=0; i<id_calendarios.size();i++) {
+				//OBTENCION ACTIVIDADES DE UN CALENDARIO
+				ArrayList<String[]> actividades_calendario = DB.dbObtenerActividadesCalendario(id_calendarios.get(i));
+				
 				resultado_JSON.append("{");
-				resultado_JSON.append("\"id_actividad\": \""+actividad[0]+"\",");
-				resultado_JSON.append("\"id_calendario\": \""+actividad[1]+"\",");
-				resultado_JSON.append("\"informacion\": \""+actividad[2]+"\",");
-				resultado_JSON.append("\"fecha\": \""+actividad[3]+"\",");
-				resultado_JSON.append("\"hora_inicio\": \""+actividad[4]+"\",");
-				resultado_JSON.append("\"hora_fin\": \""+actividad[5]+"\"");
-				if(actividad[6]!=null) {
-					resultado_JSON.append(",\"ruta_imagen\": \""+actividad[6]+"\"");					
+				resultado_JSON.append(" \"id_calendario\": \""+ id_calendarios.get(i) +"\", ");
+				String[] datos_calendario = DB.dbObtenerDatosCalendario(id_calendarios.get(i));
+				resultado_JSON.append(" \"nombre_calendario\": \""+ datos_calendario[0] +"\", \"color\": \""+ datos_calendario[1] +"\", \"invitados\":[");
+				
+				//SE OBTIENEN LOS INVITADOS/COLABORADORES QUE POSEE EL CALENDARIO, SE RECORREN Y SE HACE APPEND
+				ArrayList<String> invitados_calendario = DB.dbObtenerInvitadosCalendario(usuario,id_calendarios.get(i));
+				for(int j=0; j<invitados_calendario.size();j++) {
+					resultado_JSON.append(" \""+invitados_calendario.get(j)+"\" ");
+					if(j!=(invitados_calendario.size()-1)) {
+						resultado_JSON.append(",");
+					}
 				}
-
-				resultado_JSON.append("}");
-				if(j!=(lista_actividades.size()-1)) {
-					resultado_JSON.append(",");
+				resultado_JSON.append("], \"actividades\":[");
+				
+				//SE OBTIENEN LAS ACTIVIDADES PERTENECIENTES A UN CALENDARIO, SE RECORREN Y SE HACE APPEND
+				ArrayList<String[]> lista_actividades = DB.dbObtenerActividadesCalendario(id_calendarios.get(i));
+				for(int j=0; j<lista_actividades.size(); j++) {
+					//OBTENER LOS DATOS DE LA ACTIVIDAD j Y HACER APPEND
+					String[] actividad = actividades_calendario.get(j);
+					resultado_JSON.append("{");
+					resultado_JSON.append("\"id_actividad\": \""+actividad[0]+"\",");
+					resultado_JSON.append("\"id_calendario\": \""+actividad[1]+"\",");
+					resultado_JSON.append("\"informacion\": \""+actividad[2]+"\",");
+					resultado_JSON.append("\"fecha\": \""+actividad[3]+"\",");
+					resultado_JSON.append("\"hora_inicio\": \""+actividad[4]+"\",");
+					resultado_JSON.append("\"hora_fin\": \""+actividad[5]+"\"");
+					if(actividad[6]!=null) {
+						resultado_JSON.append(",\"ruta_imagen\": \""+actividad[6]+"\"");					
+					}
+					resultado_JSON.append("}");
+					if(j!=(lista_actividades.size()-1)) {
+						resultado_JSON.append(",");
+					}
+				}
+				resultado_JSON.append("]");
+				
+				//CERRADO DEL JSON
+				if(i==(id_calendarios.size()-1)) {
+					resultado_JSON.append("}");
+				}else {
+					resultado_JSON.append("},");
 				}
 			}
-			resultado_JSON.append("]");
+			resultado_JSON.append("]}");
+			System.out.println(resultado_JSON.toString());
 			
-			
-			//CERRADO DEL JSON
-			if(i==(id_calendarios.size()-1)) {
-				resultado_JSON.append("}");
-			}else {
-				resultado_JSON.append("},");
-			}
+			return resultado_JSON.toString();
+		} catch (Exception e) {
+			return "{\"resultado\": \"Error al obtener calendarios\", \"status\":"+500+"}";
 		}
-		resultado_JSON.append("]}");
-		System.out.println(resultado_JSON.toString());
 		
-		return resultado_JSON.toString();
 	}
 	
 	//METODO PARA CREAR UN NUEVO CALENDARIO
@@ -134,12 +138,6 @@ public class ControladorCalendario {
 		try {
 			//OBTENER DATOS DE LA PETICION
 			HttpSession sesion = request.getSession();
-			
-			System.out.println("La prueba del arreglo es: " + request.getParameter("arreglo"));
-			//System.out.println(array_invitados.get(0));
-//			for(int k=0; k<array_invitados.length(); k++) {
-//				System.out.println(array_invitados.get(k));
-//			}
 			
 			//EJECUTAR ACTUALIZACION DEL CALENDARIO
 			Database DB = Database.getInstances();

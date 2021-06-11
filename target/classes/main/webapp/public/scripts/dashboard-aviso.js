@@ -2,7 +2,6 @@
  * 
  */
 
-console.log("dashboard-aviso")
 let div_hora = document.getElementsByClassName("div-hora");
 
 function mostrar_avisos(actividades_semana){

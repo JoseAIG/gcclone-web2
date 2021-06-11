@@ -19,22 +19,39 @@
     width: 7em;
     display: inline-block;
     text-align: center;
+    border-bottom: 1px solid gray; 
 }
 
 /* SEPARADOR DE HORAS */
 
-.separador-horas {
+/* .separador-horas {
     width: 100%; 
     text-align: center; 
     border-bottom: 1px solid #000; 
     line-height: 0.1em;
     margin: 10px 0 20px; 
- } 
+ } */ 
  
-p span { 
+/* p span { 
      background:#fff; 
      padding:0 10px; 
+} */
+
+.numero-bloque-hora{
+	border: 1px solid gray;
+	border-radius: 1em;
+	background: #fafafa;
+	width: 50%;
+	margin: auto;
+	margin-top: 0.5em;
 }
+
+/* .span-bloque-hora {
+	border: 1px solid gray;
+	border-radius: 1em;
+	background: #fafafa;
+	padding: 0 10px;
+} */
 
 section, aside{
 	height: 88vh;
@@ -45,6 +62,7 @@ section, aside{
     padding: 1em;
 }
 
-footer{
-	margin-top: -3vh;
-}
+/* #anterior-semana, #siguiente-semana{
+	margin-top: 40vh;
+	position: fixed;
+} */

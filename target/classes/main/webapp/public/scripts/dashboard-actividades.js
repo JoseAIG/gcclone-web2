@@ -42,9 +42,26 @@ function toggle_datos_calendarios(remover,datos){
 		//obtener_actividades_semana();
 		dibujar_plantilla(selectorFecha.value);
 	}
-
-	//console.log("esto esta en actividades, datos: " + datos);
 }
+
+//FUNCION PARA INCREMENTAR EN UNA SEMANA LA FECHA DEL INPUT TYPE DATE
+var boton_anterior_semana = document.getElementById("anterior-semana");
+var boton_siguiente_semana = document.getElementById("siguiente-semana");
+function cambiar_semana(incrementar){
+	console.log("cambiar semana");
+	let nueva_fecha = new Date(selectorFecha.value);
+	if(incrementar){
+		nueva_fecha.setDate(nueva_fecha.getDate()+7);	
+	}else{
+		nueva_fecha.setDate(nueva_fecha.getDate()-7);	
+	}
+	console.log("nueva fecha: " + nueva_fecha);
+	selectorFecha.valueAsDate = nueva_fecha;
+	dibujar_plantilla(selectorFecha.value);
+}
+boton_siguiente_semana.addEventListener('click',()=>{cambiar_semana(true)});
+boton_anterior_semana.addEventListener('click',()=>{cambiar_semana(false)});
+
 
 //FUNCION PARA OBTENER EL NUMERO DE LA SEMANA DE LA FECHA DE UNA ACTIVIDAD
 function obtener_numero_semana(fecha_actividad){
@@ -133,10 +150,12 @@ function dibujar_plantilla(fecha_a_dibujar){
         for(let j=0; j<24; j=(j+0.5)){
 			if(j%1==0){
 				//SI ES UNA HORA EN PUNTO
-	            div_dia[i].innerHTML += `<div style="cursor: pointer" class="div-hora hoverable" dia=${i} hora=${j} numerodia="${parseInt(diasSemana[i])}"><p class="separador-horas"><span>${j+":00"}</span></p></div> <br>`
+	            //div_dia[i].innerHTML += `<div style="cursor: pointer" class="div-hora hoverable" dia=${i} hora=${j} numerodia="${parseInt(diasSemana[i])}"><p class="separador-horas"><span class="span-bloque-hora">${j+":00"}</span></p></div> <br>`
+	            div_dia[i].innerHTML += `<div style="cursor: pointer" class="div-hora hoverable" dia=${i} hora=${j} numerodia="${parseInt(diasSemana[i])}"><p class="numero-bloque-hora">${j+":00"}</p></div> <br>`
 			}else{
 				//SI ES UNA HORA Y MEDIA
-            	div_dia[i].innerHTML += `<div style="cursor: pointer" class="div-hora hoverable" dia=${i} hora=${j} numerodia="${parseInt(diasSemana[i])}"><p class="separador-horas"><span>${(j-0.5)+":30"}</span></p></div> <br>`				
+            	//div_dia[i].innerHTML += `<div style="cursor: pointer" class="div-hora hoverable" dia=${i} hora=${j} numerodia="${parseInt(diasSemana[i])}"><p class="separador-horas"><span class="span-bloque-hora">${(j-0.5)+":30"}</span></p></div> <br>`				
+            	div_dia[i].innerHTML += `<div style="cursor: pointer" class="div-hora hoverable" dia=${i} hora=${j} numerodia="${parseInt(diasSemana[i])}"><p class="numero-bloque-hora">${(j-0.5)+":30"}</p></div> <br>`				
 			}
         }
         //main_aside.appendChild(div_dia[i]);
@@ -275,6 +294,8 @@ function dibujar_plantilla(fecha_a_dibujar){
 					//INCLUIR EL DISENIO DEL DIV PRINCIPAL DE LA ACTIVIDAD
 					//div_hora[j].style.backgroundColor=colores_actividades[i];
 					div_hora[j].style.opacity='1';
+/*					div_hora[j].style.borderTopLeftRadius='1em';
+					div_hora[j].style.borderTopRightRadius='1em';*/
 					div_hora[j].innerHTML+=actividades_en_la_semana[i].informacion;	
 					//SI LA ACTIVIDAD TIENE UNA IMAGEN, MOSTRARLA
 					if(actividades_en_la_semana[i].ruta_imagen){
@@ -288,7 +309,9 @@ function dibujar_plantilla(fecha_a_dibujar){
 						//COLOCAR LOS DATOS DE LA ACTIVIDAD EN LOS CAMPOS DEL MODAL EDITAR ACTIVIDAD
 						input_detalle_editar_actividad.value = actividades_en_la_semana[i].informacion;
 						fecha_editar_actividad.value = actividades_en_la_semana[i].fecha;
-						rango_horas_editar_actividad.noUiSlider.set([actividades_en_la_semana[i].hora_inicio, actividades_en_la_semana[i].hora_fin]);
+						rango_hora_inicio[1].value= actividades_en_la_semana[i].hora_inicio;
+						rango_hora_fin[1].value = actividades_en_la_semana[i].hora_fin;
+						cambio_rango_horas(1);
 						//ABRIR MODAL EDITAR ACTIVIDAD
 						instancia_modal_editar_actividad.open();
 					});
@@ -413,8 +436,6 @@ const crear_actividad = () => {
 	console.log("crear actividad");
 	var form_nueva_actividad = new FormData(form_crear_actividad);
 	//AGREGAR LAS HORAS DE INICIO Y FIN AL FORM DATA
-	form_nueva_actividad.append("hora-inicio", rango_horas_crear_actividad.noUiSlider.get()[0]);
-	form_nueva_actividad.append("hora-fin", rango_horas_crear_actividad.noUiSlider.get()[1]);
 	//COMPROBAR CAMPOS DE LAS ACTIVIDADES
 	console.log(form_nueva_actividad.get('detalle-actividad'), form_nueva_actividad.get('fecha-crear-actividad'), form_nueva_actividad.get('imagen-crear-actividad'), form_nueva_actividad.get('select-calendario-crear-actividad'), form_nueva_actividad.get('hora-inicio'), form_nueva_actividad.get('hora-fin'));
 	if(!form_nueva_actividad.get('detalle-actividad') || !form_nueva_actividad.get('fecha-crear-actividad') || form_nueva_actividad.get('select-calendario-crear-actividad')==null){
@@ -442,8 +463,6 @@ const crear_actividad = () => {
 	        console.error('Error:', error);
 	    });
 	}
-	//console.log(rango_horas_crear_actividad.noUiSlider.get()[0], rango_horas_crear_actividad.noUiSlider.get()[1]);
-	//console.log(form_nueva_actividad.get('detalle-actividad'), form_nueva_actividad.get('fecha-crear-actividad'), form_nueva_actividad.get('imagen-crear-actividad'), form_nueva_actividad.get('select-calendario-crear-actividad'));
 }
 link_guardar_nueva_actividad.onclick=crear_actividad;
 
@@ -454,8 +473,6 @@ var form_editar_actividad = document.getElementById("form-editar-actividad");
 const modificar_actividad = () => {
 	console.log("modificar actividad, fetch aqui");
 	var datos_form_editar_actividad = new FormData(form_editar_actividad);
-	datos_form_editar_actividad.append("hora-inicio", rango_horas_editar_actividad.noUiSlider.get()[0]);
-	datos_form_editar_actividad.append("hora-fin", rango_horas_editar_actividad.noUiSlider.get()[1]);
 	datos_form_editar_actividad.append("id-actividad", id_actividad_editar);
 
     fetch('Actividad', {
@@ -508,31 +525,38 @@ const eliminar_actividad = () =>{
 }
 link_eliminar_actividad.onclick = eliminar_actividad;
 
-//COMPONENTES RANGO DE HORAS (noUiSlider) PARA LOS MODAL CREAR ACTIVIDAD Y MODIFICAR ACTIVIDAD
-//VER: https://refreshless.com/nouislider/
-var rango_horas_crear_actividad = document.getElementById('rango-horas-crear-actividad');
-noUiSlider.create(rango_horas_crear_actividad, {
-    start: [4, 12],
-    connect: true,
-    step: 0.5,
-    tooltips: true,
-    range: {
-        'min': 0,
-        'max': 24
-    }
-});
+//RANGO DE HORAS VANILLA PARA CREAR Y EDITAR ACTIVIDADES
+var rango_hora_inicio = document.getElementsByClassName("rango-hora-inicio");
+var rango_hora_fin = document.getElementsByClassName("rango-hora-fin");
 
-var rango_horas_editar_actividad = document.getElementById('rango-horas-editar-actividad');
-noUiSlider.create(rango_horas_editar_actividad, {
-    start: [4, 12],
-    connect: true,
-    step: 0.5,
-    tooltips: true,
-    range: {
-        'min': 0,
-        'max': 24
-    }
-});
+var label_hora_inicio = document.getElementsByClassName("label-hora-inicio");
+var label_hora_fin = document.getElementsByClassName("label-hora-fin");
+
+//ESTA FUNCION RECIBE POR PARAMETROS UN INDICE i, SI ES 0 ES PARA AJUSTAR LA INFORMACION PARA CREAR ACTIVIDAD Y SI ES 1 ES PARA EDITAR
+function cambio_rango_horas (i) {	
+	if(parseFloat(rango_hora_fin[i].value)<=parseFloat(rango_hora_inicio[i].value)){
+		rango_hora_fin[i].value=rango_hora_inicio[i].value;
+		rango_hora_fin[i].stepUp(1);
+	}
+	
+	//COLOCAR LA INFORMACION DE LA HORA DEL RANGO DE LA ACTIVIDAD EN SU LABEL
+	if(rango_hora_inicio[i].value%1==0){
+		label_hora_inicio[i].innerText="Hora inicio: " + rango_hora_inicio[i].value + ":00";	
+	}else{
+		label_hora_inicio[i].innerText="Hora inicio: " + parseInt(rango_hora_inicio[i].value) + ":30";
+	}
+	if(rango_hora_fin[i].value%1==0){
+		label_hora_fin[i].innerText="Hora fin: " + rango_hora_fin[i].value + ":00";	
+	}else{
+		label_hora_fin[i].innerText="Hora fin: " + parseInt(rango_hora_fin[i].value) + ":30";
+	}
+}
+rango_hora_inicio[0].addEventListener("input",()=>{cambio_rango_horas(0)});
+rango_hora_fin[0].addEventListener("input",()=>{cambio_rango_horas(0)})
+rango_hora_inicio[1].addEventListener("input",()=>{cambio_rango_horas(1)});
+rango_hora_fin[1].addEventListener("input",()=>{cambio_rango_horas(1)})
+
+
 
 //ELEMENTOS INTERNOS DEL MODAL CREAR ACTIVIDAD
 var input_detalle_crear_actividad = document.getElementById("input-detalle-crear-actividad");
@@ -550,8 +574,7 @@ document.addEventListener('DOMContentLoaded', function() {
    		onCloseEnd: ()=>{
 			input_detalle_crear_actividad.value=null;
 			fecha_crear_actividad.value=null;
-			rango_horas_crear_actividad.noUiSlider.reset();
-			
+						
 			document.getElementById("option-defecto").selected = 'selected';
 		    //VOLVER A INSTANCIAR LAS ETIQUETAS SELECT
 			var elems = document.querySelectorAll('select');
@@ -567,6 +590,9 @@ document.addEventListener('DOMContentLoaded', function() {
 	//INPUT TYPE RANGE
 /*	var rango_actividad = document.querySelector('#rango-actividad');
 	instancia_rango_actividad = M.Range.init(rango_actividad);*/
+	
+    var elems  = document.querySelectorAll("input[type=range]");
+    M.Range.init(elems);
 	
 	//BOTON FIJO AGREGADO
    	var elems = document.querySelectorAll('.fixed-action-btn');

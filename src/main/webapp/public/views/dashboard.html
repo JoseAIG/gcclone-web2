@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<meta charset="ISO-8859-1">
+		<meta charset="UTF-8">
 		<!-- MATERIALIZE -->
 		<link href="public/styles/materialize.min.css" rel="stylesheet">
 		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -12,31 +12,31 @@
 		<script src="public/scripts/dashboard-aviso.js" defer></script>
 		<script src="public/scripts/dashboard-actividades.js" defer></script>
 		<link href="public/styles/dashboard-actividades.css" rel="stylesheet">
-		<!-- NOUISLIDER -->
-<!-- 		<script src="https://cdnjs.cloudflare.com/ajax/libs/wnumb/1.2.0/wNumb.min.js" integrity="sha512-igVQ7hyQVijOUlfg3OmcTZLwYJIBXU63xL9RC12xBHNpmGJAktDnzl9Iw0J4yrSaQtDxTTVlwhY730vphoVqJQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
- -->		<script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/14.7.0/nouislider.min.js" integrity="sha512-jWNpWAWx86B/GZV4Qsce63q5jxx/rpWnw812vh0RE+SBIo/mmepwOSQkY2eVQnMuE28pzUEO7ux0a5sJX91g8A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/12.0.0/nouislider.min.css" integrity="sha512-kSH0IqtUh1LRE0tlO8dWN7rbmdy5cqApopY6ABJ4U99HeKulW6iKG5KgrVfofEXQOYtdQGFjj2N/DUBnj3CNmQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/14.7.0/nouislider.min.css" integrity="sha512-40vN6DdyQoxRJCw0klEUwZfTTlcwkOLKpP8K8125hy9iF4fi8gPpWZp60qKC6MYAFaond8yQds7cTMVU8eMbgA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 		
 		<title>GC Clone - Dashboard</title>
 	</head>
 	<body>
-		<!-- Inicio componente de navbar -->
+		<!-- INICIO NAVBAR -->
 		<nav>
 		  <div class="nav-wrapper teal">
 		    <a href="/" class="brand-logo left"><i class="material-icons">perm_contact_calendar</i>GC Clone</a>
 		    <ul class="right">
 		    	<li><a id="link-editar-perfil" class="waves-effect waves-light modal-trigger" data-target="modal-editar-perfil"><i class="material-icons left ">person_outline</i>Editar perfil</a></li>
-		      	<li><a id="link-cerrar-sesion"><i class="waves-effect waves-light material-icons left">power_settings_new</i>Cerrar Sesión</a></li>
+		      	<li><a id="link-cerrar-sesion"><i class="waves-effect waves-light material-icons left">power_settings_new</i>Cerrar SesiÃ³n</a></li>
 		    </ul>
 		  </div>
 		</nav>
-		<!-- Fin componente de navbar -->
+		<!-- FIN NAVBAR -->
 		
 	    <!-- ESTRUCTURA DE LA PAGINA DEBAJO DEL NAVBAR -->
     	<div class="row">
 			<!-- ASIDE NAVEGACION -->
       		<aside class="col s3 grey lighten-2">
         		<input type="date" id="selector-fecha">
+         		<div class="center">
+    		        <button id="anterior-semana" class="btn-floating waves-effect waves-light teal"><i class="material-icons">arrow_back</i></button>
+        			<button id="siguiente-semana" class="btn-floating waves-effect waves-light teal"><i class="material-icons">arrow_forward</i></button>
+        		</div>
         		<h5 class="center">Calendarios</h5>
         		<div id="contenedor-nombres-calendarios"></div>
         		<div class="center">
@@ -44,8 +44,12 @@
         		</div>        		
       		</aside>
 			<!-- SECTION DASHBOARD -->
-      		<section class="col s9">
+      		<section class="col s9 grey lighten-5">
         		<div id="contenedor-divs-dia" class="center">
+<!--         			<div class="center col s9" style="margin-top: 40vh; position: fixed;">
+    		        	<button id="anterior-semana" class="btn-floating btn-large waves-effect waves-light teal left"><i class="material-icons">arrow_back</i></button>
+        				<button id="siguiente-semana" class="btn-floating btn-large waves-effect waves-light teal right"><i class="material-icons">arrow_forward</i></button>
+        			</div> -->
 	      		    <div id="div0" class="div-dia"></div>
 			        <div id="div1" class="div-dia"></div>
 			        <div id="div2" class="div-dia"></div>
@@ -85,7 +89,7 @@
 					        </div>
         			        <div class="input-field col s6 offset-s3">
 					        	<input id="editar-clave" type="password" class="validate" name="clave" placeholder="" disabled>
-					        	<label for="clave">Nueva contraseña</label>
+					        	<label for="clave">Nueva contraseÃ±a</label>
 					        </div>
 		        		</div>
 		        	</form>
@@ -103,7 +107,7 @@
 		</div>
 		<!-- Fin Modal actualizacion usuario -->
 		
-		<!-- MODAR AGREGAR CALENDARIO -->
+		<!-- MODAL AGREGAR CALENDARIO -->
 		<div id="modal-crear-calendario" class="modal hoverable">
 		  <div class="modal-content">
 		    <h4 class="center">Nuevo calendario</h4>
@@ -133,7 +137,7 @@
 		</div>
 		<!-- FIN MODAL AGREGAR CALENDARIO -->
 		
-		<!-- MODAR EDITAR CALENDARIO -->
+		<!-- MODAL EDITAR CALENDARIO -->
 		<div id="modal-editar-calendario" class="modal hoverable">
 		  <div class="modal-content">
 		    <h4 class="center">Editar calendario</h4>
@@ -184,8 +188,16 @@
 		        				<input type="date" id="fecha-crear-actividad" name="fecha-crear-actividad">
 		        			</div>
 		        			<div class="col s6 offset-s3">
-		        				<label for="rango-horas-crear-actividad">Rango de horas:</label>
-   								<div id="rango-horas-crear-actividad" style="margin-top: 3.5em; margin-bottom: 1.5em"></div>
+		        				<label class="label-hora-inicio">Hora inicio: 4:00</label>
+		        			    <p class="range-field">
+							      <input type="range" name="hora-inicio" class="rango-hora-inicio" min="0.0" max="23.5" value="4.0" step="0.5"/>
+							    </p>
+		        			</div>
+		        			<div class="col s6 offset-s3">
+		        				<label class="label-hora-fin">Hora fin: 12:00</label>
+		        			    <p class="range-field">
+							      <input type="range" name="hora-fin" class="rango-hora-fin" min="0.5" max="24.0" value="12.0" step="0.5"/>
+							    </p>
 		        			</div>
 		        			<div class="col s6 offset-s3">
 		        				<label>Imagen actividad (opcional):</label>
@@ -233,9 +245,17 @@
 		        				<label for="fecha-editar-actividad">Fecha de la actividad:</label>
 		        				<input type="date" id="fecha-editar-actividad" name="fecha-editar-actividad">
 		        			</div>
+        					<div class="col s6 offset-s3">
+		        				<label class="label-hora-inicio">Hora inicio: </label>
+		        			    <p class="range-field">
+							      <input type="range" name="hora-inicio" class="rango-hora-inicio" min="0.0" max="23.5" value="4.0" step="0.5"/>
+							    </p>
+		        			</div>
 		        			<div class="col s6 offset-s3">
-		        				<label for="rango-horas-editar-actividad">Rango de horas:</label>
-   								<div id="rango-horas-editar-actividad" style="margin-top: 3.5em; margin-bottom: 1.5em"></div>
+		        				<label class="label-hora-fin">Hora Fin: </label>
+		        			    <p class="range-field">
+							      <input type="range" name="hora-fin" class="rango-hora-fin" min="0.5" max="24.0" value="12.0" step="0.5"/>
+							    </p>
 		        			</div>
 		        			<div class="col s6 offset-s3">
 		        				<label>Imagen actividad (opcional):</label>
@@ -249,12 +269,6 @@
 									</div>
 		        				</div>
 		        			</div>
-<!-- 		        			<div class="col s6 offset-s3">
-		        			   	<label for="select-calendario-editar-actividad">Calendario:</label>
-		        				<select name="select-calendario-editar-actividad" id="select-calendario-editar-actividad">
-		        					<option value="" disabled selected id="option-defecto">Seleccione un calendario</option>
-		        				</select>
-		        			</div> -->
 		        		</div>
 		        	</form>
 		        	<div class="col s12 center">
@@ -270,6 +284,5 @@
 		  </div>
 		</div>
 		<!-- FIN MODAL EDITAR ACTIVIDAD -->		
-
 	</body>
 </html>
