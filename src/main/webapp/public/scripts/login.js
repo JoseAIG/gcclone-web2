@@ -16,9 +16,9 @@ const iniciar_sesion = () => {
 	    fetch('Login', {
 	    	method: 'POST',
 	    	body: datos_form,
-			mode: "no-cors",
-	    	headers: {'Content-Type': 'application/json'}
-			})
+			/*mode: "no-cors",*/
+	    	/*headers: {'Content-Type': 'application/json'}*/
+		})
 	    //RESPUESTA CRUDA DEL SERVER
 	    .then(response => response.json())
 	    //RESPUESTA CON LOS RESULTADOS DEL SERVIDOR

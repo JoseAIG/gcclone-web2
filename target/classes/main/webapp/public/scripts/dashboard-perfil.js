@@ -7,7 +7,7 @@ var link_cerrar_sesion = document.getElementById("link-cerrar-sesion");
 const cerrar_sesion = ()=>{
 	    fetch('Dashboard', {
 	    	method: 'POST'
-			})
+		})
 	    //RESPUESTA CRUDA DEL SERVER
 	    .then(response => response.json())
 	    //RESPUESTA CON LOS RESULTADOS DEL SERVIDOR
@@ -32,7 +32,7 @@ const obtener_datos_perfil = () => {
     fetch('Perfil', {
     	method: 'GET',
     	headers: {'Content-Type': 'application/json'}
-		})
+	})
     //RESPUESTA CRUDA DEL SERVER
     .then(response => response.json())
     //RESPUESTA CON LOS RESULTADOS DEL SERVIDOR
@@ -60,9 +60,9 @@ const guardar_datos_perfil = () => {
     fetch('Perfil', {
     	method: 'POST',
     	body: datos_form_editar_perfil,
-		mode: "no-cors",
-    	headers:{'Content-Type': 'application/json'},
-		})
+/*		mode: "no-cors",
+    	headers:{'Content-Type': 'application/json'},*/
+	})
     //RESPUESTA CRUDA DEL SERVER
     .then(response => response.json())
     //RESPUESTA CON LOS RESULTADOS DEL SERVIDOR

@@ -4,22 +4,23 @@
 
 //OBTENER LOS CALENDARIOS DEL USUARIO AL CARGAR LA PAGINA
 window.onload=()=>{
-	    fetch('Calendario', {
-	    	method: 'GET',
-	    	headers: {'Content-Type': 'application/json'}
-			})
-	    //RESPUESTA CRUDA DEL SERVER
-	    .then(response => response.json())
-	    //RESPUESTA CON LOS RESULTADOS DEL SERVIDOR
-	    .then(data => {
-	        console.log('Respuesta del servidor:', data);
-			mostrar_calendarios_aside(data);
-			agregar_calendarios_opciones_select(data.calendarios);
-	    })	    
-		//CATCH PARA OBTENER DETALLE POR SI ORURRE UN ERROR
-	    .catch((error) => {
-	        console.error('Error:', error);
-	    });
+    fetch('Calendario', {
+    	method: 'GET',
+    	headers: {'Content-Type': 'application/json'}
+	})
+    //RESPUESTA CRUDA DEL SERVER
+    .then(response => response.json())
+    //RESPUESTA CON LOS RESULTADOS DEL SERVIDOR
+    .then(data => {
+        console.log('Respuesta del servidor:', data);
+        //CON LA RESPUESTA DE LOS CALENDARIOS QUE RETORNA EL SERVIDOR, MOSTRAR LOS CALENDARIOS EN EL ASIDE Y AGREGAR LOS OPTIONS EN LAS ETIQUETAS SELECT PARA CREAR ACTIVIDAD
+		mostrar_calendarios_aside(data);
+		agregar_calendarios_opciones_select(data.calendarios);
+    })	    
+	//CATCH PARA OBTENER DETALLE POR SI ORURRE UN ERROR
+    .catch((error) => {
+        console.error('Error:', error);
+    });
 }
 //CONTENEDOR PARA IMPRIMIR LOS NOMBRES DE LOS CALENDARIOS
 var div_contenedor_nombres_calendarios = document.getElementById("contenedor-nombres-calendarios");
@@ -37,7 +38,7 @@ const mostrar_calendarios_aside = (data)=>{
 		//CONTENEDOR "ETIQUETA" CALENDARIO (CHECKBOX, NOMBRE Y BOTON CONFIG)
 		let div = document.createElement("div");
 		
-		//BOTON CONFIGURACION DE CALENDARIO
+		//BOTON CON ICONO PARA CONFIGURACION DE CALENDARIO
 		let i_tag = document.createElement("i");
 		i_tag.className="material-icons right";
 		i_tag.textContent="edit";
@@ -62,7 +63,7 @@ const mostrar_calendarios_aside = (data)=>{
 		p.appendChild(label);
 		div.appendChild(p);
 		
-	
+		//AGREGAR EVENTO AL ICONO EDITAR CALENDARIO PARA CADA CALENDARIO EN EL ASIDE
 		//COLOCAR LOS DATOS DEL CALENDARIO EN EL MODAL PARA EDITAR CALENDARIO
 		i_tag.addEventListener("click",()=>{
 			//FUNCIONALIDAD BOTON ELIMINAR CALENDARIO EN FUNCION DE SU ID
@@ -73,18 +74,20 @@ const mostrar_calendarios_aside = (data)=>{
 			input_color_editar_calendario.value=data.calendarios[i].color;
 			instancia_modal_editar_calendario.open();
 			//contador_editar_invitados = data.calendarios[i].invitados.length;
-			//AGREGAR LAS ENTRADAS DE LOS INVITADOS DEL CALENDARIO
+			//AGREGAR LAS ENTRADAS DE LOS INVITADOS DEL CALENDARIO SIEMPRE QUE EL USUARIO SEA PROPIETARIO (INVITADOS!=NULL)
 			if(data.calendarios[i].invitados!=null){
 				contador_editar_invitados = data.calendarios[i].invitados.length;
-				
-				//FUNCIONALIDAD BOTON ELIMINAR CALENDARIO EN FUNCION DE SU ID Y PRIVILEGIOS DE DUEÑO
+				//FUNCIONALIDAD BOTON ELIMINAR CALENDARIO EN FUNCION DE SU ID Y PRIVILEGIOS DE DUEÑO (ELIMINAR CALENDARIO Y TODOS LOS DATOS DE EDICIONES DE LA BBDD)
 				eliminar_calendario(data.calendarios[i].id_calendario, true);
+				
+				//REESTABLECER DISEÑO DE PROPIETARIO (AGREGAR INVITADOS, CAMPOS ACTIVOS Y GUARDAR EDICION)
 				link_agregar_invitado_editar.style.display='inline-block';
 				link_guardar_edicion_calendario.style.display='inline-block';
 				input_nombre_editar_calendario.disabled = false;
 				input_color_editar_calendario.disabled = false;
 				p_informacion_compartido.innerText="Compartido con:";
 				
+				//PARA CADA INVITADO DEL CALENDARIO, CREAR SU CAMPO, RELLENAR LA INFORMACION E INCLUIR EL BOTON PARA ELIMINAR EL CAMPO
 				for(let j=0; j<data.calendarios[i].invitados.length; j++){
 					//DIV PARA EL CAMPO DE INVITADO
 					let div = document.createElement("div");
@@ -98,7 +101,7 @@ const mostrar_calendarios_aside = (data)=>{
 					input.placeholder="";
 					input.value=data.calendarios[i].invitados[j];
 					div.appendChild(input);
-					console.log(input);
+					//console.log(input);
 					
 					//DIV PARA BOTON REMOVER CAMPO INVITADO
 					let div_remover = document.createElement("div");
@@ -122,9 +125,10 @@ const mostrar_calendarios_aside = (data)=>{
 					contenedor_editar_invitados.appendChild(div_remover);
 				}
 			}else{
-				//FUNCIONALIDAD BOTON ELIMINAR CALENDARIO EN FUNCION DE SU ID Y PRIVILEGIOS DE NO PROPIETARIO (BORRAR DATOS DE EDICION)
+				//FUNCIONALIDAD BOTON ELIMINAR CALENDARIO EN FUNCION DE SU ID Y PRIVILEGIOS DE NO PROPIETARIO (INVITADOS=NULL) (BORRAR DATOS DE EDICION)
 				eliminar_calendario(data.calendarios[i].id_calendario, false);
 			
+				//DISEÑO DE LOS ELEMENTOS DEL MODAL EDICION CALENDARIO SIENDO UN INVITADO (CAMPOS DESACTIVADOS Y BOTONES NO VISIBLES)
 				link_agregar_invitado_editar.style.display='none';
 				link_guardar_edicion_calendario.style.display='none';
 				input_nombre_editar_calendario.disabled = true;
@@ -133,10 +137,9 @@ const mostrar_calendarios_aside = (data)=>{
 				p_informacion_compartido.innerText="Eres un invitado en este calendario!";
 			}
 			
-			
 		});
 		
-		//FUNCIONALIDAD CLICK DE LOS CHECKBOXES
+		//FUNCIONALIDAD CLICK DEL CHECKBOX DEL CALENDARIO i
 		input_checkbox.addEventListener('click',()=>{
 			//AL CLICKEAR UN CHECKBOX SE COMPRUEBA SU ESTADO. SI ES SELECCIONADO SE LLAMA A LA FUNCION "toggle_datos_calendarios" EN "dashboard-actividades.js"
 			//SI EL CHECKBOX ESTA ACTIVO, SE GUARDAN LOS DATOS EN EL ARREGLO DE DATOS CALENDARIOS SELECCIONADOS EN "dashboard-actividades.js", SINO, SE REMUEVE (PRIMER PARAMETRO true)
@@ -187,6 +190,8 @@ var form_crear_calendario = document.getElementById("form-crear-calendario");
 const guardar_nuevo_calendario = ()=>{
 	var datos_form_crear_calendario = new FormData(form_crear_calendario);
 	datos_form_crear_calendario.append("cantidad-invitados", contador_invitados);
+	
+	//RECORRER LOS INVITADOS Y COMPROPAR QUE SU INPUT NO ESTE VACIO Y QUE NO ESTEN DUPLICADOS
 	for(let i=0;i<contador_invitados;i++){
 		if(datos_form_crear_calendario.get("input-invitado"+i)!=null){
 			for(let j=0; j<contador_invitados;j++){
@@ -198,14 +203,15 @@ const guardar_nuevo_calendario = ()=>{
 		}
 	}
 	
+	//COMPROBAR SI EL CALENDARIO POSEE UN NOMBRE VALIDO PARA EJECUTAR LA PETICION CON FETCH
 	if(datos_form_crear_calendario.get("nombre-calendario")==""){
 		alert("Ingrese un nombre para el calendario");
 	}else{
 	    fetch('Calendario', {
 	    	method: 'POST',
 	    	body: datos_form_crear_calendario,
-			mode: "no-cors",
-	    	headers: {'Content-Type': 'application/json'}
+/*			mode: "no-cors",
+	    	headers: {'Content-Type': 'application/json'}*/
 		})
 	    //RESPUESTA CRUDA DEL SERVER
 	    .then(response => response.json())
@@ -296,7 +302,7 @@ function eliminar_calendario (id_calendario, propietario) {
 	    fetch('Calendario', {
 	    	method: 'DELETE',
 	    	body: form_peticion,
-			})
+		})
 	    //RESPUESTA CRUDA DEL SERVER
 	    .then(response => response.json())
 	    //RESPUESTA CON LOS RESULTADOS DEL SERVIDOR

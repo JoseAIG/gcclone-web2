@@ -20,6 +20,8 @@
     display: inline-block;
     text-align: center;
     border-bottom: 1px solid gray; 
+    
+    position: relative;
 }
 
 /* SEPARADOR DE HORAS */
@@ -44,6 +46,17 @@
 	width: 50%;
 	margin: auto;
 	margin-top: 0.5em;
+}
+
+.link-editar-actividad{
+	position: absolute;
+	bottom: 0.2em;
+	left:35%;
+	background-color: #fafafa;
+	width: 2em;
+	height: 2em;
+	border-radius: 1em;
+	color: gray;
 }
 
 /* .span-bloque-hora {

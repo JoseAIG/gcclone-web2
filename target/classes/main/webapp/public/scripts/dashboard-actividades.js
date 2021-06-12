@@ -9,17 +9,19 @@ Date.prototype.numeroSemana = function() {
     return Math.ceil((((this - primer_dia_anio) / 86400000) + primer_dia_anio.getDay()+1)/7);
 };
 
+//OBTENER EL SELECTOR DE LA FECHA Y ASIGNARLE POR DEFECTO LA FECHA ACTUAL
 let selectorFecha = document.getElementById("selector-fecha");
 selectorFecha.valueAsDate= new Date();
 //dibujar_plantilla(selectorFecha.value);
 
+//EJECUTAR LA FUNCION "dibujar_plantilla" CADA VEZ QUE SE CAMBIA UN VALOR EN EL SELECTOR DE LA FECHA
 selectorFecha.addEventListener('change',()=>{dibujar_plantilla(selectorFecha.value)})
 //selectorFecha.addEventListener('change',()=>{console.log(selectorFecha.value)})
 
 //FUNCION LLAMADA CUANDO SE SELECCIONA UN CHECKBOX EN "dashboard-calendario.js"
 var datos_calendarios = new Array();
 function toggle_datos_calendarios(remover,datos){
-	
+	//SI SE PASA TRUE EN EL PARAMETRO REMOVER, RECORRER EL ARREGLO DE LOS DATOS DEL CALENDARIO Y REMOVER EXACTAMENTE LOS DATOS DE UN CALENDARIO ESPECIFICO UNICAMENTE
 	if(remover){
 		for(let i=0; i<datos_calendarios.length; i++){
 			if(datos_calendarios[i]==datos){
@@ -30,32 +32,32 @@ function toggle_datos_calendarios(remover,datos){
 		for(let i=0; i<datos_calendarios.length; i++){
 			console.log(datos_calendarios[i]);
 		}
-		//obtener_actividades_semana();
+		//SE DIBUJA LA PLANTILLA SEMANAL CON LA FECHA QUE POSEE EL SELECTOR
 		dibujar_plantilla(selectorFecha.value);
 	}else{
+		//SI REMOVER ES FALSE (AGREGAR DATOS). SE AGREGAN LOS DATOS DEL CALENDARIO EN EL ARREGLO
 		datos_calendarios.push(datos);
 		//IMPRESION DE LOS DATOS CONTENIDOS EN EL ARREGLO
 		for(let i=0; i<datos_calendarios.length; i++){
 			console.log(datos_calendarios[i]);
-			//obtener_actividades_semana(datos_calendario[i]);
 		}		
-		//obtener_actividades_semana();
+		//SE DIBUJA LA PLANTILLA SEMANAL CON LA FECHA QUE POSEE EL SELECTOR
 		dibujar_plantilla(selectorFecha.value);
 	}
 }
 
-//FUNCION PARA INCREMENTAR EN UNA SEMANA LA FECHA DEL INPUT TYPE DATE
+//FUNCION PARA INCREMENTAR O DECREMENTAR EN UNA SEMANA LA FECHA DEL INPUT TYPE DATE CON BOTONES
 var boton_anterior_semana = document.getElementById("anterior-semana");
 var boton_siguiente_semana = document.getElementById("siguiente-semana");
 function cambiar_semana(incrementar){
-	console.log("cambiar semana");
+	//SE CREA UNA NUEVA FECHA EN BASE A LA DEL SELECTOR, SI SE INCREMENTA AUMENTA LA FECHA EN 7 DIAS, SINO, LA DECREMENTA EN 7
 	let nueva_fecha = new Date(selectorFecha.value);
 	if(incrementar){
 		nueva_fecha.setDate(nueva_fecha.getDate()+7);	
 	}else{
 		nueva_fecha.setDate(nueva_fecha.getDate()-7);	
 	}
-	console.log("nueva fecha: " + nueva_fecha);
+	//ASIGNAR NUEVO VALOR COMO FECHA AL SELECTOR DE LA FECHA PARA DIBUJAR LA PLANTILLA SEMANAL CON LA FECHA DEL SELECTOR
 	selectorFecha.valueAsDate = nueva_fecha;
 	dibujar_plantilla(selectorFecha.value);
 }
@@ -85,30 +87,29 @@ function obtener_numero_semana(fecha_actividad){
 
 var actividades_en_la_semana = new Array();
 var colores_actividades = new Array();
+var privilegios_actividades = new Array();
+//FUNCION PARA CALCULAR LAS ACTIVIDADES DE UNA SEMANA
 function obtener_actividades_semana(){
-	//LIMPIAR ARREGLO DE LAS ACTIVIDADES DE LA SEMANA
+	//LIMPIAR ARREGLO DE LAS ACTIVIDADES DE LA SEMANA Y COLORES DE LAS ACTIVIDADES
 	actividades_en_la_semana = [];
 	colores_actividades = [];
+	privilegios_actividades = [];
 	//SE RECORREN TODOS LOS CALENDARIOS DE LOS CHECKBOXES MARCADOS
 	for(let i=0; i<datos_calendarios.length; i++){
 		//SE RECORREN TODAS LAS ACTIVIDADES DE CADA CALENDARIO
 		for(let j=0; j<datos_calendarios[i].actividades.length; j++){
-			//console.log(datos_calendarios[i].actividades[j]);
 			//SI EL NUMERO DE LA SEMANA DE UNA ACTIVIDAD ES IGUAL AL NUMERO DE LA SEMANA DE LA FECHA PRINCIPAL, SE GUARDA LA ACTIVIDAD EN EL ARREGLO DE ACTIVIDADES DE LA PRESENTE SEMANA
-			//EN EL CASO QUE EL DIA DE LA FECHA SEA DOMINGO, SE LE SUMA 1 AL NUMERO DE SEMANA, DADO QUE LAS SEMANAS CAMBIAN DE NUMERO LOS LUNES Y QUEREMOS QUE EL DOMINGO PERTENEZCA A ESA MISMA SEMANA
-/*			let semana_fecha_principal = fechaPrincipal.getWeek();
-			if(fechaPrincipal.getDay()==0){
-				semana_fecha_principal++;
-			}*/
 			let semana_fecha_principal = fechaPrincipal.numeroSemana();
-			
 			if(obtener_numero_semana(datos_calendarios[i].actividades[j].fecha)==semana_fecha_principal){
 				actividades_en_la_semana.push(datos_calendarios[i].actividades[j]);
 				colores_actividades.push(datos_calendarios[i].color);
-				console.log(colores_actividades);
+				if(datos_calendarios[i].invitados==null){
+					console.log("no brindar privilegios de edicion de actividades");
+					privilegios_actividades.push(false);
+				}else{
+					privilegios_actividades.push(true);
+				}
 			}
-
-
 		}
 	}
 	console.log(actividades_en_la_semana);
@@ -151,11 +152,11 @@ function dibujar_plantilla(fecha_a_dibujar){
 			if(j%1==0){
 				//SI ES UNA HORA EN PUNTO
 	            //div_dia[i].innerHTML += `<div style="cursor: pointer" class="div-hora hoverable" dia=${i} hora=${j} numerodia="${parseInt(diasSemana[i])}"><p class="separador-horas"><span class="span-bloque-hora">${j+":00"}</span></p></div> <br>`
-	            div_dia[i].innerHTML += `<div style="cursor: pointer" class="div-hora hoverable" dia=${i} hora=${j} numerodia="${parseInt(diasSemana[i])}"><p class="numero-bloque-hora">${j+":00"}</p></div> <br>`
+	            div_dia[i].innerHTML += `<div  class="div-hora hoverable" dia=${i} hora=${j} numerodia="${parseInt(diasSemana[i])}"><p class="numero-bloque-hora">${j+":00"}</p></div> <br>`
 			}else{
 				//SI ES UNA HORA Y MEDIA
             	//div_dia[i].innerHTML += `<div style="cursor: pointer" class="div-hora hoverable" dia=${i} hora=${j} numerodia="${parseInt(diasSemana[i])}"><p class="separador-horas"><span class="span-bloque-hora">${(j-0.5)+":30"}</span></p></div> <br>`				
-            	div_dia[i].innerHTML += `<div style="cursor: pointer" class="div-hora hoverable" dia=${i} hora=${j} numerodia="${parseInt(diasSemana[i])}"><p class="numero-bloque-hora">${(j-0.5)+":30"}</p></div> <br>`				
+            	div_dia[i].innerHTML += `<div  class="div-hora hoverable" dia=${i} hora=${j} numerodia="${parseInt(diasSemana[i])}"><p class="numero-bloque-hora">${(j-0.5)+":30"}</p></div> <br>`				
 			}
         }
         //main_aside.appendChild(div_dia[i]);
@@ -165,9 +166,9 @@ function dibujar_plantilla(fecha_a_dibujar){
     let div_hora = document.getElementsByClassName("div-hora");
 	for(let i=0; i<div_hora.length;i++){
         div_hora[i].style.opacity='0.5';
-		div_hora[i].addEventListener('click',()=>{
+/*		div_hora[i].addEventListener('click',()=>{
 			console.log("click en el div " + i, div_hora[i]);
-		});
+		});*/
 /*        div_hora[i].addEventListener('mouseover',()=>{
             div_hora[i].style.opacity='1';
         });
@@ -296,27 +297,39 @@ function dibujar_plantilla(fecha_a_dibujar){
 					div_hora[j].style.opacity='1';
 /*					div_hora[j].style.borderTopLeftRadius='1em';
 					div_hora[j].style.borderTopRightRadius='1em';*/
-					div_hora[j].innerHTML+=actividades_en_la_semana[i].informacion;	
+					div_hora[j].innerHTML+=actividades_en_la_semana[i].informacion;
 					//SI LA ACTIVIDAD TIENE UNA IMAGEN, MOSTRARLA
 					if(actividades_en_la_semana[i].ruta_imagen){
-			        	div_hora[j].innerHTML+=`<br><img alt="img" src="${actividades_en_la_semana[i].ruta_imagen}" style="width:3em">`;					
+			        	div_hora[j+1].innerHTML+=`<br><img alt="img" src="${actividades_en_la_semana[i].ruta_imagen}" style="width:3em">`;					
 					}			
 			        
 			        //CONFIGURAR EL EVENTO PARA EDITAR ACTIVIDAD EN EL PRIMER DIV DE LA ACTIVIDAD
-					div_hora[j].addEventListener('click',()=>{
-						//
-						id_actividad_editar = div_hora[j].getAttribute("id-actividad");
-						//COLOCAR LOS DATOS DE LA ACTIVIDAD EN LOS CAMPOS DEL MODAL EDITAR ACTIVIDAD
-						input_detalle_editar_actividad.value = actividades_en_la_semana[i].informacion;
-						fecha_editar_actividad.value = actividades_en_la_semana[i].fecha;
-						rango_hora_inicio[1].value= actividades_en_la_semana[i].hora_inicio;
-						rango_hora_fin[1].value = actividades_en_la_semana[i].hora_fin;
-						cambio_rango_horas(1);
-						//ABRIR MODAL EDITAR ACTIVIDAD
-						instancia_modal_editar_actividad.open();
-					});
-			        
+			        if(privilegios_actividades[i]){
+			        	let link_editar_actividad = document.createElement("a");
+			        	link_editar_actividad.className="waves-effect waves-light modal-trigger link-editar-actividad";
+			        	link_editar_actividad.setAttribute("data-target", "modal-editar-actividad");
+			        	link_editar_actividad.innerHTML= `<i class="material-icons">edit</i>`;
+    					div_hora[j].appendChild(link_editar_actividad);
+						link_editar_actividad.addEventListener('click',()=>{
+							//
+							id_actividad_editar = div_hora[j].getAttribute("id-actividad");
+							//COLOCAR LOS DATOS DE LA ACTIVIDAD EN LOS CAMPOS DEL MODAL EDITAR ACTIVIDAD
+							input_detalle_editar_actividad.value = actividades_en_la_semana[i].informacion;
+							fecha_editar_actividad.value = actividades_en_la_semana[i].fecha;
+							//ASIGNAR LOS VALORES EN LOS RANGO DE HORAS PARA EDICION (0 CREAR - 1 EDITAR)
+							rango_hora_inicio[1].value= actividades_en_la_semana[i].hora_inicio;
+							rango_hora_fin[1].value = actividades_en_la_semana[i].hora_fin;
+							cambio_rango_horas(1);
+							
+							//INCLUIR BOTON PARA EDITAR ACTIVIDAD
+							
+							//ABRIR MODAL EDITAR ACTIVIDAD
+							//instancia_modal_editar_actividad.open();
+						});
+				    }    
 					flag=true;
+					
+					
 				}
 				if(actividades_en_la_semana[i].hora_fin%1==0 && div_hora[j].getAttribute("hora")!=23.5){
 					div_hora[j+1].style.backgroundColor=colores_actividades[i];
