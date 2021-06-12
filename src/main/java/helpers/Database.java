@@ -89,33 +89,6 @@ public class Database {
 		return "Operacion exitosa";
 	}
 	
-	//METODO PARA OBTENER COINCIDENCIAS DE USUARIO Y CLAVE PARA LOGIN
-//	public boolean dbLogin (Object[] datos) {
-//		try {
-//			this.stmt = this.conn.createStatement();
-//			//this.rs = this.stmt.executeQuery("select *from usuarios");
-//			this.rs = this.stmt.executeQuery(PR.obtenerPropiedad("login"));
-//			while(rs.next()) {
-//				String usuario = rs.getString("nombre_usuario");
-//				String correo = rs.getString("correo");
-//				String clave = rs.getString("clave");
-//				if((usuario.equals(datos[0]) || correo.equals(datos[0])) && clave.equals(datos[1])) {
-//					return true;
-//				}
-//			}
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//		}finally {
-//			try {
-//				this.stmt.close();
-//				this.rs.close();
-//			} catch (SQLException e) {
-//				e.printStackTrace();
-//			}
-//		}
-//		return false;
-//	}
-	
 	//METODO PARA OBTENER LOS DATOS DE UN USUARIO
 	public String[] dbObtenerDatosUsuario(String usuario) {
 		String [] datos = new String[3];
@@ -150,7 +123,7 @@ public class Database {
 			this.pstmt.setString(3, (String) hash_clave);
 			this.pstmt.executeUpdate();
 		} catch (SQLException e) {
-//			e.printStackTrace();
+			e.printStackTrace();
 			return false;
 		} finally {
 			try {
@@ -244,6 +217,7 @@ public class Database {
 			this.pstmt.setString(1, (String) datos_ediciones[0]);
 			this.pstmt.setString(2, (String) datos_ediciones[1]);
 			this.pstmt.setInt(3,  (int) datos_ediciones[2]);
+			this.pstmt.setBoolean(4, (boolean) datos_ediciones[3]);
 			this.pstmt.executeUpdate();
 			
 		}catch (SQLException e) {
@@ -262,23 +236,32 @@ public class Database {
 		return true;
 	}
 	
+	//METODO PARA ELIMINAR LOS DATOS DE EDICION DE UN CALENDARIO (INVITADO ELIMINANDO UN CALENDARIO)
+	public boolean dbEliminarDatosEdicionCalendario(String usuario, int id_calendario) {
+		try {
+			this.stmt = this.conn.createStatement();
+			this.stmt.executeUpdate("DELETE FROM ediciones WHERE (nombre_usuario='"+usuario+"' OR correo='"+usuario+"') AND id_calendario="+id_calendario);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}finally {
+			try {
+				this.stmt.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return true;
+	}
+	
 	//METODO PARA OBTENER DATOS DE EDICION DE CALENDARIOS
 	public ArrayList<Integer> dbObtenerIDsCalendarios(String usuario) {
 		ArrayList<Integer> id_calendario = new ArrayList<>();
-		//String [] datos = new String[3];
-		//String [] id_calendarios = new String [2];
  		try {
 			this.stmt = this.conn.createStatement();
 			this.rs = this.stmt.executeQuery("select *from ediciones where nombre_usuario ='"+usuario+"' OR correo='"+usuario+"';");
-			//int i=0;
 			while(rs.next()) {
-//				datos[0] = rs.getString("nombre_usuario");
-//				datos[1] = rs.getString("correo");
-//				datos[2] = rs.getString("id_calendario");	
-				
-				//id_calendarios[i] = rs.getString("id_calendario");
 				id_calendario.add(rs.getInt("id_calendario"));
-				//i++;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -301,10 +284,7 @@ public class Database {
 			this.stmt = this.conn.createStatement();
 			//this.rs = this.stmt.executeQuery("select *from calendarios where id_calendario ='"+id_calendario+"';");
 			this.rs = this.stmt.executeQuery(PR.obtenerPropiedad("obtenerDatosCalendario")+id_calendario);
-			while(rs.next()) {
-//				datos[0] = rs.getString("id_calendario");
-//				datos[1] = rs.getString("nombre");
-//				datos[2] = rs.getString("color");	
+			while(rs.next()) {	
 				datos_calendario[0]=rs.getString("nombre");
 				datos_calendario[1]=rs.getString("color");
 			}
@@ -321,10 +301,21 @@ public class Database {
 		return datos_calendario;
 	}
 	
-	//METODO PARA OBTENER LOS INVITADOS DE UN CALENDARIO
+	//METODO PARA OBTENER LOS INVITADOS DE UN CALENDARIO COMPROBANDO QUE EL USUARIO SEA PROPIETARIO DEL MISMO
 	public ArrayList<String> dbObtenerInvitadosCalendario(String usuario, int id_calendario) {
 		ArrayList<String> invitados = new ArrayList<>();
  		try {
+ 			//COMPROBAR SI EL USUARIO ES PROPIETARIO DEL CALENDARIO
+			this.stmt = this.conn.createStatement();
+			this.rs = this.stmt.executeQuery("select *from ediciones where (nombre_usuario='"+usuario+"' OR correo='"+usuario+"') AND id_calendario="+id_calendario+" AND propietario");
+ 			if(!rs.next()) {
+ 				//SI NO ES PROPIETARIO RETORNAR NULL
+ 				return null;
+ 			}
+			this.stmt.close();
+			this.rs.close();
+ 			
+ 			//OBTENER LOS INVITADOS DEL CALENDARIO YA QUE EL USUARIO ES PROPIETARIO DEL CALENDARIO
 			this.stmt = this.conn.createStatement();
 			this.rs = this.stmt.executeQuery("select *from ediciones where (nombre_usuario!='"+usuario+"' AND correo!='"+usuario+"') AND id_calendario="+id_calendario+";");
 			while(rs.next()) {
@@ -371,10 +362,11 @@ public class Database {
 			this.stmt.executeUpdate("DELETE FROM ediciones WHERE id_calendario="+id_calendario+" AND (nombre_usuario!='"+usuario+"' AND correo!='"+usuario+"');");
 			
 			for(int i=0; i<nombres_invitados.size(); i++) {
-				this.pstmt = this.conn.prepareStatement("INSERT INTO ediciones (nombre_usuario, correo, id_calendario) VALUES (?,?,?);");
+				this.pstmt = this.conn.prepareStatement("INSERT INTO ediciones (nombre_usuario, correo, id_calendario, propietario) VALUES (?,?,?,?);");
 				this.pstmt.setString(1, (String) nombres_invitados.get(i));
 				this.pstmt.setString(2, (String) correos_invitados.get(i));
 				this.pstmt.setInt(3, id_calendario);
+				this.pstmt.setBoolean(4, false);
 				this.pstmt.executeUpdate();	
 			}
 			

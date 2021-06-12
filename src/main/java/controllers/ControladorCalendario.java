@@ -36,17 +36,24 @@ public class ControladorCalendario {
 				resultado_JSON.append("{");
 				resultado_JSON.append(" \"id_calendario\": \""+ id_calendarios.get(i) +"\", ");
 				String[] datos_calendario = DB.dbObtenerDatosCalendario(id_calendarios.get(i));
-				resultado_JSON.append(" \"nombre_calendario\": \""+ datos_calendario[0] +"\", \"color\": \""+ datos_calendario[1] +"\", \"invitados\":[");
+				resultado_JSON.append(" \"nombre_calendario\": \""+ datos_calendario[0] +"\", \"color\": \""+ datos_calendario[1] +"\", \"invitados\":");
 				
 				//SE OBTIENEN LOS INVITADOS/COLABORADORES QUE POSEE EL CALENDARIO, SE RECORREN Y SE HACE APPEND
 				ArrayList<String> invitados_calendario = DB.dbObtenerInvitadosCalendario(usuario,id_calendarios.get(i));
-				for(int j=0; j<invitados_calendario.size();j++) {
-					resultado_JSON.append(" \""+invitados_calendario.get(j)+"\" ");
-					if(j!=(invitados_calendario.size()-1)) {
-						resultado_JSON.append(",");
+				if(invitados_calendario!=null) {
+					resultado_JSON.append("[");
+					for(int j=0; j<invitados_calendario.size();j++) {
+						resultado_JSON.append(" \""+invitados_calendario.get(j)+"\" ");
+						if(j!=(invitados_calendario.size()-1)) {
+							resultado_JSON.append(",");
+						}
 					}
+					//resultado_JSON.append("], \"actividades\":[");
+					resultado_JSON.append("]");
+				}else {
+					resultado_JSON.append("null");
 				}
-				resultado_JSON.append("], \"actividades\":[");
+				resultado_JSON.append(", \"actividades\":[");
 				
 				//SE OBTIENEN LAS ACTIVIDADES PERTENECIENTES A UN CALENDARIO, SE RECORREN Y SE HACE APPEND
 				ArrayList<String[]> lista_actividades = DB.dbObtenerActividadesCalendario(id_calendarios.get(i));
@@ -82,6 +89,7 @@ public class ControladorCalendario {
 			
 			return resultado_JSON.toString();
 		} catch (Exception e) {
+			e.printStackTrace();
 			return "{\"resultado\": \"Error al obtener calendarios\", \"status\":"+500+"}";
 		}
 		
@@ -109,19 +117,20 @@ public class ControladorCalendario {
 				//INCLUSION DE LOS DATOS DEL USUARIO (CREADOR DEL CALENDARIO) EN LA TABLA EDICIONES
 				HttpSession sesion = request.getSession();
 				String [] datos_usuario = DB.dbObtenerDatosUsuario(sesion.getAttribute("usuario").toString());
-				Object [] datos_edicion = {datos_usuario[0],datos_usuario[1],id_nuevo_calendario};
+				Object [] datos_edicion = {datos_usuario[0],datos_usuario[1],id_nuevo_calendario,true};
 				System.out.println("Resultado creacion datos edicion calendario: " + DB.dbCrearDatosEdicionCalendario(datos_edicion));
 				
 				//INCLUSION DE INVITADOS EN EL CALENDARIO DE EDICIONES
 				int cantidad_invitados = Integer.parseInt(request.getParameter("cantidad-invitados").toString());
-				System.out.println("invitados: ");
+				//System.out.println("invitados: ");
 				for(int i=0;i<cantidad_invitados;i++) {
 					if(request.getParameter("input-invitado"+i)!=null && !request.getParameter("input-invitado"+i).equals("")) {
 						String [] datos_invitado = DB.dbObtenerDatosUsuario(request.getParameter("input-invitado"+i));
 						if(datos_invitado[0]!=null) {
-							Object [] datos_edicion_invitado = {datos_invitado[0],datos_invitado[1],id_nuevo_calendario};
-							System.out.println("Invitado a almacenar: " + datos_invitado[0] +" "+datos_invitado[1]);
-							System.out.println("Resultado creacion datos edicion calendario invitado: " + DB.dbCrearDatosEdicionCalendario(datos_edicion_invitado));
+							Object [] datos_edicion_invitado = {datos_invitado[0],datos_invitado[1],id_nuevo_calendario,false};
+							//System.out.println("Invitado a almacenar: " + datos_invitado[0] +" "+datos_invitado[1]);
+							//System.out.println("Resultado creacion datos edicion calendario invitado: " + DB.dbCrearDatosEdicionCalendario(datos_edicion_invitado));
+							DB.dbCrearDatosEdicionCalendario(datos_edicion_invitado);
 						}
 					}
 				}
@@ -171,12 +180,20 @@ public class ControladorCalendario {
 	//METODO PARA ELIMINAR UN CALENDARIO TRAS LA PETICION DE UN CLIENTE	
 	public static String eliminarCalendario(HttpServletRequest request) {
 		try {
-			System.out.println("Controlador calendario - eliminarCalendario - Parametro peticion " + request.getParameter("id-calendario"));
 			Database DB = Database.getInstances();
-			if(DB.dbEliminarCalendario(Integer.parseInt(request.getParameter("id-calendario")))) {
-				return "{\"resultado\": \"Calendario eliminado exitosamente\", \"status\":"+200+"}";
+			if(Boolean.parseBoolean(request.getParameter("propietario"))) {
+				if(DB.dbEliminarCalendario(Integer.parseInt(request.getParameter("id-calendario")))) {
+					return "{\"resultado\": \"Calendario eliminado exitosamente\", \"status\":"+200+"}";
+				}else {
+					return "{\"resultado\": \"No se pudo eliminar el calendario\", \"status\":"+500+"}";
+				}
 			}else {
-				return "{\"resultado\": \"No se pudo eliminar el calendario\", \"status\":"+500+"}";
+				HttpSession sesion = request.getSession();
+				if(DB.dbEliminarDatosEdicionCalendario(sesion.getAttribute("usuario").toString(), Integer.parseInt(request.getParameter("id-calendario")))) {
+					return "{\"resultado\": \"Datos edicion eliminados exitosamente\", \"status\":"+200+"}";
+				}else {
+					return "{\"resultado\": \"No se pudo eliminar los datos de edicion\", \"status\":"+500+"}";
+				}
 			}
 		} catch (Exception e) {
 			return "{\"resultado\": \"Error al editar calendario\", \"status\":"+500+"}";

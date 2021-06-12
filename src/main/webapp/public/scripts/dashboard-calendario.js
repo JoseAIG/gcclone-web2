@@ -27,6 +27,7 @@ var div_contenedor_nombres_calendarios = document.getElementById("contenedor-nom
 var input_nombre_editar_calendario = document.getElementById("input-nombre-editar-calendario");
 var input_color_editar_calendario = document.getElementById("input-color-editar-calendario");
 var contenedor_editar_invitados = document.getElementById("contenedor-editar-invitados");
+var p_informacion_compartido = document.getElementById("p-informacion-compartido");
 
 //FUNCION PARA MOSTRAR ADECUADAMENTE LOS DATOS DE LOS CALENDARIOS EN EL ASIDE
 var contador_editar_invitados;
@@ -65,50 +66,73 @@ const mostrar_calendarios_aside = (data)=>{
 		//COLOCAR LOS DATOS DEL CALENDARIO EN EL MODAL PARA EDITAR CALENDARIO
 		i_tag.addEventListener("click",()=>{
 			//FUNCIONALIDAD BOTON ELIMINAR CALENDARIO EN FUNCION DE SU ID
-			eliminar_calendario(data.calendarios[i].id_calendario);
+			//eliminar_calendario(data.calendarios[i].id_calendario);
 			//COLOCAR LOS DATOS DEL CALENDARIO EN LOS CAMPOS DEL MODAL
 			id_calendario_editar = data.calendarios[i].id_calendario;
 			input_nombre_editar_calendario.value=p.innerText;
 			input_color_editar_calendario.value=data.calendarios[i].color;
 			instancia_modal_editar_calendario.open();
-			contador_editar_invitados = data.calendarios[i].invitados.length;
+			//contador_editar_invitados = data.calendarios[i].invitados.length;
 			//AGREGAR LAS ENTRADAS DE LOS INVITADOS DEL CALENDARIO
-			for(let j=0; j<data.calendarios[i].invitados.length; j++){
-				//DIV PARA EL CAMPO DE INVITADO
-				let div = document.createElement("div");
-				div.className="input-field col s5 offset-s3 invitados";
-				let input = document.createElement("input");
-				input.type="text";
-				input.className="validate selected";
-				input.autocomplete="off";
-				input.name="input-invitado"+j;
-				input.id="editar-invitado"+j;
-				input.placeholder="";
-				input.value=data.calendarios[i].invitados[j];
-				div.appendChild(input);
-				console.log(input);
+			if(data.calendarios[i].invitados!=null){
+				contador_editar_invitados = data.calendarios[i].invitados.length;
 				
-				//DIV PARA BOTON REMOVER CAMPO INVITADO
-				let div_remover = document.createElement("div");
-				div_remover.className="col 2 invitados";
-				div_remover.style="margin-top: 1.5em";
-				let a_remover = document.createElement("a");
-				a_remover.className="btn-floating waves-effect waves-light red";
-				let i_remover = document.createElement("i");
-				i_remover.className="material-icons";
-				i_remover.innerText="clear";
-				a_remover.appendChild(i_remover);
-				div_remover.appendChild(a_remover);
+				//FUNCIONALIDAD BOTON ELIMINAR CALENDARIO EN FUNCION DE SU ID Y PRIVILEGIOS DE DUEÑO
+				eliminar_calendario(data.calendarios[i].id_calendario, true);
+				link_agregar_invitado_editar.style.display='inline-block';
+				link_guardar_edicion_calendario.style.display='inline-block';
+				input_nombre_editar_calendario.disabled = false;
+				input_color_editar_calendario.disabled = false;
+				p_informacion_compartido.innerText="Compartido con:";
 				
-				a_remover.addEventListener("click",()=>{
-					div.remove();
-					div_remover.remove();
-					contador_editar_invitados--;
-				})
-				
-				contenedor_editar_invitados.appendChild(div);
-				contenedor_editar_invitados.appendChild(div_remover);
+				for(let j=0; j<data.calendarios[i].invitados.length; j++){
+					//DIV PARA EL CAMPO DE INVITADO
+					let div = document.createElement("div");
+					div.className="input-field col s5 offset-s3 invitados";
+					let input = document.createElement("input");
+					input.type="text";
+					input.className="validate selected";
+					input.autocomplete="off";
+					input.name="input-invitado"+j;
+					input.id="editar-invitado"+j;
+					input.placeholder="";
+					input.value=data.calendarios[i].invitados[j];
+					div.appendChild(input);
+					console.log(input);
+					
+					//DIV PARA BOTON REMOVER CAMPO INVITADO
+					let div_remover = document.createElement("div");
+					div_remover.className="col 2 invitados";
+					div_remover.style="margin-top: 1.5em";
+					let a_remover = document.createElement("a");
+					a_remover.className="btn-floating waves-effect waves-light red";
+					let i_remover = document.createElement("i");
+					i_remover.className="material-icons";
+					i_remover.innerText="clear";
+					a_remover.appendChild(i_remover);
+					div_remover.appendChild(a_remover);
+					
+					a_remover.addEventListener("click",()=>{
+						div.remove();
+						div_remover.remove();
+						contador_editar_invitados--;
+					})
+					
+					contenedor_editar_invitados.appendChild(div);
+					contenedor_editar_invitados.appendChild(div_remover);
+				}
+			}else{
+				//FUNCIONALIDAD BOTON ELIMINAR CALENDARIO EN FUNCION DE SU ID Y PRIVILEGIOS DE NO PROPIETARIO (BORRAR DATOS DE EDICION)
+				eliminar_calendario(data.calendarios[i].id_calendario, false);
+			
+				link_agregar_invitado_editar.style.display='none';
+				link_guardar_edicion_calendario.style.display='none';
+				input_nombre_editar_calendario.disabled = true;
+				input_color_editar_calendario.disabled = true;
+				console.log(link_guardar_edicion_calendario);
+				p_informacion_compartido.innerText="Eres un invitado en este calendario!";
 			}
+			
 			
 		});
 		
@@ -264,10 +288,11 @@ link_agregar_invitado_editar.onclick=()=>{crear_campo_invitado(contenedor_input_
 
 //ELIMINACION DE UN CALENDARIO
 var link_borrar_calendario = document.getElementById("link-borrar-calendario");
-function eliminar_calendario (id_calendario) {
+function eliminar_calendario (id_calendario, propietario) {
 	link_borrar_calendario.onclick=()=>{
 	let form_peticion = new FormData();
 	form_peticion.append("id-calendario",id_calendario);
+	form_peticion.append("propietario",propietario);
 	    fetch('Calendario', {
 	    	method: 'DELETE',
 	    	body: form_peticion,
