@@ -18,6 +18,11 @@ public class ControladorActividad {
 	
 	//METODO ESTATICO PARA CREAR ACTIVIDADES
 	public static String crearActividad(HttpServletRequest request) {
+		String ruta_aplicacion = null;
+		String ruta_imagenes = null;
+		boolean existe_directorio = false;
+		boolean creacion_directorio = false;
+		
 		String estado_directorio = null;
 		String ruta_imagen_guardar = null;
 		boolean resultado_carga = false;
@@ -35,59 +40,85 @@ public class ControladorActividad {
 			//File archprueba = new File(ruta_a_activity_images_act_21);
 			//System.out.println(ruta_a_activity_images_act_21);
 			//System.out.println("archprueba: " + archprueba.exists());
-			
-			//PROPERTIES
-//			Properties prop = new Properties();
-//			prop.load(ControladorActividad.class.getResourceAsStream("/properties/db.propertiess"));
-//			System.out.println(prop.getProperty("prueba"));
-						
-			//OBTENER LAS PARTES DEL ARCHIVO IMAGEN DEL CLIENTE
-			Part part_imagen = request.getPart("imagen-crear-actividad");
-			System.out.println(part_imagen.getSize());
-			//System.out.println("Nombre del archivo: " + part_imagen.getSubmittedFileName());
-			System.out.println("Nombre del archivo: " + getSubmittedFileName(part_imagen));
-			
-			//MKDIRS
-			String carpeta_imagenes_raiz = "/imagenes/actividades/";
-			File directorio = new File(carpeta_imagenes_raiz);
-			if(directorio.mkdirs()) {
-				estado_directorio = "ruta creada: " + directorio.getAbsolutePath();
-				System.out.println("ruta creada: " + directorio.getAbsolutePath());
-			}else {
-				estado_directorio= "no se creo la ruta";
-				System.out.println("No se pudo crear la ruta");
-			}
 
-			String ruta_almacenar_db;
-			if(getSubmittedFileName(part_imagen).equals("")) {
-				//SI NO INGRESO UNA IMAGEN SE ALMACENA NULL EN EL CAMPO RUTA EN LA BASE DE DATOS
-				System.out.println("almacenar null");
-				ruta_imagen_guardar = null;
-				ruta_almacenar_db = null;
-				resultado_carga=false;
-			}else {
-				//SI EL ARCHIVO NO ES NULO, ALMACENARLO EN "activity-images/test"
-//				String ruta_guardar_imagen = ruta_activity_images+"\\test\\"+getSubmittedFileName(part_imagen);
-//				File archivo = new File(ruta_guardar_imagen);
-//				System.out.println(archivo.getAbsolutePath());
-//				part_imagen.write(ruta_guardar_imagen);
-//				//SE COLOCA LA RUTA DEL ARCHIVO EN LA BASE DE DATOS
-//				ruta_almacenar_db = "public/activity-images/test/"+getSubmittedFileName(part_imagen);
-				
-				//MKDIRS
-				//part_imagen.write(carpeta_imagenes_raiz+getSubmittedFileName(part_imagen));
-				//System.out.println("La imagen se guerdo en: " + directorio.getAbsolutePath()+"\\"+getSubmittedFileName(part_imagen));
-				InputStream inputStreamPart = part_imagen.getInputStream();
-				FileOutputStream outputStream = new FileOutputStream(carpeta_imagenes_raiz+getSubmittedFileName(part_imagen));
-				System.out.println("Ruta de la imagen que se cargara: " + carpeta_imagenes_raiz+getSubmittedFileName(part_imagen));
-				ruta_imagen_guardar= carpeta_imagenes_raiz+getSubmittedFileName(part_imagen);
-				//ruta_imagen_guardar= directorio.getAbsolutePath()+File.separator+getSubmittedFileName(part_imagen);
-				System.out.println("Ruta absoluta de la imagen a cargar: " + directorio.getAbsolutePath()+File.separator+getSubmittedFileName(part_imagen));
-				//System.out.println("resultado de la carga: " + cargar(inputStreamPart, outputStream));
-				resultado_carga = cargar(inputStreamPart, outputStream);
-				ruta_almacenar_db = carpeta_imagenes_raiz+getSubmittedFileName(part_imagen);
-				//ruta_almacenar_db = directorio.getAbsolutePath()+File.separator+getSubmittedFileName(part_imagen);
+			//TEST V2
+			//OBTENER LA RUTA DE LA APLICACION
+			ruta_aplicacion = request.getServletContext().getRealPath("");
+			System.out.println(ruta_aplicacion);
+			//ESTABLECER LA RUTA PARA GUARDAR EL ARCHIVO
+			ruta_imagenes = ruta_aplicacion + File.separator + "imagenes";
+			System.out.println(ruta_imagenes);
+			
+			//VERIFICAR SI EL DIRECTORIO EXISTE, DE NO EXISTIR, SE CREA
+			File directorioImagenes = new File (ruta_imagenes);
+			existe_directorio = directorioImagenes.exists();
+			System.out.println("Existe el directorio?: " + existe_directorio);
+			if(!existe_directorio) {
+				creacion_directorio = directorioImagenes.mkdirs();
+				System.out.println("Creacion del directorio: " + creacion_directorio);
 			}
+			System.out.println("directorio de la carga del archivo: " + directorioImagenes.getAbsolutePath());
+			
+			Part part_imagen = request.getPart("imagen-crear-actividad");
+			String nombre_archivo = part_imagen.getSubmittedFileName();
+			part_imagen.write(ruta_imagenes +  File.separator + nombre_archivo);
+			
+			String ruta_almacenar = "imagenes/" + nombre_archivo;
+			
+			//FIN TEST V2
+			
+			//TEST V1
+			//OBTENER LAS PARTES DEL ARCHIVO IMAGEN DEL CLIENTE
+//			Part part_imagen = request.getPart("imagen-crear-actividad");
+//			System.out.println(part_imagen.getSize());
+//			//System.out.println("Nombre del archivo: " + part_imagen.getSubmittedFileName());
+//			System.out.println("Nombre del archivo: " + getSubmittedFileName(part_imagen));
+//			
+//			//MKDIRS
+//			String carpeta_imagenes_raiz = "/imagenes/actividades/";
+//			File directorio = new File(carpeta_imagenes_raiz);
+//			if(directorio.mkdirs()) {
+//				estado_directorio = "ruta creada: " + directorio.getAbsolutePath();
+//				System.out.println("ruta creada: " + directorio.getAbsolutePath());
+//			}else {
+//				estado_directorio= "no se creo la ruta";
+//				System.out.println("No se pudo crear la ruta");
+//			}
+//
+//			String ruta_almacenar_db;
+//			if(getSubmittedFileName(part_imagen).equals("")) {
+//				//SI NO INGRESO UNA IMAGEN SE ALMACENA NULL EN EL CAMPO RUTA EN LA BASE DE DATOS
+//				System.out.println("almacenar null");
+//				ruta_imagen_guardar = null;
+//				ruta_almacenar_db = null;
+//				resultado_carga=false;
+//			}else {
+//				
+//				
+//				//SI EL ARCHIVO NO ES NULO, ALMACENARLO EN "activity-images/test"
+////				String ruta_guardar_imagen = ruta_activity_images+"\\test\\"+getSubmittedFileName(part_imagen);
+////				File archivo = new File(ruta_guardar_imagen);
+////				System.out.println(archivo.getAbsolutePath());
+////				part_imagen.write(ruta_guardar_imagen);
+////				//SE COLOCA LA RUTA DEL ARCHIVO EN LA BASE DE DATOS
+////				ruta_almacenar_db = "public/activity-images/test/"+getSubmittedFileName(part_imagen);
+//				
+//				//MKDIRS
+//				//part_imagen.write(carpeta_imagenes_raiz+getSubmittedFileName(part_imagen));
+//				//System.out.println("La imagen se guerdo en: " + directorio.getAbsolutePath()+"\\"+getSubmittedFileName(part_imagen));
+//				InputStream inputStreamPart = part_imagen.getInputStream();
+//				FileOutputStream outputStream = new FileOutputStream(carpeta_imagenes_raiz+getSubmittedFileName(part_imagen));
+//				System.out.println("Ruta de la imagen que se cargara: " + carpeta_imagenes_raiz+getSubmittedFileName(part_imagen));
+//				ruta_imagen_guardar= carpeta_imagenes_raiz+getSubmittedFileName(part_imagen);
+//				//ruta_imagen_guardar= directorio.getAbsolutePath()+File.separator+getSubmittedFileName(part_imagen);
+//				System.out.println("Ruta absoluta de la imagen a cargar: " + directorio.getAbsolutePath()+File.separator+getSubmittedFileName(part_imagen));
+//				//System.out.println("resultado de la carga: " + cargar(inputStreamPart, outputStream));
+//				resultado_carga = cargar(inputStreamPart, outputStream);
+//				ruta_almacenar_db = carpeta_imagenes_raiz+getSubmittedFileName(part_imagen);
+//				//ruta_almacenar_db = directorio.getAbsolutePath()+File.separator+getSubmittedFileName(part_imagen);
+//			}
+			//FIN TEST V1
+			
 //			String ruta_guardar_imagen = ruta_activity_images+"\\test\\"+part_imagen.getSubmittedFileName();
 //			File archivo = new File(ruta_guardar_imagen);
 //			System.out.println(archivo.getAbsolutePath());
@@ -103,23 +134,27 @@ public class ControladorActividad {
 				request.getParameter("hora-inicio"),
 				request.getParameter("hora-fin"),
 				//ruta_guardar_imagen
-				ruta_almacenar_db
+				//null
+				ruta_almacenar
 			};
 			//INGRESAR EN LA BASE DE DATOS LA INFORMACION DE LA ACTIVIDAD
 			Database DB = Database.getInstances();
 			if(DB.dbCrearActividad(datos_nueva_actividad)) {
 				System.out.println(1);
-				String respuesta = "{\"resultado\": \"Actividad creada satisfactoriamente\", \"status\":"+200+", \"estado-directorio\":\""+estado_directorio+"\", \"ruta-imagen-guardar\":\""+ruta_imagen_guardar+"\", \"resultado-carga\":\""+resultado_carga+"\" }";
+				//String respuesta = "{\"resultado\": \"Actividad creada satisfactoriamente\", \"status\":"+200+", \"estado-directorio\":\""+estado_directorio+"\", \"ruta-imagen-guardar\":\""+ruta_imagen_guardar+"\", \"resultado-carga\":\""+resultado_carga+"\" }";
+				String respuesta = "{\"resultado\": \"Actividad creada satisfactoriamente\", \"status\":"+200+", \"ruta-aplicacion\":\""+ruta_aplicacion+"\", \"ruta-imagenes\":\""+ruta_imagenes+"\", \"existe-directorio\":\""+existe_directorio+"\",\"creacion-directorio\":\""+creacion_directorio+"\"}";
 				System.out.println(respuesta);
 				return(respuesta);
 			}else {
 				System.out.println(2);
-				return("{\"resultado\": \"No se pudo ingresar la actividad en la base de datos\", \"status\":"+500+", \"estado-directorio\":\""+estado_directorio+"\", \"ruta-imagen-guardar\":\""+ruta_imagen_guardar+"\", \"resultado-carga\":\""+resultado_carga+"\"}");
+				//return("{\"resultado\": \"No se pudo ingresar la actividad en la base de datos\", \"status\":"+500+", \"estado-directorio\":\""+estado_directorio+"\", \"ruta-imagen-guardar\":\""+ruta_imagen_guardar+"\", \"resultado-carga\":\""+resultado_carga+"\"}");
+				return("{\"resultado\": \"No se pudo ingresar la actividad en la base de datos\", \"status\":"+500+", \"ruta-aplicacion\":\""+ruta_aplicacion+"\", \"ruta-imagenes\":\""+ruta_imagenes+"\", \"existe-directorio\":\""+existe_directorio+"\",\"creacion-directorio\":\""+creacion_directorio+"\"}");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println(3);
-			return("{\"resultado\": \"No se pudo crear la actividad\", \"status\":"+500+", \"estado-directorio\":\""+estado_directorio+"\", \"ruta-imagen-guardar\":\""+ruta_imagen_guardar+"\", \"resultado-carga\":\""+resultado_carga+"\"}");
+			//return("{\"resultado\": \"No se pudo crear la actividad\", \"status\":"+500+", \"estado-directorio\":\""+estado_directorio+"\", \"ruta-imagen-guardar\":\""+ruta_imagen_guardar+"\", \"resultado-carga\":\""+resultado_carga+"\"}");
+			return("{\"resultado\": \"No se pudo crear la actividad\", \"status\":"+500+", \"ruta-aplicacion\":\""+ruta_aplicacion+"\", \"ruta_imagenes\":\""+ruta_imagenes+"\", \"existe-directorio\":\""+existe_directorio+"\", \"creacion-directorio\":\""+creacion_directorio+"\" }");
 		}
 		
 	}
