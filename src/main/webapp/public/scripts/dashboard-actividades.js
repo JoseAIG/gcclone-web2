@@ -161,32 +161,6 @@ function dibujar_plantilla(fecha_a_dibujar){
         }
         //main_aside.appendChild(div_dia[i]);
     }
-
-	//OBTENER DIVS DE LAS HORAS
-    let div_hora = document.getElementsByClassName("div-hora");
-	for(let i=0; i<div_hora.length;i++){
-        div_hora[i].style.opacity='0.5';
-/*		div_hora[i].addEventListener('click',()=>{
-			console.log("click en el div " + i, div_hora[i]);
-		});*/
-/*        div_hora[i].addEventListener('mouseover',()=>{
-            div_hora[i].style.opacity='1';
-        });
-        div_hora[i].addEventListener('mouseleave',()=>{
-            div_hora[i].style.opacity='0.5';
-        });*/
-        div_hora[i].addEventListener('mouseover',oscurecer_div(div_hora[i]));
-        div_hora[i].addEventListener('mouseleave',aclarar_div(div_hora[i]));
-
-	}
-	
-	//FUNCIONES VISUALES DIVS HORAS PLANTILLAS SEMANALES
-	function oscurecer_div(div){
-		div.style.opacity='1';
-	}
-	function aclarar_div(div){
-		div.style.opacity='0.5';
-	}
 	
 	//RECORRER LAS ACTIVIDADES DE LA SEMANA
 /*	for(let i=0; i<actividades_en_la_semana.length; i++){
@@ -300,10 +274,10 @@ function dibujar_plantilla(fecha_a_dibujar){
 					div_hora[j].innerHTML+=actividades_en_la_semana[i].informacion;
 					//SI LA ACTIVIDAD TIENE UNA IMAGEN, MOSTRARLA
 					if(actividades_en_la_semana[i].ruta_imagen){
-			        	div_hora[j+1].innerHTML+=`<br><img alt="img" src="${actividades_en_la_semana[i].ruta_imagen}" style="width:3em">`;					
-					}			
+			        	div_hora[j+1].innerHTML+=`<span class="span-imagen-actividad"><img alt="img" src="${actividades_en_la_semana[i].ruta_imagen}" class="imagen-actividad"></span>`;					
+					}
 			        
-			        //CONFIGURAR EL EVENTO PARA EDITAR ACTIVIDAD EN EL PRIMER DIV DE LA ACTIVIDAD
+			        //CONFIGURAR EL EVENTO PARA EDITAR ACTIVIDAD EN EL PRIMER DIV DE LA ACTIVIDAD SI EL USUARIO POSEE PRIVILEGIOS DE PROPIETARIO EN EL CALENDARIO, POR ENDE EN LA ACTIVIDAD
 			        if(privilegios_actividades[i]){
 			        	let link_editar_actividad = document.createElement("a");
 			        	link_editar_actividad.className="waves-effect waves-light modal-trigger link-editar-actividad";
@@ -311,7 +285,15 @@ function dibujar_plantilla(fecha_a_dibujar){
 			        	link_editar_actividad.innerHTML= `<i class="material-icons">edit</i>`;
     					div_hora[j].appendChild(link_editar_actividad);
 						link_editar_actividad.addEventListener('click',()=>{
-							//
+							
+							//SI LA ACTIVIDAD POSEE UNA IMAGEN MOSTRARLA EN LA PREVISUALIZACION
+							if(actividades_en_la_semana[i].ruta_imagen){
+								previsualizar_imagen_editar_actividad.style.display="inline-block";
+								contenedor_imagen_previsualizar.innerHTML+=`<img alt="img" src="${actividades_en_la_semana[i].ruta_imagen}" class="imagen-previsualizada">`;							
+							}else{
+								previsualizar_imagen_editar_actividad.style.display="none";
+							}
+							
 							id_actividad_editar = div_hora[j].getAttribute("id-actividad");
 							//COLOCAR LOS DATOS DE LA ACTIVIDAD EN LOS CAMPOS DEL MODAL EDITAR ACTIVIDAD
 							input_detalle_editar_actividad.value = actividades_en_la_semana[i].informacion;
@@ -325,6 +307,7 @@ function dibujar_plantilla(fecha_a_dibujar){
 							
 							//ABRIR MODAL EDITAR ACTIVIDAD
 							//instancia_modal_editar_actividad.open();
+							
 						});
 				    }    
 					flag=true;
@@ -491,9 +474,7 @@ const modificar_actividad = () => {
     fetch('Actividad', {
     	method: 'PUT',
     	body: datos_form_editar_actividad
-    	//body: json,
-    	//headers: new Headers({'Content-Type': 'application/json'}),
-		})
+	})
     //RESPUESTA CRUDA DEL SERVER
     .then(response => response.json())
     //RESPUESTA CON LOS RESULTADOS DEL SERVIDOR
@@ -504,7 +485,7 @@ const modificar_actividad = () => {
 			window.open("Dashboard","_self");
 		}
     })	    
-	//CATCH PARA OBTENER DETALLER POR SI ORURRE UN ERROR
+	//CATCH PARA OBTENER DETALLE POR SI ORURRE UN ERROR
     .catch((error) => {
         console.error('Error:', error);
     });
@@ -578,6 +559,8 @@ var fecha_crear_actividad = document.getElementById("fecha-crear-actividad");
 //ELEMENTOS INTERNOS DEL MODAL EDITAR ACTIVIDAD
 var input_detalle_editar_actividad = document.getElementById("input-detalle-editar-actividad");
 var fecha_editar_actividad = document.getElementById("fecha-editar-actividad");
+var previsualizar_imagen_editar_actividad = document.getElementById("previsualizar-imagen-editar-actividad");
+var contenedor_imagen_previsualizar = document.getElementById("contenedor-imagen-previsualizar");
 
 //ACTIVAR EL MODAL PARA ACTIVIDADES (MATERIALIZE)
 //var instancia_rango_actividad;
@@ -592,13 +575,15 @@ document.addEventListener('DOMContentLoaded', function() {
 		    //VOLVER A INSTANCIAR LAS ETIQUETAS SELECT
 			var elems = document.querySelectorAll('select');
 			var instances = M.FormSelect.init(elems);
+			
+			contenedor_imagen_previsualizar.innerHTML="";
    		}
 	}
     var elems = document.querySelector('#modal-crear-actividad');
     var instances = M.Modal.init(elems, options);   
 
     var elems = document.querySelector('#modal-editar-actividad');
-    instancia_modal_editar_actividad = M.Modal.init(elems); 
+    instancia_modal_editar_actividad = M.Modal.init(elems, options); 
 
 	//INPUT TYPE RANGE
 /*	var rango_actividad = document.querySelector('#rango-actividad');

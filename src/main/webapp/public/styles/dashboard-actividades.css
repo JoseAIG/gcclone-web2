@@ -13,6 +13,7 @@
 
 .div-hora{
     /* border: 1px solid gray; */
+    opacity:0.5;
     border-left: 1px solid gray;
     border-right: 1px solid gray;
     height: 7em;
@@ -20,8 +21,35 @@
     display: inline-block;
     text-align: center;
     border-bottom: 1px solid gray; 
-    
     position: relative;
+}
+
+.div-hora:hover{
+	opacity: 1;
+}
+
+.span-imagen-actividad{
+	display: inline-block;
+	height: 100%;
+	vertical-align: middle;
+}
+
+.imagen-actividad{
+	width:3em;
+	border-radius: 0.5em;
+	opacity: 1;
+	vertical-align: middle;
+}
+
+.imagen-previsualizada{
+	width: 6em;
+	opacity: 1;
+	border-radius: 0.5em;
+	margin: 1em;
+}
+
+.imagen-previsualizada:hover{
+	opacity: 0.5;
 }
 
 /* SEPARADOR DE HORAS */

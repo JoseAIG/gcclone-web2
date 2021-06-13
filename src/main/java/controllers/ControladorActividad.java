@@ -42,29 +42,34 @@ public class ControladorActividad {
 			//System.out.println("archprueba: " + archprueba.exists());
 
 			//TEST V2
-			//OBTENER LA RUTA DE LA APLICACION
-			ruta_aplicacion = request.getServletContext().getRealPath("");
-			System.out.println(ruta_aplicacion);
-			//ESTABLECER LA RUTA PARA GUARDAR EL ARCHIVO
-			ruta_imagenes = ruta_aplicacion + File.separator + "imagenes";
-			System.out.println(ruta_imagenes);
-			
-			//VERIFICAR SI EL DIRECTORIO EXISTE, DE NO EXISTIR, SE CREA
-			File directorioImagenes = new File (ruta_imagenes);
-			existe_directorio = directorioImagenes.exists();
-			System.out.println("Existe el directorio?: " + existe_directorio);
-			if(!existe_directorio) {
-				creacion_directorio = directorioImagenes.mkdirs();
-				System.out.println("Creacion del directorio: " + creacion_directorio);
-			}
-			System.out.println("directorio de la carga del archivo: " + directorioImagenes.getAbsolutePath());
-			
 			Part part_imagen = request.getPart("imagen-crear-actividad");
 			String nombre_archivo = part_imagen.getSubmittedFileName();
-			part_imagen.write(ruta_imagenes +  File.separator + nombre_archivo);
-			
-			String ruta_almacenar = "imagenes/" + nombre_archivo;
-			
+			String ruta_almacenar=null;
+			if(!nombre_archivo.equals("")) {
+				
+				//OBTENER LA RUTA DE LA APLICACION
+				ruta_aplicacion = request.getServletContext().getRealPath("");
+				System.out.println(ruta_aplicacion);
+				//ESTABLECER LA RUTA PARA GUARDAR EL ARCHIVO
+				ruta_imagenes = ruta_aplicacion + File.separator + "imagenes";
+				System.out.println(ruta_imagenes);
+				
+				//VERIFICAR SI EL DIRECTORIO EXISTE, DE NO EXISTIR, SE CREA
+				File directorioImagenes = new File (ruta_imagenes);
+				existe_directorio = directorioImagenes.exists();
+				System.out.println("Existe el directorio?: " + existe_directorio);
+				if(!existe_directorio) {
+					creacion_directorio = directorioImagenes.mkdirs();
+					System.out.println("Creacion del directorio: " + creacion_directorio);
+				}
+				System.out.println("directorio de la carga del archivo: " + directorioImagenes.getAbsolutePath());
+				
+	//			Part part_imagen = request.getPart("imagen-crear-actividad");
+	//			String nombre_archivo = part_imagen.getSubmittedFileName();
+				part_imagen.write(ruta_imagenes +  File.separator + nombre_archivo);
+				
+				ruta_almacenar = "imagenes/" + nombre_archivo;
+			}
 			//FIN TEST V2
 			
 			//TEST V1
@@ -142,42 +147,91 @@ public class ControladorActividad {
 			if(DB.dbCrearActividad(datos_nueva_actividad)) {
 				System.out.println(1);
 				//String respuesta = "{\"resultado\": \"Actividad creada satisfactoriamente\", \"status\":"+200+", \"estado-directorio\":\""+estado_directorio+"\", \"ruta-imagen-guardar\":\""+ruta_imagen_guardar+"\", \"resultado-carga\":\""+resultado_carga+"\" }";
-				String respuesta = "{\"resultado\": \"Actividad creada satisfactoriamente\", \"status\":"+200+", \"ruta-aplicacion\":\""+ruta_aplicacion+"\", \"ruta-imagenes\":\""+ruta_imagenes+"\", \"existe-directorio\":\""+existe_directorio+"\",\"creacion-directorio\":\""+creacion_directorio+"\"}";
-				System.out.println(respuesta);
-				return(respuesta);
+
+//				String respuesta = "{\"resultado\": \"Actividad creada satisfactoriamente\", \"status\":"+200+", \"ruta-aplicacion\":\""+ruta_aplicacion+"\", \"ruta-imagenes\":\""+ruta_imagenes+"\", \"existe-directorio\":\""+existe_directorio+"\",\"creacion-directorio\":\""+creacion_directorio+"\"}";
+//				System.out.println(respuesta);
+//				return(respuesta);
+				
+				return "{\"resultado\": \"Actividad creada satisfactoriamente\", \"status\":"+200+"}";
 			}else {
 				System.out.println(2);
 				//return("{\"resultado\": \"No se pudo ingresar la actividad en la base de datos\", \"status\":"+500+", \"estado-directorio\":\""+estado_directorio+"\", \"ruta-imagen-guardar\":\""+ruta_imagen_guardar+"\", \"resultado-carga\":\""+resultado_carga+"\"}");
-				return("{\"resultado\": \"No se pudo ingresar la actividad en la base de datos\", \"status\":"+500+", \"ruta-aplicacion\":\""+ruta_aplicacion+"\", \"ruta-imagenes\":\""+ruta_imagenes+"\", \"existe-directorio\":\""+existe_directorio+"\",\"creacion-directorio\":\""+creacion_directorio+"\"}");
+				//return("{\"resultado\": \"No se pudo ingresar la actividad en la base de datos\", \"status\":"+500+", \"ruta-aplicacion\":\""+ruta_aplicacion+"\", \"ruta-imagenes\":\""+ruta_imagenes+"\", \"existe-directorio\":\""+existe_directorio+"\",\"creacion-directorio\":\""+creacion_directorio+"\"}");
+				return "{\"resultado\": \"No se pudo ingresar la actividad en la base de datos\", \"status\":"+500+"}";
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println(3);
 			//return("{\"resultado\": \"No se pudo crear la actividad\", \"status\":"+500+", \"estado-directorio\":\""+estado_directorio+"\", \"ruta-imagen-guardar\":\""+ruta_imagen_guardar+"\", \"resultado-carga\":\""+resultado_carga+"\"}");
-			return("{\"resultado\": \"No se pudo crear la actividad\", \"status\":"+500+", \"ruta-aplicacion\":\""+ruta_aplicacion+"\", \"ruta_imagenes\":\""+ruta_imagenes+"\", \"existe-directorio\":\""+existe_directorio+"\", \"creacion-directorio\":\""+creacion_directorio+"\" }");
+			//return("{\"resultado\": \"No se pudo crear la actividad\", \"status\":"+500+", \"ruta-aplicacion\":\""+ruta_aplicacion+"\", \"ruta_imagenes\":\""+ruta_imagenes+"\", \"existe-directorio\":\""+existe_directorio+"\", \"creacion-directorio\":\""+creacion_directorio+"\" }");
+			return "{\"resultado\": \"No se pudo crear la actividad\", \"status\":"+500+"}";
 		}
 		
 	}
 	
 	//METODO PARA MODIFICAR UNA ACTIVIDAD
 	public static String modificarActividad(HttpServletRequest request) {
-		try {			
+		System.out.println(request.getParameter("eliminar-imagen-actividad"));
+		
+		String ruta_aplicacion = null;
+		String ruta_imagenes = null;
+		boolean existe_directorio = false;
+		boolean creacion_directorio = false;
+		try {
+			//OBTENER LA PART DE LA IMAGEN Y COMPROBAR QUE EL NOMBRE DEL ARCHIVO SUBIDO NO SEA VACIO PARA HACER LA CARGA Y ALMACENADO DE LA RUTA
+			Part part_imagen = request.getPart("imagen-editar-actividad");
+			String nombre_archivo = part_imagen.getSubmittedFileName();
+			String ruta_almacenar=null;
+			if(!nombre_archivo.equals("")) {
+				
+				//OBTENER LA RUTA DE LA APLICACION
+				ruta_aplicacion = request.getServletContext().getRealPath("");
+				//System.out.println(ruta_aplicacion);
+				//ESTABLECER LA RUTA PARA GUARDAR EL ARCHIVO
+				ruta_imagenes = ruta_aplicacion + File.separator + "imagenes";
+				//System.out.println(ruta_imagenes);
+				
+				//VERIFICAR SI EL DIRECTORIO EXISTE, DE NO EXISTIR, SE CREA
+				File directorioImagenes = new File (ruta_imagenes);
+				existe_directorio = directorioImagenes.exists();
+				//System.out.println("Existe el directorio?: " + existe_directorio);
+				if(!existe_directorio) {
+					creacion_directorio = directorioImagenes.mkdirs();
+					//System.out.println("Creacion del directorio: " + creacion_directorio);
+				}
+				//System.out.println("directorio de la carga del archivo: " + directorioImagenes.getAbsolutePath());
+				
+				part_imagen.write(ruta_imagenes +  File.separator + nombre_archivo);				
+				ruta_almacenar = "imagenes/" + nombre_archivo;
+			}
+			
+			
 			Object [] datos_edicion_actividad = {
 				request.getParameter("detalle-editar-actividad"),
 				request.getParameter("fecha-editar-actividad"),
 				request.getParameter("hora-inicio"),
 				request.getParameter("hora-fin"),
-				null
+				ruta_almacenar
 			};
 
 			Database DB = Database.getInstances();
-			if(DB.dbModificarActividad(Integer.parseInt(request.getParameter("id-actividad")), datos_edicion_actividad)) {
-				return "{\"resultado\": \"Actividad modificada con exito\", \"status\":"+200+"}";
+			//SI EL PARAMETRO ELIMINAR IMAGEN ACTIVIDAD NO ES NULL, ES DECIR, ESTA "ON" (CHECKBOX ELIMINAR IMAGEN MARCADO) INSERTAR NULL EN EL CAMPO RUTA_IMAGEN O LA NUEVA RUTA DE LA IMAGEN CARGADA (DE HABERSE CARGADO)
+			if(request.getParameter("eliminar-imagen-actividad")!=null || ruta_almacenar!=null) {
+				if(DB.dbModificarActividad(Integer.parseInt(request.getParameter("id-actividad")), datos_edicion_actividad)) {
+					return "{\"resultado\": \"Actividad modificada con exito\", \"status\":"+200+"}";
+				}else {
+					return "{\"resultado\": \"La actividad no se pudo modificar\", \"status\":"+500+"}";				
+				}	
 			}else {
-				return "{\"resultado\": \"La actividad no se pudo modificar\", \"status\":"+500+"}";				
+				if(DB.dbPreparedStatement("UPDATE actividades SET informacion=?, fecha=?, hora_inicio=?, hora_fin=? WHERE id_actividad="+Integer.parseInt(request.getParameter("id-actividad")), datos_edicion_actividad)) {
+					return "{\"resultado\": \"Actividad modificada con exito\", \"status\":"+200+"}";
+				}else {
+					return "{\"resultado\": \"La actividad no se pudo modificar\", \"status\":"+500+"}";				
+				}	
 			}
 			
 		} catch (Exception e) {
+			e.printStackTrace();
 			return "{\"resultado\": \"Error al editar actividad\", \"status\":"+500+"}";
 		}
 	}

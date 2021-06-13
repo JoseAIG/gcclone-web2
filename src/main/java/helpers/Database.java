@@ -502,6 +502,27 @@ public class Database {
 		return true;
 	}
 	
+	//METODO PREPARED STATEMENT
+	public boolean dbPreparedStatement(String query, Object[] datos) {
+		try {
+			this.pstmt = this.conn.prepareStatement(query);
+			this.pstmt.setString(1, (String) datos[0]);
+			this.pstmt.setString(2, (String) datos[1]);
+			this.pstmt.setDouble(3, Double.parseDouble(datos[2].toString()));
+			this.pstmt.setDouble(4, Double.parseDouble(datos[3].toString()));
+			this.pstmt.executeUpdate();
+		}catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}finally {
+			try {
+				this.pstmt.close();
+			} catch (SQLException e) {
+				//e.printStackTrace();
+			}
+		}
+		return true;
+	}
 	
 	//METODO PARA CERRAR LA SESION DE LA BASE DE DATOS
 	public void dbClose() {
