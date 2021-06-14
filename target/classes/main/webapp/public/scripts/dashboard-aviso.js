@@ -5,16 +5,16 @@
 let div_hora = document.getElementsByClassName("div-hora");
 
 function mostrar_avisos(actividades_semana){
-	console.log("mostrar avisos: ", actividades_semana);
+	//console.log("mostrar avisos: ", actividades_semana);
 	
 	let fecha_actual = new Date();
-	console.log("dia de hoy: "+fecha_actual.getDate());
+	//console.log("dia de hoy: "+fecha_actual.getDate());
 	//DETERMINAR EL BLOQUE DE HORAS ACTUALES
 	let bloque_actual = fecha_actual.getHours();
 	if(fecha_actual.getMinutes()>=30){
 		bloque_actual+=".5";
 	}
-	console.log("bloque actual: " + bloque_actual);
+	//console.log("bloque actual: " + bloque_actual);
 	
 	//SE RECORREN TODAS LAS ACTIVIDADES DE LA SEMANA
 	for(let i=0; i<actividades_semana.length;i++){

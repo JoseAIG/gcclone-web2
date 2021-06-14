@@ -8,15 +8,14 @@ const cerrar_sesion = ()=>{
 	    fetch('Dashboard', {
 	    	method: 'POST'
 		})
-	    //RESPUESTA CRUDA DEL SERVER
+		//RESPUESTA INICIAL DEL SERVIDOR
 	    .then(response => response.json())
-	    //RESPUESTA CON LOS RESULTADOS DEL SERVIDOR
+        //OBTENCION DE LOS DATOS DE LA RESPUESTA
 	    .then(data => {
-	        console.log('Respuesta del servidor:', data);
 			alert(data.resultado);
 			window.open("/","_self");
-	    })	    
-		//CATCH PARA OBTENER DETALLE POR SI ORURRE UN ERROR
+	    })
+	    //CATCH PARA OBTENER DETALLE POR SI ORURRE UN ERROR
 	    .catch((error) => {
 	        console.error('Error:', error);
 	    });
@@ -33,11 +32,8 @@ const obtener_datos_perfil = () => {
     	method: 'GET',
     	headers: {'Content-Type': 'application/json'}
 	})
-    //RESPUESTA CRUDA DEL SERVER
     .then(response => response.json())
-    //RESPUESTA CON LOS RESULTADOS DEL SERVIDOR
     .then(data => {
-        console.log('Respuesta del servidor - Datos del perfil para editar:', data);
 		input_editar_nombre_usuario.value=data.usuario;
 		input_editar_nombre_usuario.disabled=false;
 		input_editar_correo.value=data.correo;
@@ -45,7 +41,6 @@ const obtener_datos_perfil = () => {
 		input_editar_clave.value="";
 		input_editar_clave.disabled=false;
     })	    
-	//CATCH PARA OBTENER DETALLE POR SI ORURRE UN ERROR
     .catch((error) => {
         console.error('Error:', error);
     });
@@ -60,20 +55,14 @@ const guardar_datos_perfil = () => {
     fetch('Perfil', {
     	method: 'POST',
     	body: datos_form_editar_perfil,
-/*		mode: "no-cors",
-    	headers:{'Content-Type': 'application/json'},*/
 	})
-    //RESPUESTA CRUDA DEL SERVER
     .then(response => response.json())
-    //RESPUESTA CON LOS RESULTADOS DEL SERVIDOR
     .then(data => {
-        console.log('Respuesta del servidor:', data);
 		alert(data.resultado);
 		if(data.status==200){
 			window.open("Dashboard","_self");				
 		}
     })	    
-	//CATCH PARA OBTENER DETALLE POR SI ORURRE UN ERROR
     .catch((error) => {
         console.error('Error:', error);
     });
@@ -86,25 +75,15 @@ const borrar_perfil = () => {
     fetch('Perfil', {
     	method: 'DELETE'
 	})
-    //RESPUESTA CRUDA DEL SERVER
     .then(response => response.json())
-    //RESPUESTA CON LOS RESULTADOS DEL SERVIDOR
     .then(data => {
-        console.log('Respuesta del servidor:', data);
 		alert(data.resultado);
 		if(data.status==200){
 			window.open("/","_self");				
 		}
     })	    
-	//CATCH PARA OBTENER DETALLE POR SI ORURRE UN ERROR
     .catch((error) => {
         console.error('Error:', error);
     });
 }
 link_borrar_perfil.onclick=borrar_perfil;
-
-//ACTIVAR LOS MODAL DE MATERIALIZE
-document.addEventListener('DOMContentLoaded', function() {
-   var elems = document.querySelectorAll('.modal');
-   var instances = M.Modal.init(elems);
-});

@@ -12,7 +12,6 @@
 }
 
 .div-hora{
-    /* border: 1px solid gray; */
     opacity:0.5;
     border-left: 1px solid gray;
     border-right: 1px solid gray;
@@ -52,21 +51,6 @@
 	opacity: 0.5;
 }
 
-/* SEPARADOR DE HORAS */
-
-/* .separador-horas {
-    width: 100%; 
-    text-align: center; 
-    border-bottom: 1px solid #000; 
-    line-height: 0.1em;
-    margin: 10px 0 20px; 
- } */ 
- 
-/* p span { 
-     background:#fff; 
-     padding:0 10px; 
-} */
-
 .numero-bloque-hora{
 	border: 1px solid gray;
 	border-radius: 1em;
@@ -87,13 +71,6 @@
 	color: gray;
 }
 
-/* .span-bloque-hora {
-	border: 1px solid gray;
-	border-radius: 1em;
-	background: #fafafa;
-	padding: 0 10px;
-} */
-
 section, aside{
 	height: 88vh;
 	border-bottom: 1px solid grey;
@@ -102,8 +79,3 @@ section, aside{
     width: 100%;
     padding: 1em;
 }
-
-/* #anterior-semana, #siguiente-semana{
-	margin-top: 40vh;
-	position: fixed;
-} */

@@ -13,7 +13,7 @@ public class ControladorCalendario {
 		
 	}
 	
-	//METODO PARA OBTENER LOS CALENDARIOS DE UN USUARIO
+	//METODO PARA OBTENER LOS CALENDARIOS DE UN USUARIO (CON INVITADOS Y ACTIVIDADES)
 	public static String obtenerCalendariosUsuario(HttpServletRequest request) {
 		try {
 			HttpSession sesion = request.getSession();
@@ -38,7 +38,8 @@ public class ControladorCalendario {
 				String[] datos_calendario = DB.dbObtenerDatosCalendario(id_calendarios.get(i));
 				resultado_JSON.append(" \"nombre_calendario\": \""+ datos_calendario[0] +"\", \"color\": \""+ datos_calendario[1] +"\", \"invitados\":");
 				
-				//SE OBTIENEN LOS INVITADOS/COLABORADORES QUE POSEE EL CALENDARIO, SE RECORREN Y SE HACE APPEND
+				//SE OBTIENEN LOS INVITADOS QUE POSEE EL CALENDARIO, SI EL USUARIO NO ES PROPIETARIO DE UN CALENDARIO, LOS INVITADOS SON NULL, DE SER PROPIETARIO, SE RECORREN Y SE HACE APPEND
+				//EN CASO DE QUE UN PROPIETARIO NO TENGA INVITADOS EN SU CALENDARIO, LOS INVITADOS SON UN ARREGLO VACIO.
 				ArrayList<String> invitados_calendario = DB.dbObtenerInvitadosCalendario(usuario,id_calendarios.get(i));
 				if(invitados_calendario!=null) {
 					resultado_JSON.append("[");
@@ -48,7 +49,6 @@ public class ControladorCalendario {
 							resultado_JSON.append(",");
 						}
 					}
-					//resultado_JSON.append("], \"actividades\":[");
 					resultado_JSON.append("]");
 				}else {
 					resultado_JSON.append("null");
@@ -77,7 +77,7 @@ public class ControladorCalendario {
 				}
 				resultado_JSON.append("]");
 				
-				//CERRADO DEL JSON
+				//CERRADO DEL JSON ARMADO CON STRINGBUILDER
 				if(i==(id_calendarios.size()-1)) {
 					resultado_JSON.append("}");
 				}else {
@@ -85,7 +85,7 @@ public class ControladorCalendario {
 				}
 			}
 			resultado_JSON.append("]}");
-			System.out.println(resultado_JSON.toString());
+			//System.out.println(resultado_JSON.toString());
 			
 			return resultado_JSON.toString();
 		} catch (Exception e) {
@@ -98,38 +98,30 @@ public class ControladorCalendario {
 	//METODO PARA CREAR UN NUEVO CALENDARIO
 	public static String crearNuevoCalendrio(HttpServletRequest request) {
 		try {
-			System.out.println("CalendarController - crearNuevoCalendario");
 			Database DB = Database.getInstances();
 			
-			String nombre_nuevo_calendario = request.getParameter("nombre-calendario");
-			System.out.println(nombre_nuevo_calendario);
-			
+			//OBTENER POR PARAMETROS LOS DATOS DEL CALENDARIO PARA CREARLO
+			String nombre_nuevo_calendario = request.getParameter("nombre-calendario");			
 			String color_nuevo_calendario = request.getParameter("color-calendario");
-			System.out.println(color_nuevo_calendario);
-			
 			Object [] datos_calendario = {nombre_nuevo_calendario, color_nuevo_calendario};
 			int id_nuevo_calendario = DB.dbCrearCalendario(datos_calendario);
 			if(id_nuevo_calendario==0) {
-				System.out.println("no se pudo crear el calendario");
 				return "{\"resultado\": \"Error al crear calendario\", \"status\":"+500+"}";
 			}else {
-				System.out.println("calendario creado, id_calendario: " + id_nuevo_calendario);
 				//INCLUSION DE LOS DATOS DEL USUARIO (CREADOR DEL CALENDARIO) EN LA TABLA EDICIONES
 				HttpSession sesion = request.getSession();
 				String [] datos_usuario = DB.dbObtenerDatosUsuario(sesion.getAttribute("usuario").toString());
 				Object [] datos_edicion = {datos_usuario[0],datos_usuario[1],id_nuevo_calendario,true};
-				System.out.println("Resultado creacion datos edicion calendario: " + DB.dbCrearDatosEdicionCalendario(datos_edicion));
+				DB.dbCrearDatosEdicionCalendario(datos_edicion);
 				
 				//INCLUSION DE INVITADOS EN EL CALENDARIO DE EDICIONES
 				int cantidad_invitados = Integer.parseInt(request.getParameter("cantidad-invitados").toString());
-				//System.out.println("invitados: ");
 				for(int i=0;i<cantidad_invitados;i++) {
+					//SE VUELVE A COMPROBAR QUE EL INPUT DEL INVITADO SEA VALIDO, SE OBTIENEN LOS DATOS DEL USUARIO Y DE SER EXISTENTE, SE INCLUYEN LOS DATOS DE EDICION
 					if(request.getParameter("input-invitado"+i)!=null && !request.getParameter("input-invitado"+i).equals("")) {
 						String [] datos_invitado = DB.dbObtenerDatosUsuario(request.getParameter("input-invitado"+i));
 						if(datos_invitado[0]!=null) {
 							Object [] datos_edicion_invitado = {datos_invitado[0],datos_invitado[1],id_nuevo_calendario,false};
-							//System.out.println("Invitado a almacenar: " + datos_invitado[0] +" "+datos_invitado[1]);
-							//System.out.println("Resultado creacion datos edicion calendario invitado: " + DB.dbCrearDatosEdicionCalendario(datos_edicion_invitado));
 							DB.dbCrearDatosEdicionCalendario(datos_edicion_invitado);
 						}
 					}
@@ -145,12 +137,12 @@ public class ControladorCalendario {
 	//METODO PARA EDITAR UN CALENDARIO Y DATOS DE EDICION DE CALENDARIO
 	public static String editarCalendarioEdicion(HttpServletRequest request) {
 		try {
-			//OBTENER DATOS DE LA PETICION
 			HttpSession sesion = request.getSession();
 			
 			//EJECUTAR ACTUALIZACION DEL CALENDARIO
 			Database DB = Database.getInstances();
-			System.out.println(DB.dbActualizarCalendario(Integer.parseInt(request.getParameter("id-calendario")), request.getParameter("nombre-editar-calendario"), request.getParameter("color-editar-calendario")));
+			DB.dbActualizarCalendario(Integer.parseInt(request.getParameter("id-calendario")), request.getParameter("nombre-editar-calendario"), request.getParameter("color-editar-calendario"));
+			//OBTENER DATOS DE LOS INVITADOS 
 			ArrayList<String> lista_nombres_invitados = new ArrayList<>();
 			ArrayList<String> lista_correos_invitados = new ArrayList<>();
 			for(int i=0;i<Integer.parseInt(request.getParameter("cantidad-invitados")+1);i++) {
@@ -162,13 +154,13 @@ public class ControladorCalendario {
 					datos_invitado[1] = null;
 				}
 				
+				//SI LOS DATOS DEL INVITADO NO SON NULOS, AGREGAR DATOS A LA LISTA PARA POSTERIORMENTE ACTUALIZAR LOS DATOS DE EDICION
 				if(datos_invitado[0]!=null && datos_invitado[1]!=null) {
-					System.out.println(datos_invitado[0] + " - " + datos_invitado[1]);
 					lista_nombres_invitados.add(lista_nombres_invitados.size(), datos_invitado[0]);
 					lista_correos_invitados.add(lista_correos_invitados.size(), datos_invitado[1]);	
 				}
 			}
-			System.out.println(DB.dbActualizarDatosEdicion(sesion.getAttribute("usuario").toString(), Integer.parseInt(request.getParameter("id-calendario")), lista_nombres_invitados, lista_correos_invitados));
+			DB.dbActualizarDatosEdicion(sesion.getAttribute("usuario").toString(), Integer.parseInt(request.getParameter("id-calendario")), lista_nombres_invitados, lista_correos_invitados);
 			
 			return "{\"resultado\": \"Calendario editado satisfactoriamente\", \"status\":"+200+"}";
 		} catch (Exception e) {
@@ -181,6 +173,7 @@ public class ControladorCalendario {
 	public static String eliminarCalendario(HttpServletRequest request) {
 		try {
 			Database DB = Database.getInstances();
+			//SI UN PROPIETARIO DESEA ELIMINAR SU CALENDARIO, ELIMINARLO COMPLETAMENTE
 			if(Boolean.parseBoolean(request.getParameter("propietario"))) {
 				if(DB.dbEliminarCalendario(Integer.parseInt(request.getParameter("id-calendario")))) {
 					return "{\"resultado\": \"Calendario eliminado exitosamente\", \"status\":"+200+"}";
@@ -188,6 +181,7 @@ public class ControladorCalendario {
 					return "{\"resultado\": \"No se pudo eliminar el calendario\", \"status\":"+500+"}";
 				}
 			}else {
+				//SI UN USUARIO NO PROPIETARIO ELIMINA EL CALENDARIO, BORRAR UNICAMENTE LOS DATOS DE EDICION DEL USUARIO RESPECTIVO
 				HttpSession sesion = request.getSession();
 				if(DB.dbEliminarDatosEdicionCalendario(sesion.getAttribute("usuario").toString(), Integer.parseInt(request.getParameter("id-calendario")))) {
 					return "{\"resultado\": \"Datos edicion eliminados exitosamente\", \"status\":"+200+"}";

@@ -15,6 +15,7 @@ public class ControladorPerfil {
 	//METODO PARA OBTENER LOS DATOS DE UN PERFIL
 	public static String obtenerDatosPerfil(HttpServletRequest request) {
 		try {
+			//OBTENER LA SESION PARA CON ELLA OBTENER EL ATRIBUTO USUARIO DE LA MISMA Y OBTENER LA INFORMACION DE ESTE EN LA BASE DE DATOS
 			HttpSession sesion = request.getSession();
 			Database DB = Database.getInstances();
 			String [] datos_usuario = DB.dbObtenerDatosUsuario(sesion.getAttribute("usuario").toString());
@@ -26,14 +27,10 @@ public class ControladorPerfil {
 	
 	//METODO PARA ACTUALIZAR LOS DATOS DE UN PERFIL DEL SISTEMA
 	public static String actualizarDatosPerfil(HttpServletRequest request) {
-		try {
-			System.out.println("ControladorPerfil - actualizar datos");
-			System.out.println(request.getParameter("usuario"));
-			System.out.println(request.getParameter("clave"));
-			System.out.println(request.getParameter("correo"));
-			
+		try {			
 			HttpSession sesion = request.getSession();
 			
+			//OBTENER PARAMETROS DEL FORM EDITAR PERFIL
 			String usuario = request.getParameter("usuario");
 			String correo = request.getParameter("correo");
 			String clave = request.getParameter("clave");
@@ -42,14 +39,12 @@ public class ControladorPerfil {
 			Boolean resultado;
 			//ACTUALIZAR DATOS CUANDO NO CAMBIA LA CLAVE
 			if(clave.equals("")) {
-				System.out.println("Actualizar datos sin clave");
 				resultado = DB.dbActualizarDatosUsuario(sesion.getAttribute("usuario").toString(), usuario, correo);
 			}else {
 				//ACTUALIZAR DATOS CUANDO LA CLAVE ES MODIFICADA
-				System.out.println("Actualizar datos y clave");
 				resultado = DB.dbActualizarDatosUsuario(sesion.getAttribute("usuario").toString(), usuario, correo, Hashing.obtenerHash(clave));
 			}
-			System.out.println(resultado);
+			//DE SER SATISFACTORIO COLOCAR EL NOMBRE DE USUARIO ACTUALIZADO AL ATRIBUTO "usuario" EN LA SESION
 			if(resultado) {
 				sesion.setAttribute("usuario", usuario);
 				return("{\"resultado\": \"Datos actualizados\", \"status\":"+200+", \"nuevo_usuario\":\""+usuario+"\"}");
@@ -66,11 +61,10 @@ public class ControladorPerfil {
 	//METODO PARA ELIMINAR LOS DATOS DE UN PERFIL DEL SISTEMA
 	public static String eliminarDatosPerfil(HttpServletRequest request) {
 		try {
+			//OBTENER LA SESION PARA CON ELLA OBTENER EL ATRIBUTO USUARIO Y CON EL ELIMINAR EL REGISTRO EN LA BASE DE DATOS
 			HttpSession sesion = request.getSession();
-		
 			Database DB = Database.getInstances();
 			Boolean resultado = DB.dbEliminarPerfil(sesion.getAttribute("usuario").toString());
-			System.out.println("Resultado eliminar perfil: " + resultado);
 			if(resultado) {
 				sesion.setAttribute("usuario", null);
 				return("{\"resultado\": \"Perfil eliminado\", \"status\":"+200+"}");
