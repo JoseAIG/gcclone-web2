@@ -25,7 +25,7 @@ public class Registro extends HttpServlet {
     }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		//COMPROBAR SESION SI EXISTE UNA SESION ACTIVA PARA REDIRIGIR AL DASHBOARD
+		//COMPROBAR QUE NO EXISTA UNA SESION ACTIVA PARA ENVIAR LA VISTA DE REGISTRO. REDIRIGIR AL DASHBOARD DE EXISTIR UNA SESION
 		HttpSession sesion = request.getSession();
 		if(sesion.getAttribute("usuario")==null) {
 			response.setContentType("text/html");

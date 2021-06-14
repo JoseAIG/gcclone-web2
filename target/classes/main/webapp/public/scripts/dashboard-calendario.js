@@ -12,7 +12,7 @@ window.onload=()=>{
     .then(response => response.json())
     //RESPUESTA CON LOS RESULTADOS DEL SERVIDOR
     .then(data => {
-        //CON LA RESPUESTA DE LOS CALENDARIOS QUE RETORNA EL SERVIDOR, MOSTRAR LOS CALENDARIOS EN EL ASIDE Y AGREGAR LOS OPTIONS EN LAS ETIQUETAS SELECT PARA CREAR ACTIVIDAD
+		//CON LA RESPUESTA DE LOS CALENDARIOS QUE RETORNA EL SERVIDOR, MOSTRAR LOS CALENDARIOS EN EL ASIDE Y AGREGAR LOS OPTIONS EN LAS ETIQUETAS SELECT PARA CREAR ACTIVIDAD
 		mostrar_calendarios_aside(data);
 		//AGREGAR LOS CALENDARIOS EN LAS OPCIONES DEL SELECT PARA CREAR ACTIVIDADES EN "dashboard-actividades.js"
 		agregar_calendarios_opciones_select(data.calendarios);
@@ -158,20 +158,20 @@ const guardar_edicion_calendario = ()=>{
 	datos_form_editar_calendario.append("cantidad-invitados",contador_editar_invitados);
 	datos_form_editar_calendario.append("id-calendario", id_calendario_editar);
 	
-    fetch('Calendario', {
-    	method: 'PUT',
-    	body: datos_form_editar_calendario
+	fetch('Calendario', {
+		method: 'PUT',
+		body: datos_form_editar_calendario
 	})
-    .then(response => response.json())
-    .then(data => {
+	.then(response => response.json())
+	.then(data => {
 		alert(data.resultado);
 		if(data.status==200){
 			window.open("Dashboard","_self");
 		}
-    })	    
-    .catch((error) => {
-        console.error('Error:', error);
-    });
+	})	    
+	.catch((error) => {
+	    console.error('Error:', error);
+	});
 }
 link_guardar_edicion_calendario.onclick=guardar_edicion_calendario;
 

@@ -5,14 +5,14 @@
 //PROTOTYOE numeroSemana PARA OBTENER EL NUMERO DE LA SEMANA EN UN ANIO DE UNA FECHA
 Date.prototype.numeroSemana = function() {
 	//SE OBTIENE EL PRIMER DIA DEL ANIO ACTUAL
-    let primer_dia_anio = new Date(this.getFullYear(),0,1);
-    let dia_semana_primero_enero = primer_dia_anio.getDay()+1;
-    //OBTENER DIFERENCIA DE TIEMPO ENTRE LAS FECHAS EN MILISEGUNDOS Y DIVIDIRLO ENTRE LOS MILISEGUNDOS EN UN DIA PARA OBTENER LOS DIAS DE DIFERENCIA ENTRE LAS FECHAS
-    let dias_diferencia_primero_enero = (this - primer_dia_anio) / 86400000;
-    //SUMAR LOS DIAS DE DIFERENCIA DESDE EL PRIMERO DE ENERO HASTA LA FECHA CON EL NUMERO DE DIA DE SEMANA DE PRIMERO DE ENERO PARA OBTENER LA DIFERENCIA DE DIAS DESDE EL PRINCIPIO DE LA PRIMERA SEMANA
-    let diferencia_dias_inicio_primera_semana = (dias_diferencia_primero_enero + dia_semana_primero_enero);
-    //PASAR LA DIFERENCIA DE DIAS A SEMANAS Y RETORNAR RESPUESTA
-    let diferencia_semanas = Math.ceil(diferencia_dias_inicio_primera_semana/7);
+	let primer_dia_anio = new Date(this.getFullYear(),0,1);
+	let dia_semana_primero_enero = primer_dia_anio.getDay()+1;
+	//OBTENER DIFERENCIA DE TIEMPO ENTRE LAS FECHAS EN MILISEGUNDOS Y DIVIDIRLO ENTRE LOS MILISEGUNDOS EN UN DIA PARA OBTENER LOS DIAS DE DIFERENCIA ENTRE LAS FECHAS
+	let dias_diferencia_primero_enero = (this - primer_dia_anio) / 86400000;
+	//SUMAR LOS DIAS DE DIFERENCIA DESDE EL PRIMERO DE ENERO HASTA LA FECHA CON EL NUMERO DE DIA DE SEMANA DE PRIMERO DE ENERO PARA OBTENER LA DIFERENCIA DE DIAS DESDE EL PRINCIPIO DE LA PRIMERA SEMANA
+	let diferencia_dias_inicio_primera_semana = (dias_diferencia_primero_enero + dia_semana_primero_enero);
+	//PASAR LA DIFERENCIA DE DIAS A SEMANAS Y RETORNAR RESPUESTA
+	let diferencia_semanas = Math.ceil(diferencia_dias_inicio_primera_semana/7);
 	return diferencia_semanas;   
 };
 
@@ -67,8 +67,8 @@ boton_anterior_semana.addEventListener('click',()=>{cambiar_semana(false)});
 function obtener_numero_semana(fecha_actividad){
 	let fecha = new Date(fecha_actividad);
 	let dia = fecha.getDate();
-    let mes = fecha.getMonth();
-    let anio = fecha.getFullYear();
+	let mes = fecha.getMonth();
+	let anio = fecha.getFullYear();
 	let fecha_corregida = new Date(anio,mes,(dia+1));
 		
 	return fecha_corregida.numeroSemana();
@@ -114,10 +114,10 @@ dibujar_plantilla(selectorFecha.value);
 //FUNCION PARA DIBUJAR LA PLANTILLA SEMANAL EN EL SECTION DE LA APLICACION DADA UNA FECHA
 function dibujar_plantilla(fecha_a_dibujar){
 	//OBTENER LOS DATOS DE LAS FECHAS DEL INPUT DE FORMA INDIVIDUAL
-    let fecha = new Date(fecha_a_dibujar);
-    let dia = fecha.getDate();
-    let mes = fecha.getMonth();
-    let anio = fecha.getFullYear();
+	let fecha = new Date(fecha_a_dibujar);
+	let dia = fecha.getDate();
+	let mes = fecha.getMonth();
+	let anio = fecha.getFullYear();
 
 	//CORREGIR FECHA SUMANDOLE 1 DIA PARA OBTENER LA FECHA PRINCIPAL
 	fechaPrincipal = new Date(anio,mes,(dia+1));
@@ -125,24 +125,24 @@ function dibujar_plantilla(fecha_a_dibujar){
 	//OBTENER LAS ACTIVIDADES DE LA SEMANA EN BASE A LA FECHA PRINCIPAL CALCULADA
 	obtener_actividades_semana();
 
-    let div_dia = [];
-    //OBTENER LOS NUMEROS DE LOS DIAS DE LA SEMANA DADA LA FECHA PRINCIPAL
-    let diasSemana = obtenerDiasSemana(fechaPrincipal);
+	let div_dia = [];
+	//OBTENER LOS NUMEROS DE LOS DIAS DE LA SEMANA DADA LA FECHA PRINCIPAL
+	let diasSemana = obtenerDiasSemana(fechaPrincipal);
 	//RECORRER LOS DIVS DIAS PARA COLOCAR LOS DIVS DE LAS HORAS DENTRO DE CADA UNO
-    for(let i=0; i<7; i++){
-        div_dia[i] = document.getElementById("div"+i);
-        div_dia[i].innerHTML = nombre_dia_semana(i) + `<br>` + diasSemana[i] + `<hr>`;
-        //AÑADIDO DE DIVS DE LAS HORAS EN LOS DIVS DE LOS DIAS
-        for(let j=0; j<24; j=(j+0.5)){
+	for(let i=0; i<7; i++){
+	    div_dia[i] = document.getElementById("div"+i);
+	    div_dia[i].innerHTML = nombre_dia_semana(i) + `<br>` + diasSemana[i] + `<hr>`;
+	    //AÑADIDO DE DIVS DE LAS HORAS EN LOS DIVS DE LOS DIAS
+	    for(let j=0; j<24; j=(j+0.5)){
 			if(j%1==0){
 				//SI ES UNA HORA EN PUNTO
 	            div_dia[i].innerHTML += `<div  class="div-hora hoverable" dia=${i} hora=${j} numerodia="${parseInt(diasSemana[i])}"><p class="numero-bloque-hora">${j+":00"}</p></div> <br>`
 			}else{
 				//SI ES UNA HORA Y MEDIA
-            	div_dia[i].innerHTML += `<div  class="div-hora hoverable" dia=${i} hora=${j} numerodia="${parseInt(diasSemana[i])}"><p class="numero-bloque-hora">${(j-0.5)+":30"}</p></div> <br>`				
+	        	div_dia[i].innerHTML += `<div  class="div-hora hoverable" dia=${i} hora=${j} numerodia="${parseInt(diasSemana[i])}"><p class="numero-bloque-hora">${(j-0.5)+":30"}</p></div> <br>`				
 			}
-        }
-    }
+	    }
+	}
 		
 	//RECORRIDO FINAL DE LAS ACTIVIDADES POR LOS DIVS DE LAS HORAS
 	for(let i=0; i<actividades_en_la_semana.length; i++){
@@ -233,43 +233,43 @@ function obtenerFinalSemana (fecha) {
 
 //FUNCION PARA OBTENER LOS DIAS DE UNA SEMANA DADA UNA FECHA (LA FECHA DEBE SER CORREGIDA, DATE+1)
 function obtenerDiasSemana(fecha) {
-    let primerDia = obtenerInicioSemana(fecha).getDate();
-    let ultimoDia = obtenerFinalSemana(fecha).getDate();
-
-    let numeroDiasSemana = [];
+	let primerDia = obtenerInicioSemana(fecha).getDate();
+	let ultimoDia = obtenerFinalSemana(fecha).getDate();
+	
+	let numeroDiasSemana = [];
 	
 	//SI EL PRIMER DIA ES MENOR AL ULTIMO DIA DE LA SEMANA, RECORRER LOS DIAS Y GUARDAR EN EL ARREGLO LOS NUMEROS DE LOS DIAS
-    if(primerDia<ultimoDia){
-        for(let i=0; i<7; i++){
-        	//EL NUMERO DEL DIA i ES EL DIA DE LA FECHA MENOS EL NUMERO DEL DIA DE LA SEMANA DE LA FECHA SUMANDOLE LA ITERACION PARA INCREMENTAR LOS DIAS CONSECUTIVAMENTE
-            numeroDiasSemana[i] = fecha.getDate() + i - fecha.getDay();
-        }
-    }else{
-    	//PERO SI DENTRO DE LA SEMANA CULMINA UN MES, SE OBTIENE LA FECHA DE INICIO DE LA SEMANA Y SE SETEA EL DIA A 31 PARA OBTENER CON QUE NUMERO DE DIA CULMINA EL MES
-        let fechaPrimerDia = obtenerInicioSemana(fecha);
-        fechaPrimerDia.setDate(31);
-
+	if(primerDia<ultimoDia){
+	    for(let i=0; i<7; i++){
+			//EL NUMERO DEL DIA i ES EL DIA DE LA FECHA MENOS EL NUMERO DEL DIA DE LA SEMANA DE LA FECHA SUMANDOLE LA ITERACION PARA INCREMENTAR LOS DIAS CONSECUTIVAMENTE
+			numeroDiasSemana[i] = fecha.getDate() + i - fecha.getDay();
+	    }
+	}else{
+		//PERO SI DENTRO DE LA SEMANA CULMINA UN MES, SE OBTIENE LA FECHA DE INICIO DE LA SEMANA Y SE SETEA EL DIA A 31 PARA OBTENER CON QUE NUMERO DE DIA CULMINA EL MES
+	    let fechaPrimerDia = obtenerInicioSemana(fecha);
+	    fechaPrimerDia.setDate(31);
+	
 		//SI LA RESTA DE 31 CON LA FECHA DEL PRIMER DIA SETEADA EN 31 PARA ES 0, SIGINIFICA QUE EN EFECTO EL MES TERMINA EN EL DIA 31
-        let diaFinMesAnterior = 31-fechaPrimerDia.getDate()
-        if(diaFinMesAnterior==0){
-            diaFinMesAnterior=31;
-        }
-        
-        for(let i=0;i<7;i++){
-            //SI LA SUMA DE LA SIGUIENTE ITERACION NO SUPERA EL DIA FIN DEL MES ANTERIOR, EL DIA DE LA SEMANA ES LA SUMA
-            if(!((primerDia+i)>diaFinMesAnterior)){
-                numeroDiasSemana[i] = primerDia + i;
-            }
-            //PERO SI LA SUMA SUPERA EL DIA FIN DEL MES ANTERIOR, EMPIEZA EL CONTEO DEL PROXIMO MES
-            else{
-                for(let j=i;j<7;j++){
-                    numeroDiasSemana[j] = j-i+1;
-                }
-                break;
-            }
-        }
-    }
-    return numeroDiasSemana;
+	    let diaFinMesAnterior = 31-fechaPrimerDia.getDate()
+	    if(diaFinMesAnterior==0){
+	        diaFinMesAnterior=31;
+	    }
+	    
+	    for(let i=0;i<7;i++){
+	        //SI LA SUMA DE LA SIGUIENTE ITERACION NO SUPERA EL DIA FIN DEL MES ANTERIOR, EL DIA DE LA SEMANA ES LA SUMA
+	        if(!((primerDia+i)>diaFinMesAnterior)){
+	            numeroDiasSemana[i] = primerDia + i;
+	        }
+	        //PERO SI LA SUMA SUPERA EL DIA FIN DEL MES ANTERIOR, EMPIEZA EL CONTEO DEL PROXIMO MES
+	        else{
+	            for(let j=i;j<7;j++){
+	                numeroDiasSemana[j] = j-i+1;
+	            }
+	            break;
+	        }
+	    }
+	}
+	return numeroDiasSemana;
 }
 
 //FUNCION PARA OBTENER LOS NOMBRES DE LOS DIAS DE LA SEMANA EN BASE DE UN NUMERO DE DIA DE SEMANA (0-6)
@@ -314,9 +314,9 @@ function agregar_calendarios_opciones_select(calendarios){
 		}
 	}
 	
-    //VOLVER A INICIAR LAS ETIQUETAS SELECT
-    var elems = document.querySelectorAll('select');
-    M.FormSelect.init(elems);
+	//VOLVER A INICIAR LAS ETIQUETAS SELECT
+	var elems = document.querySelectorAll('select');
+	M.FormSelect.init(elems);
 }
 
 //CREAR ACTIVIDAD
@@ -353,20 +353,20 @@ var form_editar_actividad = document.getElementById("form-editar-actividad");
 const modificar_actividad = () => {
 	var datos_form_editar_actividad = new FormData(form_editar_actividad);
 	datos_form_editar_actividad.append("id-actividad", id_actividad_editar);
-    fetch('Actividad', {
-    	method: 'PUT',
-    	body: datos_form_editar_actividad
+	fetch('Actividad', {
+		method: 'PUT',
+		body: datos_form_editar_actividad
 	})
-    .then(response => response.json())
-    .then(data => {
+	.then(response => response.json())
+	.then(data => {
 		alert(data.resultado);
 		if(data.status==200){
 			window.open("Dashboard","_self");
 		}
-    })	    
-    .catch((error) => {
-        console.error('Error:', error);
-    });
+	})	    
+	.catch((error) => {
+	    console.error('Error:', error);
+	});
 }
 link_guardar_editar_actividad.onclick=modificar_actividad;
 
@@ -375,20 +375,20 @@ var link_eliminar_actividad = document.getElementById("link-eliminar-actividad")
 const eliminar_actividad = () =>{		
 	let form_eliminar_actividad = new FormData();
 	form_eliminar_actividad.append("id-actividad",id_actividad_editar);
-    fetch('Actividad', {
-    	method: 'DELETE',
-    	body: form_eliminar_actividad
+	fetch('Actividad', {
+		method: 'DELETE',
+		body: form_eliminar_actividad
 	})
-    .then(response => response.json())
-    .then(data => {
+	.then(response => response.json())
+	.then(data => {
 		alert(data.resultado);
 		if(data.status==200){
 			window.open("Dashboard","_self");
 		}
-    })	    
-    .catch((error) => {
-        console.error('Error:', error);
-    });
+	})	    
+	.catch((error) => {
+	    console.error('Error:', error);
+	});
 }
 link_eliminar_actividad.onclick = eliminar_actividad;
 
@@ -436,36 +436,36 @@ var contenedor_imagen_previsualizar = document.getElementById("contenedor-imagen
 
 //INICIALIZAR LOS ELEMENTOS VISUALES DE MATERIALIZE CUANDO CARGUE EL CONTENIDO DEL DOM
 document.addEventListener('DOMContentLoaded', function() {
-   let options = {
-   		onCloseEnd: ()=>{
+	let options = {
+		onCloseEnd: ()=>{
 			input_detalle_crear_actividad.value=null;
 			fecha_crear_actividad.value=null;
 			document.getElementById("option-defecto").selected = 'selected';
 			contenedor_imagen_previsualizar.innerHTML="";
-		    //VOLVER A INICIAR LAS ETIQUETAS SELECT
+			//VOLVER A INICIAR LAS ETIQUETAS SELECT
 			var elems = document.querySelectorAll('select');
 			M.FormSelect.init(elems);
-   		}
+		}
 	}
-    var elems = document.querySelector('#modal-crear-actividad');
-    M.Modal.init(elems, options);   
-
-    var elems = document.querySelector('#modal-editar-actividad');
-    M.Modal.init(elems, options); 
+	var elems = document.querySelector('#modal-crear-actividad');
+	M.Modal.init(elems, options);   
 	
-    var elems  = document.querySelectorAll("input[type=range]");
-    M.Range.init(elems);
+	var elems = document.querySelector('#modal-editar-actividad');
+	M.Modal.init(elems, options); 
+	
+	var elems  = document.querySelectorAll("input[type=range]");
+	M.Range.init(elems);
 	
 	//BOTON FIJO AGREGADO PARA CREAR ACTIVIDADES Y CALENDARIOS
-   	var elems = document.querySelectorAll('.fixed-action-btn');
-   	M.FloatingActionButton.init(elems);
-   	
-   	//TOOLTIPS BOTONES AGREGADO
-    var elems = document.querySelectorAll('.tooltipped');
-    var instances = M.Tooltip.init(elems);
-    
-    //ETIQUETA SELECT
-    var elems = document.querySelectorAll('select');
-    M.FormSelect.init(elems);
+	var elems = document.querySelectorAll('.fixed-action-btn');
+	M.FloatingActionButton.init(elems);
+	
+	//TOOLTIPS BOTONES AGREGADO
+	var elems = document.querySelectorAll('.tooltipped');
+	var instances = M.Tooltip.init(elems);
+	
+	//ETIQUETA SELECT
+	var elems = document.querySelectorAll('select');
+	M.FormSelect.init(elems);
 
 });

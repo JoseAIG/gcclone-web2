@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import helpers.Database;
+import helpers.PropertiesReader;
 
 public class ControladorCalendario {
 
@@ -30,9 +31,8 @@ public class ControladorCalendario {
 			
 			//SE RECORREN LOS CALENDARIOS
 			for(int i=0; i<id_calendarios.size();i++) {
-				//OBTENCION ACTIVIDADES DE UN CALENDARIO
-				ArrayList<String[]> actividades_calendario = DB.dbObtenerActividadesCalendario(id_calendarios.get(i));
 				
+				//SE AGREGAN LOS VALORES BASICOS DEL CALENDARIO
 				resultado_JSON.append("{");
 				resultado_JSON.append(" \"id_calendario\": \""+ id_calendarios.get(i) +"\", ");
 				String[] datos_calendario = DB.dbObtenerDatosCalendario(id_calendarios.get(i));
@@ -59,7 +59,7 @@ public class ControladorCalendario {
 				ArrayList<String[]> lista_actividades = DB.dbObtenerActividadesCalendario(id_calendarios.get(i));
 				for(int j=0; j<lista_actividades.size(); j++) {
 					//OBTENER LOS DATOS DE LA ACTIVIDAD j Y HACER APPEND
-					String[] actividad = actividades_calendario.get(j);
+					String[] actividad = lista_actividades.get(j);
 					resultado_JSON.append("{");
 					resultado_JSON.append("\"id_actividad\": \""+actividad[0]+"\",");
 					resultado_JSON.append("\"id_calendario\": \""+actividad[1]+"\",");
@@ -99,6 +99,7 @@ public class ControladorCalendario {
 	public static String crearNuevoCalendrio(HttpServletRequest request) {
 		try {
 			Database DB = Database.getInstances();
+			PropertiesReader PR = PropertiesReader.getInstance();
 			
 			//OBTENER POR PARAMETROS LOS DATOS DEL CALENDARIO PARA CREARLO
 			String nombre_nuevo_calendario = request.getParameter("nombre-calendario");			
@@ -112,7 +113,7 @@ public class ControladorCalendario {
 				HttpSession sesion = request.getSession();
 				String [] datos_usuario = DB.dbObtenerDatosUsuario(sesion.getAttribute("usuario").toString());
 				Object [] datos_edicion = {datos_usuario[0],datos_usuario[1],id_nuevo_calendario,true};
-				DB.dbCrearDatosEdicionCalendario(datos_edicion);
+				DB.dbPreparedStatement(PR.obtenerPropiedad("crearDatosEdicion"), datos_edicion);
 				
 				//INCLUSION DE INVITADOS EN EL CALENDARIO DE EDICIONES
 				int cantidad_invitados = Integer.parseInt(request.getParameter("cantidad-invitados").toString());
@@ -122,7 +123,7 @@ public class ControladorCalendario {
 						String [] datos_invitado = DB.dbObtenerDatosUsuario(request.getParameter("input-invitado"+i));
 						if(datos_invitado[0]!=null) {
 							Object [] datos_edicion_invitado = {datos_invitado[0],datos_invitado[1],id_nuevo_calendario,false};
-							DB.dbCrearDatosEdicionCalendario(datos_edicion_invitado);
+							DB.dbPreparedStatement(PR.obtenerPropiedad("crearDatosEdicion"), datos_edicion_invitado);
 						}
 					}
 				}
@@ -141,7 +142,10 @@ public class ControladorCalendario {
 			
 			//EJECUTAR ACTUALIZACION DEL CALENDARIO
 			Database DB = Database.getInstances();
-			DB.dbActualizarCalendario(Integer.parseInt(request.getParameter("id-calendario")), request.getParameter("nombre-editar-calendario"), request.getParameter("color-editar-calendario"));
+			PropertiesReader PR = PropertiesReader.getInstance();
+			Object[] datos_calendario = {request.getParameter("nombre-editar-calendario"), request.getParameter("color-editar-calendario")};
+			DB.dbPreparedStatement(PR.obtenerPropiedad("actualizarCalendario")+Integer.parseInt(request.getParameter("id-calendario")), datos_calendario);
+			
 			//OBTENER DATOS DE LOS INVITADOS 
 			ArrayList<String> lista_nombres_invitados = new ArrayList<>();
 			ArrayList<String> lista_correos_invitados = new ArrayList<>();
@@ -173,9 +177,11 @@ public class ControladorCalendario {
 	public static String eliminarCalendario(HttpServletRequest request) {
 		try {
 			Database DB = Database.getInstances();
+			PropertiesReader PR = PropertiesReader.getInstance();
+			
 			//SI UN PROPIETARIO DESEA ELIMINAR SU CALENDARIO, ELIMINARLO COMPLETAMENTE
 			if(Boolean.parseBoolean(request.getParameter("propietario"))) {
-				if(DB.dbEliminarCalendario(Integer.parseInt(request.getParameter("id-calendario")))) {
+				if(DB.dbStatement(PR.obtenerPropiedad("eliminarCalendario")+Integer.parseInt(request.getParameter("id-calendario")))) {
 					return "{\"resultado\": \"Calendario eliminado exitosamente\", \"status\":"+200+"}";
 				}else {
 					return "{\"resultado\": \"No se pudo eliminar el calendario\", \"status\":"+500+"}";
@@ -183,7 +189,8 @@ public class ControladorCalendario {
 			}else {
 				//SI UN USUARIO NO PROPIETARIO ELIMINA EL CALENDARIO, BORRAR UNICAMENTE LOS DATOS DE EDICION DEL USUARIO RESPECTIVO
 				HttpSession sesion = request.getSession();
-				if(DB.dbEliminarDatosEdicionCalendario(sesion.getAttribute("usuario").toString(), Integer.parseInt(request.getParameter("id-calendario")))) {
+				if(DB.dbStatement("DELETE FROM ediciones WHERE (nombre_usuario='"+sesion.getAttribute("usuario").toString()+"' OR correo='"+sesion.getAttribute("usuario").toString()+"') AND id_calendario="+Integer.parseInt(request.getParameter("id-calendario")))) {
+					System.out.println("datos edicion elim optimizados");
 					return "{\"resultado\": \"Datos edicion eliminados exitosamente\", \"status\":"+200+"}";
 				}else {
 					return "{\"resultado\": \"No se pudo eliminar los datos de edicion\", \"status\":"+500+"}";

@@ -2,6 +2,7 @@ package helpers;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class Database {
 
@@ -51,13 +52,51 @@ public class Database {
 		return DB;
 	}
 	
+	// +
+	public boolean dbPreparedStatement(String query, Object[] datos) {
+		try {
+			this.pstmt = this.conn.prepareStatement(query);
+			int i = 0;
+			for(Object dato : datos) {
+				System.out.println(dato);
+				if(dato instanceof Integer) {
+					this.pstmt.setInt(++i, (int) dato);
+				}
+				else if(dato instanceof String) {
+					this.pstmt.setString(++i, (String) dato);
+				}
+				else if(dato instanceof Double) {
+					this.pstmt.setDouble(++i, (Double) dato);
+				}
+				else if(dato instanceof Boolean) {
+					this.pstmt.setBoolean(++i, (Boolean) dato);
+				}
+				else if(dato==null) {
+					this.pstmt.setNull(++i, Types.VARCHAR);
+				}
+			}
+			
+			this.pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		} finally {
+			try {
+				this.pstmt.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return true;
+	}
 	
-	//METODO PARA REGISTRAR USUARIO CON COMPROBACION DE USUARIO EXISTENTE
+	//METODO PARA REGISTRAR USUARIO CON COMPROBACION DE USUARIO EXISTENTE +
 	public String dbRegistroUsuario(Object[] datos) {
 		try {
 			//CHEQUEO DE USUARIO REGISTRADO
 			this.stmt = this.conn.createStatement();
-			this.rs = this.stmt.executeQuery("select *from usuarios");
+			//this.rs = this.stmt.executeQuery("select *from usuarios");
+			this.rs = this.stmt.executeQuery(PR.obtenerPropiedad("obtenerUsuarios"));
 			while(rs.next()) {
 				if(rs.getString("nombre_usuario").equals(datos[0])) {
 					return "Usuario ya existe";
@@ -89,12 +128,12 @@ public class Database {
 		return "Operacion exitosa";
 	}
 	
-	//METODO PARA OBTENER LOS DATOS DE UN USUARIO
+	//METODO PARA OBTENER LOS DATOS DE UN USUARIO +
 	public String[] dbObtenerDatosUsuario(String usuario) {
 		String [] datos = new String[3];
 		try {
 			this.stmt = this.conn.createStatement();
-			this.rs = this.stmt.executeQuery("select *from usuarios where nombre_usuario ='"+usuario+"' OR correo='"+usuario+"';");
+			this.rs = this.stmt.executeQuery(PR.obtenerPropiedad("obtenerDatosUsuario")+usuario+"' OR correo='"+usuario+"';");
 			while(rs.next()) {
 				datos[0] = rs.getString("nombre_usuario");
 				datos[1] = rs.getString("correo");
@@ -115,51 +154,51 @@ public class Database {
 	
 	//METODOS PARA ACTUALIZAR LOS DATOS DE UN PERFIL
 	//ACTUALIZAR LOS DATOS DE UN USUARIO CUANDO CAMBIA LA CLAVE
-	public boolean dbActualizarDatosUsuario(String usuario, String nombre, String correo, String hash_clave) {
-		try {
-			this.pstmt = this.conn.prepareStatement("UPDATE usuarios SET nombre_usuario = ?, correo = ?, clave = ? WHERE nombre_usuario='"+usuario+"' OR correo='"+usuario+"';");
-			this.pstmt.setString(1, (String) nombre);
-			this.pstmt.setString(2, (String) correo);
-			this.pstmt.setString(3, (String) hash_clave);
-			this.pstmt.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		} finally {
-			try {
-				this.pstmt.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-		return true;
-	}
+//	public boolean dbActualizarDatosUsuario(String usuario, String nombre, String correo, String hash_clave) {
+//		try {
+//			this.pstmt = this.conn.prepareStatement("UPDATE usuarios SET nombre_usuario = ?, correo = ?, clave = ? WHERE nombre_usuario='"+usuario+"' OR correo='"+usuario+"';");
+//			this.pstmt.setString(1, (String) nombre);
+//			this.pstmt.setString(2, (String) correo);
+//			this.pstmt.setString(3, (String) hash_clave);
+//			this.pstmt.executeUpdate();
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//			return false;
+//		} finally {
+//			try {
+//				this.pstmt.close();
+//			} catch (SQLException e) {
+//				e.printStackTrace();
+//			}
+//		}
+//		return true;
+//	}
+//	
+//	//ACTUALIZAR LOS DATOS DE UN USUARIO CUANDO ---NO--- CAMBIA LA CLAVE
+//	public boolean dbActualizarDatosUsuario(String usuario, String nombre, String correo) {
+//		try {
+//			this.pstmt = this.conn.prepareStatement("UPDATE usuarios SET nombre_usuario = ?, correo = ? WHERE nombre_usuario='"+usuario+"' OR correo='"+usuario+"';");
+//			this.pstmt.setString(1, (String) nombre);
+//			this.pstmt.setString(2, (String) correo);
+//			this.pstmt.executeUpdate();
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//			return false;
+//		} finally {
+//			try {
+//				this.pstmt.close();
+//			} catch (SQLException e) {
+//				e.printStackTrace();
+//			}
+//		}
+//		return true;
+//	}
 	
-	//ACTUALIZAR LOS DATOS DE UN USUARIO CUANDO ---NO--- CAMBIA LA CLAVE
-	public boolean dbActualizarDatosUsuario(String usuario, String nombre, String correo) {
-		try {
-			this.pstmt = this.conn.prepareStatement("UPDATE usuarios SET nombre_usuario = ?, correo = ? WHERE nombre_usuario='"+usuario+"' OR correo='"+usuario+"';");
-			this.pstmt.setString(1, (String) nombre);
-			this.pstmt.setString(2, (String) correo);
-			this.pstmt.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		} finally {
-			try {
-				this.pstmt.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-		return true;
-	}
-	
-	//METODO PARA ELIMINAR UN USUARIO DEL SISTEMA
-	public Boolean dbEliminarPerfil (String usuario) {
+	//METODO STATEMENT +
+	public boolean dbStatement (String query) {
 		try {
 			this.stmt = this.conn.createStatement();
-			this.stmt.executeUpdate("DELETE FROM usuarios WHERE nombre_usuario='"+ usuario +"' OR correo='"+usuario+"';");
+			this.stmt.executeUpdate(query);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
@@ -173,7 +212,25 @@ public class Database {
 		return true;
 	}
 	
-	//METODO PARA CREAR UN NUEVO CALENDARIO, RETORNA EL ID DEL CALENDARIO CREADO
+	//METODO PARA ELIMINAR UN USUARIO DEL SISTEMA
+//	public Boolean dbEliminarPerfil (String usuario) {
+//		try {
+//			this.stmt = this.conn.createStatement();
+//			this.stmt.executeUpdate("DELETE FROM usuarios WHERE nombre_usuario='"+ usuario +"' OR correo='"+usuario+"';");
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//			return false;
+//		}finally {
+//			try {
+//				this.stmt.close();
+//			} catch (SQLException e) {
+//				e.printStackTrace();
+//			}
+//		}
+//		return true;
+//	}
+	
+	//METODO PARA CREAR UN NUEVO CALENDARIO, RETORNA EL ID DEL CALENDARIO CREADO +
 	public int dbCrearCalendario (Object[] datos_calendario) {
 		//SE INICIALIZA EN 0, REPRESENTANDO ERROR
 		int id_calendario_creado = 0;
@@ -210,51 +267,50 @@ public class Database {
 	}
 	
 	//METODO PARA CREAR DATOS DE EDICION PARA UN CALENDARIO ESPECIFICO
-	public Boolean dbCrearDatosEdicionCalendario(Object[] datos_ediciones) {
-		try {
-			//this.pstmt = this.conn.prepareStatement("INSERT INTO ediciones (nombre_usuario, correo, id_calendario) VALUES (?,?,?)");
-			this.pstmt = this.conn.prepareStatement(PR.obtenerPropiedad("crearDatosEdicion"));
-			this.pstmt.setString(1, (String) datos_ediciones[0]);
-			this.pstmt.setString(2, (String) datos_ediciones[1]);
-			this.pstmt.setInt(3,  (int) datos_ediciones[2]);
-			this.pstmt.setBoolean(4, (boolean) datos_ediciones[3]);
-			this.pstmt.executeUpdate();
-			
-		}catch (SQLException e) {
-			e.printStackTrace();
-			//EN ESTE PUNTO RETORNARIA 0 (ERROR)
-			return false;
-		}finally {
-			try {
-				//this.stmt.close();
-				this.rs.close();
-				this.pstmt.close();
-			} catch (SQLException e) {
-				//e.printStackTrace();
-			}
-		}
-		return true;
-	}
+//	public Boolean dbCrearDatosEdicionCalendario(Object[] datos_ediciones) {
+//		try {
+//			//this.pstmt = this.conn.prepareStatement("INSERT INTO ediciones (nombre_usuario, correo, id_calendario) VALUES (?,?,?)");
+//			this.pstmt = this.conn.prepareStatement(PR.obtenerPropiedad("crearDatosEdicion"));
+//			this.pstmt.setString(1, (String) datos_ediciones[0]);
+//			this.pstmt.setString(2, (String) datos_ediciones[1]);
+//			this.pstmt.setInt(3,  (int) datos_ediciones[2]);
+//			this.pstmt.setBoolean(4, (boolean) datos_ediciones[3]);
+//			this.pstmt.executeUpdate();
+//			
+//		}catch (SQLException e) {
+//			e.printStackTrace();
+//			return false;
+//		}finally {
+//			try {
+//				//this.stmt.close();
+//				this.rs.close();
+//				this.pstmt.close();
+//			} catch (SQLException e) {
+//				//e.printStackTrace();
+//			}
+//		}
+//		return true;
+//	}
 	
 	//METODO PARA ELIMINAR LOS DATOS DE EDICION DE UN CALENDARIO (INVITADO ELIMINANDO UN CALENDARIO)
-	public boolean dbEliminarDatosEdicionCalendario(String usuario, int id_calendario) {
-		try {
-			this.stmt = this.conn.createStatement();
-			this.stmt.executeUpdate("DELETE FROM ediciones WHERE (nombre_usuario='"+usuario+"' OR correo='"+usuario+"') AND id_calendario="+id_calendario);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}finally {
-			try {
-				this.stmt.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-		return true;
-	}
+//	public boolean dbEliminarDatosEdicionCalendario(String usuario, int id_calendario) {
+//		try {
+//			this.stmt = this.conn.createStatement();
+//			this.stmt.executeUpdate("DELETE FROM ediciones WHERE (nombre_usuario='"+usuario+"' OR correo='"+usuario+"') AND id_calendario="+id_calendario);
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//			return false;
+//		}finally {
+//			try {
+//				this.stmt.close();
+//			} catch (SQLException e) {
+//				e.printStackTrace();
+//			}
+//		}
+//		return true;
+//	}
 	
-	//METODO PARA OBTENER DATOS DE EDICION DE CALENDARIOS
+	//METODO PARA OBTENER DATOS DE EDICION DE CALENDARIOS +
 	public ArrayList<Integer> dbObtenerIDsCalendarios(String usuario) {
 		ArrayList<Integer> id_calendario = new ArrayList<>();
  		try {
@@ -276,13 +332,11 @@ public class Database {
 		return id_calendario;
 	}
 	
-	//METODO PARA OBTENER DATOS DE UN CALENDARIO
+	//METODO PARA OBTENER DATOS DE UN CALENDARIO +
 	public String[] dbObtenerDatosCalendario(int id_calendario) {
-		//String [] datos = new String[3];
 		String[] datos_calendario = new String[2];
 		try {
 			this.stmt = this.conn.createStatement();
-			//this.rs = this.stmt.executeQuery("select *from calendarios where id_calendario ='"+id_calendario+"';");
 			this.rs = this.stmt.executeQuery(PR.obtenerPropiedad("obtenerDatosCalendario")+id_calendario);
 			while(rs.next()) {	
 				datos_calendario[0]=rs.getString("nombre");
@@ -301,7 +355,7 @@ public class Database {
 		return datos_calendario;
 	}
 	
-	//METODO PARA OBTENER LOS INVITADOS DE UN CALENDARIO COMPROBANDO QUE EL USUARIO SEA PROPIETARIO DEL MISMO
+	//METODO PARA OBTENER LOS INVITADOS DE UN CALENDARIO COMPROBANDO QUE EL USUARIO SEA PROPIETARIO DEL MISMO +
 	public ArrayList<String> dbObtenerInvitadosCalendario(String usuario, int id_calendario) {
 		ArrayList<String> invitados = new ArrayList<>();
  		try {
@@ -334,35 +388,35 @@ public class Database {
 		return invitados;
 	}
 	
-	//METODO PARA ACTUALIZAR UN CALENDARIO + DATOS DE EDICION DE CALENDARIO
-	public Boolean dbActualizarCalendario(int id_calendario, String nuevo_nombre, String nuevo_color) {
-		try {
-			//this.pstmt = this.conn.prepareStatement("UPDATE calendarios SET nombre = ?, color = ? WHERE id_calendario="+id_calendario+";");
-			this.pstmt = this.conn.prepareStatement(PR.obtenerPropiedad("actualizarCalendario")+id_calendario);
-			this.pstmt.setString(1, (String) nuevo_nombre);
-			this.pstmt.setString(2, (String) nuevo_color);
-			this.pstmt.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		} finally {
-			try {
-				this.pstmt.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-		return true;
-	}
+//	//METODO PARA ACTUALIZAR UN CALENDARIO + DATOS DE EDICION DE CALENDARIO
+//	public Boolean dbActualizarCalendario(int id_calendario, String nuevo_nombre, String nuevo_color) {
+//		try {
+//			//this.pstmt = this.conn.prepareStatement("UPDATE calendarios SET nombre = ?, color = ? WHERE id_calendario="+id_calendario+";");
+//			this.pstmt = this.conn.prepareStatement(PR.obtenerPropiedad("actualizarCalendario")+id_calendario);
+//			this.pstmt.setString(1, (String) nuevo_nombre);
+//			this.pstmt.setString(2, (String) nuevo_color);
+//			this.pstmt.executeUpdate();
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//			return false;
+//		} finally {
+//			try {
+//				this.pstmt.close();
+//			} catch (SQLException e) {
+//				e.printStackTrace();
+//			}
+//		}
+//		return true;
+//	}
 	
-	//METODO PARA ACTUALIZAR LOS DATOS DE EDICION DE UN CALENDARIO
+	//METODO PARA ACTUALIZAR LOS DATOS DE EDICION DE UN CALENDARIO +
 	public Boolean dbActualizarDatosEdicion(String usuario, int id_calendario, ArrayList<String> nombres_invitados, ArrayList<String> correos_invitados) {
 		try {
 			this.stmt = this.conn.createStatement();
 			this.stmt.executeUpdate("DELETE FROM ediciones WHERE id_calendario="+id_calendario+" AND (nombre_usuario!='"+usuario+"' AND correo!='"+usuario+"');");
 			
 			for(int i=0; i<nombres_invitados.size(); i++) {
-				this.pstmt = this.conn.prepareStatement("INSERT INTO ediciones (nombre_usuario, correo, id_calendario, propietario) VALUES (?,?,?,?);");
+				this.pstmt = this.conn.prepareStatement(PR.obtenerPropiedad("crearDatosEdicion"));
 				this.pstmt.setString(1, (String) nombres_invitados.get(i));
 				this.pstmt.setString(2, (String) correos_invitados.get(i));
 				this.pstmt.setInt(3, id_calendario);
@@ -384,25 +438,25 @@ public class Database {
 	}
 	
 	//METODO PARA ELIMINAR UN CALENDARIO DE LA BASE DE DATOS
-	public Boolean dbEliminarCalendario (int id_calendario) {
-		try {
-			this.stmt = this.conn.createStatement();
-			//this.stmt.executeUpdate("DELETE FROM calendarios WHERE id_calendario="+id_calendario+";");
-			this.stmt.executeUpdate(PR.obtenerPropiedad("eliminarCalendario")+id_calendario);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}finally {
-			try {
-				this.stmt.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-		return true;
-	}
+//	public Boolean dbEliminarCalendario (int id_calendario) {
+//		try {
+//			this.stmt = this.conn.createStatement();
+//			//this.stmt.executeUpdate("DELETE FROM calendarios WHERE id_calendario="+id_calendario+";");
+//			this.stmt.executeUpdate(PR.obtenerPropiedad("eliminarCalendario")+id_calendario);
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//			return false;
+//		}finally {
+//			try {
+//				this.stmt.close();
+//			} catch (SQLException e) {
+//				e.printStackTrace();
+//			}
+//		}
+//		return true;
+//	}
 	
-	//METODO PARA OBTENER LOS DATOS DE LAS ACTIVIDADES DE UN CALENDARIO
+	//METODO PARA OBTENER LOS DATOS DE LAS ACTIVIDADES DE UN CALENDARIO +
 	public ArrayList<String[]> dbObtenerActividadesCalendario (int id_calendario) {
 		ArrayList<String[]> actividades = new ArrayList<>();
  		try {
@@ -434,96 +488,74 @@ public class Database {
 	}
 	
 	//METODO PARA CREAR UNA NUEVA ACTIVIDAD
-	public boolean dbCrearActividad (Object[] datos_actividad) {
-		try {
-			//this.pstmt = this.conn.prepareStatement("INSERT INTO actividades (id_calendario, informacion, fecha, hora_inicio, hora_fin, ruta_imagen) VALUES (?,?,?,?,?,?)");
-			this.pstmt = this.conn.prepareStatement(PR.obtenerPropiedad("crearActividad"));
-			this.pstmt.setInt(1,  Integer.parseInt(datos_actividad[0].toString()));
-			this.pstmt.setString(2, (String) datos_actividad[1]);
-			this.pstmt.setString(3, (String) datos_actividad[2]);
-			this.pstmt.setDouble(4, Double.parseDouble(datos_actividad[3].toString()));
-			this.pstmt.setDouble(5, Double.parseDouble(datos_actividad[4].toString()));
-			this.pstmt.setString(6, (String) datos_actividad[5]);
-			this.pstmt.executeUpdate();
-		}catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}finally {
-			try {
-				this.pstmt.close();
-			} catch (SQLException e) {
-				//e.printStackTrace();
-			}
-		}
-		
-		return true;
-	}
+//	public boolean dbCrearActividad (Object[] datos_actividad) {
+//		try {
+//			//this.pstmt = this.conn.prepareStatement("INSERT INTO actividades (id_calendario, informacion, fecha, hora_inicio, hora_fin, ruta_imagen) VALUES (?,?,?,?,?,?)");
+//			this.pstmt = this.conn.prepareStatement(PR.obtenerPropiedad("crearActividad"));
+//			this.pstmt.setInt(1,  Integer.parseInt(datos_actividad[0].toString()));
+//			this.pstmt.setString(2, (String) datos_actividad[1]);
+//			this.pstmt.setString(3, (String) datos_actividad[2]);
+//			this.pstmt.setDouble(4, Double.parseDouble(datos_actividad[3].toString()));
+//			this.pstmt.setDouble(5, Double.parseDouble(datos_actividad[4].toString()));
+//			this.pstmt.setString(6, (String) datos_actividad[5]);
+//			this.pstmt.executeUpdate();
+//		}catch (SQLException e) {
+//			e.printStackTrace();
+//			return false;
+//		}finally {
+//			try {
+//				this.pstmt.close();
+//			} catch (SQLException e) {
+//				//e.printStackTrace();
+//			}
+//		}
+//		
+//		return true;
+//	}
 	
 	//METODO PARA MODIFICAR (EDITAR) UNA ACTIVIDAD
-	public boolean dbModificarActividad (int id_actividad, Object[] datos_modificacion) {
-		try {
-			//this.pstmt = this.conn.prepareStatement("UPDATE actividades SET informacion=?, fecha=?, hora_inicio=?, hora_fin=?, ruta_imagen=? WHERE id_actividad="+id_actividad+";");
-			this.pstmt = this.conn.prepareStatement(PR.obtenerPropiedad("modificarActividad")+id_actividad);
-			this.pstmt.setString(1, (String) datos_modificacion[0]);
-			this.pstmt.setString(2, (String) datos_modificacion[1]);
-			this.pstmt.setDouble(3, Double.parseDouble(datos_modificacion[2].toString()));
-			this.pstmt.setDouble(4, Double.parseDouble(datos_modificacion[3].toString()));
-			this.pstmt.setString(5, (String) datos_modificacion[4]);
-			this.pstmt.executeUpdate();
-		}catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}finally {
-			try {
-				this.pstmt.close();
-			} catch (SQLException e) {
-				//e.printStackTrace();
-			}
-		}
-		return true;
-	}
+//	public boolean dbModificarActividad (int id_actividad, Object[] datos_modificacion) {
+//		try {
+//			//this.pstmt = this.conn.prepareStatement("UPDATE actividades SET informacion=?, fecha=?, hora_inicio=?, hora_fin=?, ruta_imagen=? WHERE id_actividad="+id_actividad+";");
+//			this.pstmt = this.conn.prepareStatement(PR.obtenerPropiedad("modificarActividad")+id_actividad);
+//			this.pstmt.setString(1, (String) datos_modificacion[0]);
+//			this.pstmt.setString(2, (String) datos_modificacion[1]);
+//			this.pstmt.setDouble(3, Double.parseDouble(datos_modificacion[2].toString()));
+//			this.pstmt.setDouble(4, Double.parseDouble(datos_modificacion[3].toString()));
+//			this.pstmt.setString(5, (String) datos_modificacion[4]);
+//			this.pstmt.executeUpdate();
+//		}catch (SQLException e) {
+//			e.printStackTrace();
+//			return false;
+//		}finally {
+//			try {
+//				this.pstmt.close();
+//			} catch (SQLException e) {
+//				//e.printStackTrace();
+//			}
+//		}
+//		return true;
+//	}
 	
 	//METODO PARA ELIMINAR UNA ACTIVIDAD DE LA BASE DE DATOS
-	public boolean dbEliminarActividad (int id_actividad) {
-		try {
-			this.stmt = this.conn.createStatement();
-			//this.stmt.executeUpdate("DELETE FROM actividades WHERE id_actividad="+id_actividad);
-			this.stmt.executeUpdate(PR.obtenerPropiedad("eliminarActividad")+id_actividad);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}finally {
-			try {
-				this.stmt.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-		return true;
-	}
-	
-	//METODO PREPARED STATEMENT
-	public boolean dbPreparedStatement(String query, Object[] datos) {
-		try {
-			this.pstmt = this.conn.prepareStatement(query);
-			this.pstmt.setString(1, (String) datos[0]);
-			this.pstmt.setString(2, (String) datos[1]);
-			this.pstmt.setDouble(3, Double.parseDouble(datos[2].toString()));
-			this.pstmt.setDouble(4, Double.parseDouble(datos[3].toString()));
-			this.pstmt.executeUpdate();
-		}catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}finally {
-			try {
-				this.pstmt.close();
-			} catch (SQLException e) {
-				//e.printStackTrace();
-			}
-		}
-		return true;
-	}
-	
+//	public boolean dbEliminarActividad (int id_actividad) {
+//		try {
+//			this.stmt = this.conn.createStatement();
+//			//this.stmt.executeUpdate("DELETE FROM actividades WHERE id_actividad="+id_actividad);
+//			this.stmt.executeUpdate(PR.obtenerPropiedad("eliminarActividad")+id_actividad);
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//			return false;
+//		}finally {
+//			try {
+//				this.stmt.close();
+//			} catch (SQLException e) {
+//				e.printStackTrace();
+//			}
+//		}
+//		return true;
+//	}
+		
 	//METODO PARA CERRAR LA SESION DE LA BASE DE DATOS
 	public void dbClose() {
 		try {

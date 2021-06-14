@@ -5,6 +5,7 @@ import javax.servlet.http.HttpSession;
 
 import helpers.Database;
 import helpers.Hashing;
+import helpers.PropertiesReader;
 
 public class ControladorPerfil {
 
@@ -36,13 +37,17 @@ public class ControladorPerfil {
 			String clave = request.getParameter("clave");
 			
 			Database DB = Database.getInstances();
+			PropertiesReader PR = PropertiesReader.getInstance();
+			
 			Boolean resultado;
 			//ACTUALIZAR DATOS CUANDO NO CAMBIA LA CLAVE
 			if(clave.equals("")) {
-				resultado = DB.dbActualizarDatosUsuario(sesion.getAttribute("usuario").toString(), usuario, correo);
+				Object[] datos = {usuario, correo};
+				resultado = DB.dbPreparedStatement(PR.obtenerPropiedad("actualizarPerfilSinClave")+sesion.getAttribute("usuario").toString()+"' OR correo='"+sesion.getAttribute("usuario").toString()+"'", datos);
 			}else {
 				//ACTUALIZAR DATOS CUANDO LA CLAVE ES MODIFICADA
-				resultado = DB.dbActualizarDatosUsuario(sesion.getAttribute("usuario").toString(), usuario, correo, Hashing.obtenerHash(clave));
+				Object[] datos = {usuario, correo, Hashing.obtenerHash(clave)};
+				resultado = DB.dbPreparedStatement(PR.obtenerPropiedad("actualizarPerfilConClave")+sesion.getAttribute("usuario").toString()+"' OR correo='"+sesion.getAttribute("usuario").toString()+"'", datos);
 			}
 			//DE SER SATISFACTORIO COLOCAR EL NOMBRE DE USUARIO ACTUALIZADO AL ATRIBUTO "usuario" EN LA SESION
 			if(resultado) {
@@ -64,7 +69,8 @@ public class ControladorPerfil {
 			//OBTENER LA SESION PARA CON ELLA OBTENER EL ATRIBUTO USUARIO Y CON EL ELIMINAR EL REGISTRO EN LA BASE DE DATOS
 			HttpSession sesion = request.getSession();
 			Database DB = Database.getInstances();
-			Boolean resultado = DB.dbEliminarPerfil(sesion.getAttribute("usuario").toString());
+			PropertiesReader PR = PropertiesReader.getInstance();
+			boolean resultado = DB.dbStatement(PR.obtenerPropiedad("eliminarPerfil")+sesion.getAttribute("usuario").toString()+"' OR correo='"+sesion.getAttribute("usuario").toString()+"'");
 			if(resultado) {
 				sesion.setAttribute("usuario", null);
 				return("{\"resultado\": \"Perfil eliminado\", \"status\":"+200+"}");

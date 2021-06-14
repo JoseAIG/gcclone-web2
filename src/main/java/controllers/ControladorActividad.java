@@ -1,6 +1,7 @@
 package controllers;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 
@@ -9,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.Part;
 
 import helpers.Database;
+import helpers.PropertiesReader;
 
 public class ControladorActividad {
 
@@ -27,10 +29,6 @@ public class ControladorActividad {
 		String ruta_imagen_guardar = null;
 		boolean resultado_carga = false;
 		try {
-//			String path = request.getSession().getServletContext().getRealPath("public/activity-images/");
-//			File file = new File(path);
-//			String fullPathToYourWebappRoot = file.getCanonicalPath();
-//			System.out.println("a: " +fullPathToYourWebappRoot);
 			
 //			String ruta_activity_images= request.getSession().getServletContext().getRealPath("public/activity-images/");
 //			System.out.println("Ruta activity images: " + ruta_activity_images);
@@ -42,6 +40,34 @@ public class ControladorActividad {
 			//System.out.println("archprueba: " + archprueba.exists());
 
 			//TEST V2
+//			Part part_imagen = request.getPart("imagen-crear-actividad");
+//			String nombre_archivo = part_imagen.getSubmittedFileName();
+//			String ruta_almacenar=null;
+//			if(!nombre_archivo.equals("")) {
+//				
+//				//OBTENER LA RUTA DE LA APLICACION
+//				ruta_aplicacion = request.getServletContext().getRealPath("");
+//				System.out.println(ruta_aplicacion);
+//				//ESTABLECER LA RUTA PARA GUARDAR EL ARCHIVO
+//				ruta_imagenes = ruta_aplicacion + File.separator + "imagenes";
+//				System.out.println(ruta_imagenes);
+//				
+//				//VERIFICAR SI EL DIRECTORIO EXISTE, DE NO EXISTIR, SE CREA
+//				File directorioImagenes = new File (ruta_imagenes);
+//				existe_directorio = directorioImagenes.exists();
+//				System.out.println("Existe el directorio?: " + existe_directorio);
+//				if(!existe_directorio) {
+//					creacion_directorio = directorioImagenes.mkdirs();
+//					System.out.println("Creacion del directorio: " + creacion_directorio);
+//				}
+//				System.out.println("directorio de la carga del archivo: " + directorioImagenes.getAbsolutePath());
+//				
+//				part_imagen.write(ruta_imagenes +  File.separator + nombre_archivo);
+//				
+//				ruta_almacenar = "imagenes/" + nombre_archivo;
+//			}
+			//FIN TEST V2
+			
 			Part part_imagen = request.getPart("imagen-crear-actividad");
 			String nombre_archivo = part_imagen.getSubmittedFileName();
 			String ruta_almacenar=null;
@@ -64,13 +90,18 @@ public class ControladorActividad {
 				}
 				System.out.println("directorio de la carga del archivo: " + directorioImagenes.getAbsolutePath());
 				
-	//			Part part_imagen = request.getPart("imagen-crear-actividad");
-	//			String nombre_archivo = part_imagen.getSubmittedFileName();
-				part_imagen.write(ruta_imagenes +  File.separator + nombre_archivo);
+				//part_imagen.write(ruta_imagenes +  File.separator + nombre_archivo);
+				
+				FileOutputStream output = new FileOutputStream(new File(ruta_imagenes +  File.separator + nombre_archivo));
+				InputStream input = part_imagen.getInputStream();
+				System.out.println("resultado almacenar imagen: " + almacenarImagen(input, output));
 				
 				ruta_almacenar = "imagenes/" + nombre_archivo;
 			}
-			//FIN TEST V2
+			
+			//TEST FINAL V3
+			
+			//FIN TEST FINAL V3
 			
 			//TEST V1
 			//OBTENER LAS PARTES DEL ARCHIVO IMAGEN DEL CLIENTE
@@ -133,19 +164,19 @@ public class ControladorActividad {
 			
 			//CREAR UN ARREGLO DE OBJETOS CON LOS PARAMETROS DE LA PETICION (DATOS ACTIVIDAD)
 			Object[] datos_nueva_actividad = {
-				request.getParameter("select-calendario-crear-actividad"), 
+				Integer.parseInt(request.getParameter("select-calendario-crear-actividad")), 
 				request.getParameter("detalle-actividad"),
 				request.getParameter("fecha-crear-actividad"),
-				request.getParameter("hora-inicio"),
-				request.getParameter("hora-fin"),
+				Double.parseDouble(request.getParameter("hora-inicio")),
+				Double.parseDouble(request.getParameter("hora-fin")),
 				//ruta_guardar_imagen
 				//null
 				ruta_almacenar
 			};
 			//INGRESAR EN LA BASE DE DATOS LA INFORMACION DE LA ACTIVIDAD
 			Database DB = Database.getInstances();
-			if(DB.dbCrearActividad(datos_nueva_actividad)) {
-				System.out.println(1);
+			PropertiesReader PR = PropertiesReader.getInstance();
+			if(DB.dbPreparedStatement(PR.obtenerPropiedad("crearActividad"), datos_nueva_actividad)) {
 				//String respuesta = "{\"resultado\": \"Actividad creada satisfactoriamente\", \"status\":"+200+", \"estado-directorio\":\""+estado_directorio+"\", \"ruta-imagen-guardar\":\""+ruta_imagen_guardar+"\", \"resultado-carga\":\""+resultado_carga+"\" }";
 
 //				String respuesta = "{\"resultado\": \"Actividad creada satisfactoriamente\", \"status\":"+200+", \"ruta-aplicacion\":\""+ruta_aplicacion+"\", \"ruta-imagenes\":\""+ruta_imagenes+"\", \"existe-directorio\":\""+existe_directorio+"\",\"creacion-directorio\":\""+creacion_directorio+"\"}";
@@ -186,22 +217,22 @@ public class ControladorActividad {
 				
 				//OBTENER LA RUTA DE LA APLICACION
 				ruta_aplicacion = request.getServletContext().getRealPath("");
-				//System.out.println(ruta_aplicacion);
 				//ESTABLECER LA RUTA PARA GUARDAR EL ARCHIVO
 				ruta_imagenes = ruta_aplicacion + File.separator + "imagenes";
-				//System.out.println(ruta_imagenes);
 				
 				//VERIFICAR SI EL DIRECTORIO EXISTE, DE NO EXISTIR, SE CREA
 				File directorioImagenes = new File (ruta_imagenes);
 				existe_directorio = directorioImagenes.exists();
-				//System.out.println("Existe el directorio?: " + existe_directorio);
 				if(!existe_directorio) {
 					creacion_directorio = directorioImagenes.mkdirs();
-					//System.out.println("Creacion del directorio: " + creacion_directorio);
 				}
-				//System.out.println("directorio de la carga del archivo: " + directorioImagenes.getAbsolutePath());
 				
-				part_imagen.write(ruta_imagenes +  File.separator + nombre_archivo);				
+				//part_imagen.write(ruta_imagenes +  File.separator + nombre_archivo);				
+				
+				FileOutputStream output = new FileOutputStream(new File(ruta_imagenes +  File.separator + nombre_archivo));
+				InputStream input = part_imagen.getInputStream();
+				System.out.println("resultado almacenar imagen (editar): " + almacenarImagen(input, output));
+				
 				ruta_almacenar = "imagenes/" + nombre_archivo;
 			}
 			
@@ -209,21 +240,22 @@ public class ControladorActividad {
 			Object [] datos_edicion_actividad = {
 				request.getParameter("detalle-editar-actividad"),
 				request.getParameter("fecha-editar-actividad"),
-				request.getParameter("hora-inicio"),
-				request.getParameter("hora-fin"),
+				Double.parseDouble(request.getParameter("hora-inicio")),
+				Double.parseDouble(request.getParameter("hora-fin")),
 				ruta_almacenar
 			};
 
 			Database DB = Database.getInstances();
+			PropertiesReader PR = PropertiesReader.getInstance();
 			//SI EL PARAMETRO ELIMINAR IMAGEN ACTIVIDAD NO ES NULL, ES DECIR, ESTA "ON" (CHECKBOX ELIMINAR IMAGEN MARCADO) INSERTAR NULL EN EL CAMPO RUTA_IMAGEN O LA NUEVA RUTA DE LA IMAGEN CARGADA (DE HABERSE CARGADO)
 			if(request.getParameter("eliminar-imagen-actividad")!=null || ruta_almacenar!=null) {
-				if(DB.dbModificarActividad(Integer.parseInt(request.getParameter("id-actividad")), datos_edicion_actividad)) {
+				if(DB.dbPreparedStatement(PR.obtenerPropiedad("modificarActividad")+Integer.parseInt(request.getParameter("id-actividad")), datos_edicion_actividad)) {
 					return "{\"resultado\": \"Actividad modificada con exito\", \"status\":"+200+"}";
 				}else {
 					return "{\"resultado\": \"La actividad no se pudo modificar\", \"status\":"+500+"}";				
 				}	
 			}else {
-				if(DB.dbPreparedStatement("UPDATE actividades SET informacion=?, fecha=?, hora_inicio=?, hora_fin=? WHERE id_actividad="+Integer.parseInt(request.getParameter("id-actividad")), datos_edicion_actividad)) {
+				if(DB.dbPreparedStatement(PR.obtenerPropiedad("modificarActividadMantenerImagen")+Integer.parseInt(request.getParameter("id-actividad")), datos_edicion_actividad)) {
 					return "{\"resultado\": \"Actividad modificada con exito\", \"status\":"+200+"}";
 				}else {
 					return "{\"resultado\": \"La actividad no se pudo modificar\", \"status\":"+500+"}";				
@@ -240,7 +272,9 @@ public class ControladorActividad {
 	public static String eliminarActividad(HttpServletRequest request) {
 		try {
 			Database DB = Database.getInstances();
-			if(DB.dbEliminarActividad(Integer.parseInt(request.getParameter("id-actividad")))) {
+			PropertiesReader PR = PropertiesReader.getInstance();
+			//if(DB.dbEliminarActividad(Integer.parseInt(request.getParameter("id-actividad")))) {
+			if(DB.dbStatement(PR.obtenerPropiedad("eliminarActividad")+Integer.parseInt(request.getParameter("id-actividad")))) {
 				return "{\"resultado\": \"Actividad eliminada con exito\", \"status\":"+200+"}";
 			}else {
 				return "{\"resultado\": \"No se pudo eliminar la actividad\", \"status\":"+500+"}";
@@ -250,18 +284,8 @@ public class ControladorActividad {
 		}
 	}
 	
-	private static String getSubmittedFileName(Part part) {
-	    for (String cd : part.getHeader("content-disposition").split(";")) {
-	        if (cd.trim().startsWith("filename")) {
-	            String fileName = cd.substring(cd.indexOf('=') + 1).trim().replace("\"", "");
-	            return fileName.substring(fileName.lastIndexOf('/') + 1).substring(fileName.lastIndexOf('\\') + 1); // MSIE fix.
-	        }
-	    }
-	    return null;
-	}
-	
 	//METODO PARA CARGAR LA IMAGEN
-	private static boolean cargar(InputStream input, FileOutputStream output) {
+	private static boolean almacenarImagen(InputStream input, FileOutputStream output) {
 		int lectura = 0;
 		final byte[] bytes = new byte[1024];
 		
