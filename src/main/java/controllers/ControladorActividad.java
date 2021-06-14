@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-
+import java.util.Arrays;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.Part;
@@ -255,7 +255,8 @@ public class ControladorActividad {
 					return "{\"resultado\": \"La actividad no se pudo modificar\", \"status\":"+500+"}";				
 				}	
 			}else {
-				if(DB.dbPreparedStatement(PR.obtenerPropiedad("modificarActividadMantenerImagen")+Integer.parseInt(request.getParameter("id-actividad")), datos_edicion_actividad)) {
+				//SI NO SE ELIMINO LA IMAGEN O SE CAMBIO POR OTRA, NO ALTERAR EL CAMPO DE LA RUTA IMAGEN COPIANDO EL ARRAY DE LOS DATOS A ACTUALIZAR ELIMINANDOLE EL ULTIMO INDICE
+				if(DB.dbPreparedStatement(PR.obtenerPropiedad("modificarActividadMantenerImagen")+Integer.parseInt(request.getParameter("id-actividad")), Arrays.copyOf(datos_edicion_actividad, datos_edicion_actividad.length-1))) {
 					return "{\"resultado\": \"Actividad modificada con exito\", \"status\":"+200+"}";
 				}else {
 					return "{\"resultado\": \"La actividad no se pudo modificar\", \"status\":"+500+"}";				
@@ -273,7 +274,6 @@ public class ControladorActividad {
 		try {
 			Database DB = Database.getInstances();
 			PropertiesReader PR = PropertiesReader.getInstance();
-			//if(DB.dbEliminarActividad(Integer.parseInt(request.getParameter("id-actividad")))) {
 			if(DB.dbStatement(PR.obtenerPropiedad("eliminarActividad")+Integer.parseInt(request.getParameter("id-actividad")))) {
 				return "{\"resultado\": \"Actividad eliminada con exito\", \"status\":"+200+"}";
 			}else {
