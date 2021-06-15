@@ -16,9 +16,7 @@ function mostrar_avisos(actividades_semana){
 	if(fecha_actual.getMinutes()>=30){
 		bloque_actual+=".5";
 	}
-	
-	console.log(actividades_semana);
-		
+			
 	//SE RECORREN TODAS LAS ACTIVIDADES DE LA SEMANA
 	for(let i=0; i<actividades_semana.length;i++){
 		//SE CREA UN NUEVO OBJETO DATE CON LA FECHA DE LA ACTIVIDAD
