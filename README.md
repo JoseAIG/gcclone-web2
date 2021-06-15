@@ -22,6 +22,7 @@ Desarrollado por José Inciarte C.I. 27.696.083
 - Visualizar en bloques fijos las actividades de uno o varios calendarios en una vista semanal.
 - Desplazarse entre semanas con selector de fecha o por medio de botones para ir a la semana anterior o siguiente.
 - Mostrar notificaciones de las actividades del dia actual (Actividad en curso, a punto de acabar o finalizada).
+- Validar las sesiones y las formas de acceso a los endpoints para tomar acciones en funcion del caso.
 
 ---
 
@@ -31,3 +32,11 @@ Aplicacion web desarrollada en Eclipse for Java EE 2021.03 el cual brinda una nu
 - PostgreSQL como SGBD.
 
 En el front-end no se ha empleado ningun framework, unicamente se hace uso de Materialize.
+
+---
+
+## Enlaces de relevancia
+
+- Deploy en [Heroku](https://gcclone-web2.herokuapp.com/) 
+- Modelado de datos y sentencias tablas SQL: [Google Drive](https://drive.google.com/drive/folders/1KKhFWBM6SrZoEOYCtR66UtIyKoP5HywZ?usp=sharing)
+- Documentacion endpoints en [Postman](https://documenter.getpostman.com/view/15909681/TzY1ic6Z)
