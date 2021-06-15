@@ -2,7 +2,6 @@ package helpers;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 public class Database {
 
@@ -77,7 +76,6 @@ public class Database {
 			this.pstmt = this.conn.prepareStatement(query);
 			int i = 0;
 			for(Object dato : datos) {
-				System.out.println(dato);
 				if(dato instanceof Integer) {
 					this.pstmt.setInt(++i, (int) dato);
 				}

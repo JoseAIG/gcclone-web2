@@ -123,7 +123,7 @@ function dibujar_plantilla(fecha_a_dibujar){
 	let fecha = new Date(fecha_a_dibujar);
 	let dia = fecha.getDate();
 	let mes = fecha.getMonth();
-	let anio = fecha.getFullYear();
+	var anio = fecha.getFullYear();
 
 	//CORREGIR FECHA SUMANDOLE 1 DIA PARA OBTENER LA FECHA PRINCIPAL
 	fechaPrincipal = new Date(anio,mes,(dia+1));
@@ -144,8 +144,8 @@ function dibujar_plantilla(fecha_a_dibujar){
 	    div_dia[i] = document.getElementById("div"+i);
 	    div_dia[i].innerHTML = nombre_dias[i] + `<br>` + diasSemana[i] + `<hr>`;
 	    
-	    //SI EL DIA DE LA FECHA ACTUAL ES IGUAL AL DIA DE LA SEMANA Y EL MES ACTUAL ES IGUAL AL MES DE LA FECHA PRINCIPAL, COLOREAR EL DIV DIA DE AZUL REPRESENTANDO EL DIA ACTUAL
-	    if(new Date().getDate()==diasSemana[i] && new Date().getMonth()==fechaPrincipal.getMonth()){
+	    //SI EL DIA DE LA FECHA ACTUAL ES IGUAL AL DIA DE LA SEMANA Y EL MES ACTUAL ES IGUAL AL MES DE LA FECHA PRINCIPAL Y EL SELECTOR SE ENCUENTRA EN EL ANIO ACTUAL, COLOREAR EL DIV DIA DE AZUL REPRESENTANDO EL DIA ACTUAL
+	    if(new Date().getDate()==diasSemana[i] && new Date().getMonth()==fechaPrincipal.getMonth() && new Date().getFullYear()==anio){
 	    	div_dia[i].style.backgroundColor="#448aff";
 	    }else{
 	    	div_dia[i].style.backgroundColor="#fafafa";
@@ -172,8 +172,8 @@ function dibujar_plantilla(fecha_a_dibujar){
 		//RECORRER LOS BLOQUES DE HORAS Y COMPARAR CON LOS ATRIBUTOS DE LAS ACIVIDADES PARA PINTARLAS
 		let flag = false; 	//ESTE FLAG ES PARA REALIZAR EL ANIADIDO ADICIONAL DE DISENIO AL PRIMER DIV DE LA ACTIVIDAD
 		for(let j=0; j<div_hora.length; j++){
-			//SI LOS BLOQUES DE HORAS DE LAS ACTIVIDADES SE ENCUENTRAN DENTRO DE LOS DIVS HORAS RECORRIDOS SIEMPRE Y CUANDO SE ENCUENTREN EN EL MISMO DIA, SE PLASMA EN LA PLANTILLA
-			if((parseInt(actividades_en_la_semana[i].hora_inicio))<=(parseInt(div_hora[j].getAttribute("hora"))) && (parseInt(div_hora[j].getAttribute("hora")))<=(parseInt(actividades_en_la_semana[i].hora_fin-0.5)) && div_hora[j].getAttribute("dia") == dia_actividad.getDay()){
+			//SI LOS BLOQUES DE HORAS DE LAS ACTIVIDADES SE ENCUENTRAN DENTRO DE LOS DIVS HORAS RECORRIDOS SIEMPRE Y CUANDO SE ENCUENTREN EN EL MISMO DIA Y ANIO, SE PLASMA EN LA PLANTILLA
+			if((parseInt(actividades_en_la_semana[i].hora_inicio))<=(parseInt(div_hora[j].getAttribute("hora"))) && (parseInt(div_hora[j].getAttribute("hora")))<=(parseInt(actividades_en_la_semana[i].hora_fin-0.5)) && div_hora[j].getAttribute("dia") == dia_actividad.getDay() && dia_actividad.getFullYear() == anio){
 				if(!flag){					
 					//SI LA ACTIVIDAD COMIENZA EN UNA MEDIA HORA AUMENTAR EN UNA UNIDAD EL CONTEO INICIAL PARA EL DIBUJADO DE LA ACTIVIDAD EN PLANTILLA
 					if(actividades_en_la_semana[i].hora_inicio%1!=0){
@@ -231,19 +231,21 @@ function dibujar_plantilla(fecha_a_dibujar){
 			}
 			
 		}
-	}	
+	}
 }
 
 //FUNCION QUE DEVUELVE EL PRIMER DIA DE LA SEMANA DADA UNA FECHA
 function obtenerInicioSemana (fecha) {
+	//EL PRIMER DIA SERA EL NUMERO DEL DIA DEL MES MENOS EL NUMERO DE DIA DE LA SEMANA DE ESA FECHA
     let numeroPrimerDia = fecha.getDate() - fecha.getDay();
     let fechaPrimerDia = fecha;
     fechaPrimerDia.setDate(numeroPrimerDia);
     return fechaPrimerDia;
 }
 
+//FUNCION QUE DEVUELVE EL ULTIMO DIA DE LA SEMANA DADA UNA FECHA
 function obtenerFinalSemana (fecha) {
-    //EL ULTIMO DIA DE LA SEMANA SERA EL NUMERO DE DIA ACTUAL + EL NUMERO DE DIAS DE LA SEMANA EMPEZANDO EN 0 - EL NUMERO DE DIA DE LA SEMANA ACTUAL
+    //EL ULTIMO DIA DE LA SEMANA SERA EL NUMERO DE DIA DEL MES + EL NUMERO DE DIAS DE LA SEMANA EMPEZANDO EN 0 - EL NUMERO DE DIA DE LA SEMANA DE ESA FECHA
     let numeroUltimoDia = fecha.getDate() + 6 - fecha.getDay();
     let fechaUltimoDia = fecha;
     fechaUltimoDia.setDate(numeroUltimoDia);
@@ -264,9 +266,9 @@ function obtenerDiasSemana(fecha) {
 			numeroDiasSemana[i] = fecha.getDate() + i - fecha.getDay();
 	    }
 	}else{
-		//PERO SI DENTRO DE LA SEMANA CULMINA UN MES, SE OBTIENE LA FECHA DE INICIO DE LA SEMANA Y SE SETEA EL DIA A 31 PARA OBTENER CON QUE NUMERO DE DIA CULMINA EL MES
+		//PERO SI DENTRO DE LA SEMANA CULMINA UN MES (FECHA INICIAL MAYOR QUE LA FINAL), SE OBTIENE LA FECHA DE INICIO DE LA SEMANA Y SE SETEA EL DIA A 31 PARA OBTENER CON QUE NUMERO DE DIA CULMINA EL MES
 	    let fechaPrimerDia = obtenerInicioSemana(fecha);
-	    fechaPrimerDia.setDate(31);
+	    fechaPrimerDia.setDate(31); //SETEANDOLO A 31, SI EL MES TERMINA EN 28, 29 O 30, OBTENDREMOS LA DIFERENCIA (31-N) REPRESENTADA EN EL DIA DEL SIGUIENTE MES
 	
 		//SI LA RESTA DE 31 CON LA FECHA DEL PRIMER DIA SETEADA EN 31 PARA ES 0, SIGINIFICA QUE EN EFECTO EL MES TERMINA EN EL DIA 31
 	    let diaFinMesAnterior = 31-fechaPrimerDia.getDate()
@@ -274,12 +276,13 @@ function obtenerDiasSemana(fecha) {
 	        diaFinMesAnterior=31;
 	    }
 	    
+	    //SE RECORREN LOS DIAS DE LA SEMANA
 	    for(let i=0;i<7;i++){
-	        //SI LA SUMA ENTRE EL PRIMER DIA Y LA SIGUIENTE ITERACION NO SUPERA EL DIA FIN DEL MES ANTERIOR, EL DIA DE LA SEMANA ES LA SUMA
+	        //SI LA SUMA ENTRE EL PRIMER DIA Y EL ITERADOR NO SUPERA EL DIA FIN DEL MES ANTERIOR, EL DIA DE LA SEMANA ES LA SUMA
 	        if(!((primerDia+i)>diaFinMesAnterior)){
 	            numeroDiasSemana[i] = primerDia + i;
 	        }
-	        //PERO SI LA SUMA SUPERA EL DIA FIN DEL MES ANTERIOR, EMPIEZA EL CONTEO DEL PROXIMO MES CON EL INDICE DEL ITERADOR COMENZANDO DESDE EL DIA DEL ULTIMO MES
+	        //PERO SI LA SUMA SUPERA EL DIA FIN DEL MES ANTERIOR, EMPIEZA EL CONTEO DEL PROXIMO MES CON EL INDICE DEL ITERADOR COMENZANDO CON EL VALOR ANTERIOR ITERADOR
 	        else{
 	            for(let j=i;j<7;j++){
 	                numeroDiasSemana[j] = j-i+1;

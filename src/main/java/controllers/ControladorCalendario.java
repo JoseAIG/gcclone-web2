@@ -190,7 +190,6 @@ public class ControladorCalendario {
 				//SI UN USUARIO NO PROPIETARIO ELIMINA EL CALENDARIO, BORRAR UNICAMENTE LOS DATOS DE EDICION DEL USUARIO RESPECTIVO
 				HttpSession sesion = request.getSession();
 				if(DB.dbStatement("DELETE FROM ediciones WHERE (nombre_usuario='"+sesion.getAttribute("usuario").toString()+"' OR correo='"+sesion.getAttribute("usuario").toString()+"') AND id_calendario="+Integer.parseInt(request.getParameter("id-calendario")))) {
-					System.out.println("datos edicion elim optimizados");
 					return "{\"resultado\": \"Datos edicion eliminados exitosamente\", \"status\":"+200+"}";
 				}else {
 					return "{\"resultado\": \"No se pudo eliminar los datos de edicion\", \"status\":"+500+"}";

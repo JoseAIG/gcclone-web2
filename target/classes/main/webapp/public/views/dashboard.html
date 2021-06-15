@@ -11,7 +11,9 @@
 		<script src="public/scripts/dashboard-calendario.js" type="module" defer></script>
 		<script src="public/scripts/dashboard-aviso.js" defer></script>
 		<script src="public/scripts/dashboard-actividades.js" defer></script>
+		<!-- CSS's -->
 		<link href="public/styles/dashboard-actividades.css" rel="stylesheet">
+		<link href="public/styles/dashboard-aviso.css" rel="stylesheet">
 		
 		<title>GC Clone - Dashboard</title>
 	</head>
@@ -19,7 +21,7 @@
 		<!-- INICIO NAVBAR -->
 		<nav>
 		  <div class="nav-wrapper teal">
-		    <a href="/" class="brand-logo left"><i class="material-icons">perm_contact_calendar</i>GC Clone</a>
+		    <a href="/" class="brand-logo left"><img src="public/assets/images/calendar-logo.svg" style="height:2em; vertical-align: top">GC Clone</a>
 		    <ul class="right">
 		    	<li><a id="link-editar-perfil" class="waves-effect waves-light modal-trigger" data-target="modal-editar-perfil"><i class="material-icons left ">person_outline</i>Editar perfil</a></li>
 		      	<li><a id="link-cerrar-sesion"><i class="waves-effect waves-light material-icons left">power_settings_new</i>Cerrar Sesión</a></li>
@@ -52,10 +54,6 @@
       		<section class="col s9 grey lighten-5">
       			<h4 class="center" id="informacion-mes-fecha">Mes</h4>
         		<div id="contenedor-divs-dia" class="center">
-<!--         			<div class="center col s9" style="margin-top: 40vh; position: fixed;">
-    		        	<button id="anterior-semana" class="btn-floating btn-large waves-effect waves-light teal left"><i class="material-icons">arrow_back</i></button>
-        				<button id="siguiente-semana" class="btn-floating btn-large waves-effect waves-light teal right"><i class="material-icons">arrow_forward</i></button>
-        			</div> -->
 	      		    <div id="div0" class="div-dia"></div>
 			        <div id="div1" class="div-dia"></div>
 			        <div id="div2" class="div-dia"></div>
@@ -75,7 +73,8 @@
       			
       		</section>
     	</div>
-    	
+    	<!-- CONTENEDOR DE LAS NOTIFICACIONES -->
+    	<div id="contenedor-notificaciones"></div>
   		<!-- MODAL ACTUALIZAR DATOS PERFIL -->
 		<div id="modal-editar-perfil" class="modal hoverable">
 		  <div class="modal-content">
@@ -124,7 +123,7 @@
 		        			</div>
 		        			<div class="col s6 offset-s3">
 		        				<label>Color del calendario:</label>
-		        				<input type="color" name="color-calendario" style="width: 100%">
+		        				<input type="color" name="color-calendario" style="width: 100%" value="#7e57c2">
 		        			</div>
 		        		</div>
 		        	</form>
@@ -209,7 +208,7 @@
 		        				<div class="file-field input-field">
 	        				      	<div class="btn">
 										<span>Imagen</span>
-			        					<input type="file" name="imagen-crear-actividad" id="imagen-crear-actividad">
+			        					<input type="file" accept="image/*" name="imagen-crear-actividad" id="imagen-crear-actividad">
 									</div>
 									<div class="file-path-wrapper">
 							  			<input class="file-path validate" type="text">
@@ -279,7 +278,7 @@
 		        				<div class="file-field input-field">
 	        				      	<div class="btn">
 										<span>Imagen</span>
-			        					<input type="file" name="imagen-editar-actividad" id="imagen-editar-actividad">
+			        					<input type="file" accept="image/*" name="imagen-editar-actividad" id="imagen-editar-actividad">
 									</div>
 									<div class="file-path-wrapper">
 							  			<input class="file-path validate" type="text">

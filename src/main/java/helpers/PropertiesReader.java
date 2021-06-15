@@ -8,7 +8,7 @@ public class PropertiesReader {
 	private static PropertiesReader propertiesReader = new PropertiesReader();
 	private static Properties properties;
 
-	
+	//CONSTRUCTOR
 	private PropertiesReader() {
 		try {
 			properties = new Properties();
@@ -18,10 +18,12 @@ public class PropertiesReader {
 		}
 	}
 	
+	//METODO PARA RETORNAR INSTANCIA DE PROPERTIESREADER
 	public static PropertiesReader getInstance() {
 		return propertiesReader;
 	}
 	
+	//METODO PARA OBTENER UNA PROPIEDAD (KEY) Y RETORNAR EL VALOR
 	public String obtenerPropiedad(String key) {
 		return properties.getProperty(key);
 	}

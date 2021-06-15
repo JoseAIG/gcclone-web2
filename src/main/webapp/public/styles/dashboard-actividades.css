@@ -76,8 +76,12 @@
 	color: gray;
 }
 
+body{
+	overflow: hidden;
+}
+
 section, aside{
-	height: 88vh;
+	height: 91vh;
 	border-bottom: 1px solid grey;
 	overflow-y: auto;
     position: relative;
