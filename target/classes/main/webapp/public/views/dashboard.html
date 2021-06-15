@@ -38,13 +38,19 @@
         			<button id="siguiente-semana" class="btn-floating waves-effect waves-light teal"><i class="material-icons">arrow_forward</i></button>
         		</div>
         		<h5 class="center">Calendarios</h5>
-        		<div id="contenedor-nombres-calendarios"></div>
-        		<div class="center">
+        		<div id="contenedor-nombres-calendarios">
+        		</div>
+     		 	<div class="center">
      		       	<a id="link-crear-calendario" class="btn-floating btn-small waves-effect waves-light teal modal-trigger hoverable" data-target="modal-crear-calendario"><i class="material-icons">add</i></a>
+        		</div>
+        		<div id="contenedor-nombres-calendarios-invitado" style="display: none">
+        			<hr>
+        			<h6 class="center">Invitado</h6>
         		</div>        		
       		</aside>
 			<!-- SECTION DASHBOARD -->
       		<section class="col s9 grey lighten-5">
+      			<h4 class="center" id="informacion-mes-fecha">Mes</h4>
         		<div id="contenedor-divs-dia" class="center">
 <!--         			<div class="center col s9" style="margin-top: 40vh; position: fixed;">
     		        	<button id="anterior-semana" class="btn-floating btn-large waves-effect waves-light teal left"><i class="material-icons">arrow_back</i></button>
@@ -70,7 +76,7 @@
       		</section>
     	</div>
     	
-  		<!-- Modal actualizacion usuario -->
+  		<!-- MODAL ACTUALIZAR DATOS PERFIL -->
 		<div id="modal-editar-perfil" class="modal hoverable">
 		  <div class="modal-content">
 		    <h4 class="center">Editar Perfil</h4>
@@ -103,7 +109,7 @@
 		    <a class="modal-close waves-effect waves-green btn-flat">Cerrar</a>
 		  </div>
 		</div>
-		<!-- Fin Modal actualizacion usuario -->
+		<!-- FIN MODAL ACTUALIZAR DATOS PERFIL -->
 		
 		<!-- MODAL AGREGAR CALENDARIO -->
 		<div id="modal-crear-calendario" class="modal hoverable">
@@ -262,7 +268,7 @@
 		        				<div class="center" id=contenedor-imagen-previsualizar></div>
 	        				    <p>
 							      <label>
-							        <input type="checkbox" name="eliminar-imagen-actividad"/>
+							        <input type="checkbox" id="eliminar-imagen-actividad" name="eliminar-imagen-actividad"/>
 							        <span>Eliminar imagen</span>
 							      </label>
 							    </p>

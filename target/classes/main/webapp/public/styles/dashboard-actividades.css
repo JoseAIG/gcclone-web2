@@ -3,9 +3,9 @@
 	margin-bottom: 1em;
 }
 
-
 .div-dia{
-    height: 12em;
+	border-radius: 3em;
+    height: 3.5em;
     width: 7em;
     display: inline-block;
     text-align: center;
@@ -21,6 +21,7 @@
     text-align: center;
     border-bottom: 1px solid gray; 
     position: relative;
+    transition: opacity 1s;
 }
 
 .div-hora:hover{
@@ -31,6 +32,7 @@
 	display: inline-block;
 	height: 100%;
 	vertical-align: middle;
+	opacity: 1;
 }
 
 .imagen-actividad{
@@ -43,12 +45,15 @@
 .imagen-previsualizada{
 	width: 6em;
 	opacity: 1;
-	border-radius: 0.5em;
+	border-radius: 1.5em;
 	margin: 1em;
+	transition: border-radius 1s, width 1s, box-shadow 2s;
 }
 
 .imagen-previsualizada:hover{
-	opacity: 0.5;
+	border-radius: 0.5em;
+	width: 8em;
+	box-shadow: 1px 1px 1px 1px #eeeeee;
 }
 
 .numero-bloque-hora{

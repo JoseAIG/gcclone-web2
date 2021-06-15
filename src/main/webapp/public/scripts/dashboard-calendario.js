@@ -24,6 +24,7 @@ window.onload=()=>{
 }
 //CONTENEDOR PARA IMPRIMIR LOS NOMBRES DE LOS CALENDARIOS EN EL ASIDE
 var div_contenedor_nombres_calendarios = document.getElementById("contenedor-nombres-calendarios");
+var div_contenedor_nombres_calendarios_invitado = document.getElementById("contenedor-nombres-calendarios-invitado");
 //ELEMENTOS QUE FORMAN PARTE DEL MODAL EDITAR CALENDARIO
 var input_nombre_editar_calendario = document.getElementById("input-nombre-editar-calendario");
 var input_color_editar_calendario = document.getElementById("input-color-editar-calendario");
@@ -34,6 +35,7 @@ var p_informacion_compartido = document.getElementById("p-informacion-compartido
 var contador_editar_invitados;
 var id_calendario_editar;
 const mostrar_calendarios_aside = (data)=>{
+	let mostrar_div_invitado = false;
 	for(let i=0;i<data.calendarios.length;i++){
 		//CONTENEDOR "ETIQUETA" CALENDARIO (CHECKBOX, NOMBRE Y BOTON CONFIG)
 		let div = document.createElement("div");
@@ -145,8 +147,18 @@ const mostrar_calendarios_aside = (data)=>{
 			}
 		});
 		
-		div_contenedor_nombres_calendarios.appendChild(div);
+		if(data.calendarios[i].invitados!=null){
+			div_contenedor_nombres_calendarios.appendChild(div);		
+		}else{
+			div_contenedor_nombres_calendarios_invitado.appendChild(div);
+			mostrar_div_invitado = true;
+		}
 	}
+	
+	if(mostrar_div_invitado){
+		div_contenedor_nombres_calendarios_invitado.style.display="block";
+	}
+	
 }
 
 //GUARDAR EDICION CALENDARIO

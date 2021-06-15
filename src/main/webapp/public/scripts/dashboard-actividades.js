@@ -108,6 +108,12 @@ function obtener_actividades_semana(){
 	mostrar_avisos(actividades_en_la_semana);
 }
 
+//ARREGLO QUE CONTIENE LOS NOMBRES DE LOS MESES DE UN ANIO
+const nombre_meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+
+//ARREGLO QUE CONTIENE LOS NOMBRES DE LOS DIAS DE LA SEMANA
+const nombre_dias = ["Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado"];
+
 //LLAMADA A LA FUNCION DIBUJAR PLANTILLA LA PRIMERA VEZ QUE SE CORRE LA APP
 dibujar_plantilla(selectorFecha.value);
 
@@ -125,13 +131,26 @@ function dibujar_plantilla(fecha_a_dibujar){
 	//OBTENER LAS ACTIVIDADES DE LA SEMANA EN BASE A LA FECHA PRINCIPAL CALCULADA
 	obtener_actividades_semana();
 
+	//OBTENER EL H4 QUE CONTIENE EL NOMBRE DEL MES DE LA FECHA Y COLOCAR EL NOMBRE DEL MES CORRESPONDIENTE
+	let informacion_mes_fecha = document.getElementById("informacion-mes-fecha");
+	informacion_mes_fecha.innerText=nombre_meses[mes];
+
 	let div_dia = [];
 	//OBTENER LOS NUMEROS DE LOS DIAS DE LA SEMANA DADA LA FECHA PRINCIPAL
 	let diasSemana = obtenerDiasSemana(fechaPrincipal);
 	//RECORRER LOS DIVS DIAS PARA COLOCAR LOS DIVS DE LAS HORAS DENTRO DE CADA UNO
 	for(let i=0; i<7; i++){
+		//INGRESAR LOS VALORES BASICOS EN LOS DIVS DE LOS DIAS
 	    div_dia[i] = document.getElementById("div"+i);
-	    div_dia[i].innerHTML = nombre_dia_semana(i) + `<br>` + diasSemana[i] + `<hr>`;
+	    div_dia[i].innerHTML = nombre_dias[i] + `<br>` + diasSemana[i] + `<hr>`;
+	    
+	    //SI EL DIA DE LA FECHA ACTUAL ES IGUAL AL DIA DE LA SEMANA Y EL MES ACTUAL ES IGUAL AL MES DE LA FECHA PRINCIPAL, COLOREAR EL DIV DIA DE AZUL REPRESENTANDO EL DIA ACTUAL
+	    if(new Date().getDate()==diasSemana[i] && new Date().getMonth()==fechaPrincipal.getMonth()){
+	    	div_dia[i].style.backgroundColor="#448aff";
+	    }else{
+	    	div_dia[i].style.backgroundColor="#fafafa";
+	    }
+	    
 	    //AÑADIDO DE DIVS DE LAS HORAS EN LOS DIVS DE LOS DIAS
 	    for(let j=0; j<24; j=(j+0.5)){
 			if(j%1==0){
@@ -146,7 +165,7 @@ function dibujar_plantilla(fecha_a_dibujar){
 		
 	//RECORRIDO FINAL DE LAS ACTIVIDADES POR LOS DIVS DE LAS HORAS
 	for(let i=0; i<actividades_en_la_semana.length; i++){
-		//OBTENER UN OBJETO DATE CON LA FECHA DE CADA ACTIVIDAD 
+		//GENERAR UN OBJETO DATE CON LA FECHA DE CADA ACTIVIDAD 
 		let dia_actividad = new Date(actividades_en_la_semana[i].fecha);
 		dia_actividad.setDate(dia_actividad.getDate()+1);
 		
@@ -256,11 +275,11 @@ function obtenerDiasSemana(fecha) {
 	    }
 	    
 	    for(let i=0;i<7;i++){
-	        //SI LA SUMA DE LA SIGUIENTE ITERACION NO SUPERA EL DIA FIN DEL MES ANTERIOR, EL DIA DE LA SEMANA ES LA SUMA
+	        //SI LA SUMA ENTRE EL PRIMER DIA Y LA SIGUIENTE ITERACION NO SUPERA EL DIA FIN DEL MES ANTERIOR, EL DIA DE LA SEMANA ES LA SUMA
 	        if(!((primerDia+i)>diaFinMesAnterior)){
 	            numeroDiasSemana[i] = primerDia + i;
 	        }
-	        //PERO SI LA SUMA SUPERA EL DIA FIN DEL MES ANTERIOR, EMPIEZA EL CONTEO DEL PROXIMO MES
+	        //PERO SI LA SUMA SUPERA EL DIA FIN DEL MES ANTERIOR, EMPIEZA EL CONTEO DEL PROXIMO MES CON EL INDICE DEL ITERADOR COMENZANDO DESDE EL DIA DEL ULTIMO MES
 	        else{
 	            for(let j=i;j<7;j++){
 	                numeroDiasSemana[j] = j-i+1;
@@ -270,34 +289,6 @@ function obtenerDiasSemana(fecha) {
 	    }
 	}
 	return numeroDiasSemana;
-}
-
-//FUNCION PARA OBTENER LOS NOMBRES DE LOS DIAS DE LA SEMANA EN BASE DE UN NUMERO DE DIA DE SEMANA (0-6)
-function nombre_dia_semana(numero_dia){
-    let dia;
-    switch(numero_dia){
-        case 0:
-            dia = "Domingo";
-            break;
-        case 1:
-            dia = "Lunes";
-            break;
-        case 2: 
-            dia = "Martes";
-            break;
-        case 3:
-            dia = "Miercoles";
-            break;
-        case 4: 
-            dia = "Jueves";
-            break;
-        case 5:
-            dia = "Viernes";
-            break;
-        case 6:
-            dia = "Sabado";
-    }
-    return dia;
 }
 
 //INCLUIR LA LISTA DE CALENDARIOS EN LAS OPCIONES DE LAS ETIQUETAS SELECT PARA CREAR CALENDARIOS (LLAMADA EN "dashboard-calendario.js" AL INICIAR LA PAGINA)
@@ -441,6 +432,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			input_detalle_crear_actividad.value=null;
 			fecha_crear_actividad.value=null;
 			document.getElementById("option-defecto").selected = 'selected';
+			document.getElementById("eliminar-imagen-actividad").checked = false;
 			contenedor_imagen_previsualizar.innerHTML="";
 			//VOLVER A INICIAR LAS ETIQUETAS SELECT
 			var elems = document.querySelectorAll('select');
